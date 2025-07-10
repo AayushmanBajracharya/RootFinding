@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Root Finding Method & Comparison</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 50%, #e6fffa 100%);
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .header p {
+            color: #4b5563;
+            font-size: 1.125rem;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 32px;
+        }
+
+        .section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .equation-input {
+            max-width: 768px;
+            margin: 0 auto;
+        }
+
+        .equation-input input {
+            width: 100%;
+            padding: 16px 24px;
+            background: white;
+            border: 2px solid #d1d5db;
+            border-radius: 12px;
+            color: #1f2937;
+            font-size: 1.125rem;
+            transition: all 0.2s;
+        }
+
+        .equation-input input:focus {
+            outline: none;
+            border-color: #14b8a6;
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+        }
+
+        .examples {
+            margin-top: 16px;
+            color: #4b5563;
+        }
+
+        .examples p {
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .example-tags {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .example-tag {
+            background: #f3f4f6;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+      .method-btn {
+    color: #4a4a4a; /* Black by default */
+    padding: 24px;
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
+    background: #ece7e7;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+ 
+.method-btn:hover {
+    background: #052455;
+    border-color: #d1d5db;
+    color: #ffffff; /* White text on hover */
+}
+
+.method-btn span {
+    font-weight: 500;
+    font-size: 1.125rem;
+    color: inherit; /* Inherit from button */
+}
+
+
+        .method-btn.selected {
+            border-color: #14b8a6;
+            background: #f0fdfa;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+      
+
+        .method-indicator {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+          
+        }
+
+        .blue { background-color: #3b82f6; }
+        .green { background-color: #10b981; }
+        .purple { background-color: #8b5cf6; }
+        /* Bisection Method (Blue) */
+        .method-btn[data-method="bisection"]:hover .method-indicator {
+            background-color: #2563eb;
+          
+        }
+
+        /* Secant Method (Green) */
+        .method-btn[data-method="secant"]:hover .method-indicator {
+            background-color: #059669;
+        }
+
+        /* Newton Raphson Method (Purple) */
+        .method-btn[data-method="newton"]:hover .method-indicator {
+            background-color: #7c3aed;
+        }
+
+        .compare-btn-container {
+            text-align: center;
+            margin-bottom: 40px; 
+        }
+
+        .compare-btn {
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.125rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+             transition: all 0.2s ease;
+            
+        }
+
+        .compare-btn:enabled {
+               background: linear-gradient(135deg, #3b82f6, #2563eb); 
+
+                color: #ffffff;
+                cursor: pointer;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                transition: background 0.3s ease, transform 0.2s ease;
+            }
+
+
+
+        .compare-btn:enabled:hover {
+         transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+
+        .graphs-container {
+            display: flex;
+            flex-direction: row;
+            gap: 32px;
+            flex-wrap: wrap;
+            justify-content: center;
+            
+        }
+
+        .graph-box {
+            background: white;
+            border-radius: 12px;
+            padding: 56px;
+            height: 256px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .graph-placeholder {
+            text-align: center;
+            color: #6b7280;
+            font-size: 1.125rem;
+        }
+
+        .graph-indicator {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+        }
+
+        .expandable-section {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 16px;
+        }
+
+        .expandable-header {
+            width: 100%;
+            padding: 16px;
+            background: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background-color 0.2s;
+        }
+
+        .expandable-header:hover {
+            background: #f9fafb;
+        }
+
+       .expandable-content {
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 16px;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+}
+
+.expandable-content.show {
+    max-height: 300px; /* or enough height for your content */
+    padding: 16px;
+}
+
+        .expandable-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            color: #1f2937;
+        }
+
+        .expandable-input:focus {
+            outline: none;
+            border-color: #14b8a6;
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #1f2937;
+        }
+
+        .results-table th {
+            text-align: left;
+            padding: 16px;
+            font-weight: 600;
+            background: #f9fafb;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .results-table td {
+            padding: 16px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .results-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .method-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .method-name span {
+            font-weight: 500;
+        }
+
+        .root-value {
+            color: #14b8a6;
+            font-weight: 500;
+        }
+
+        .chevron {
+            transition: transform 0.2s;
+        }
+
+        .chevron.rotated {
+            transform: rotate(90deg);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 24px;
+            }
+            
+            .methods-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>
+               <i data-lucide="chevron-right" class="chevron"></i>
+
+                Root Finding Method & Comparison
+            </h1>
+            <p>Discover and compare powerful root finding methods for solving equations with precision & efficiency</p>
+        </div>
+
+        <!-- Equation Input Section -->
+        <div class="section">
+            <h2>
+                <i data-lucide="chevron-right" class="chevron"></i>
+
+                Enter Your Equation
+            </h2>
+            <div class="equation-input">
+                <input type="text" id="equationInput" placeholder="e.g., x^2 + 3*x" value="x^2 + 3*x">
+                <div class="examples">
+                    <p>Examples:</p>
+                    <div class="example-tags">
+                        <span class="example-tag">x^2 + 3*x</span>
+                        <span class="example-tag">y^2 - 4*x + 4</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Method Selection -->
+        <div class="section">
+            <h2>Select Methods</h2>
+            <div class="methods-grid">
+                <button class="method-btn" data-method="bisection">
+                    <span>Bisection Method</span>
+                    <div class="method-indicator blue"></div>
+                </button>
+                <button class="method-btn" data-method="secant">
+                    <span>Secant Method</span>
+                    <div class="method-indicator green"></div>
+                </button>
+                <button class="method-btn" data-method="newton">
+                    <span>Newton Raphson Method</span>
+                    <div class="method-indicator purple"></div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Compare Button -->
+        <div class="compare-btn-container">
+            <button class="compare-btn" id="compareBtn" enabled>
+                <i data-lucide="bar-chart-3"></i>
+                Compare Methods
+            </button>
+        </div>
+
+        <!-- Graph Display -->
+        <div class="section">
+            <h2>Graphs</h2>
+            <div class="graphs-container">
+                <div class="graph-box">
+                    <div class="graph-placeholder">
+                        <div class="graph-indicator blue"></div>
+                        Bisection Method Graph
+                    </div>
+                </div>
+                <div class="graph-box">
+                    <div class="graph-placeholder">
+                        <div class="graph-indicator green"></div>
+                        Secant Method Graph
+                    </div>
+                </div>
+                <div class="graph-box">
+                    <div class="graph-placeholder">
+                        <div class="graph-indicator purple"></div>
+                        Newton Raphson Method Graph
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Method Explanations -->
+        <div class="section">
+            <h2>
+                <i data-lucide="info" style="color: #f59e0b;"></i>
+                To Understand Better:
+            </h2>
+           <div class="expandable-section">
+    <button class="expandable-header" data-method="bisection">
+        <div class="method-name">
+            <div class="method-indicator blue"></div>
+            <span>Bisection Method</span>
+        </div>
+        <i data-lucide="chevron-right" class="chevron"></i>
+    </button>
+    <div class="expandable-content">
+        <p><strong>What is the Bisection Method?</strong><br>
+        The Bisection Method is a numerical technique used to find roots of a function \( f(x) = 0 \).<br><br>
+
+        <strong>Steps:</strong><br>
+        1. Choose interval [a, b] where \( f(a) \cdot f(b) < 0 \).<br>
+        2. Compute midpoint \( c = \frac{a + b}{2} \).<br>
+        3. Evaluate \( f(c) \).<br>
+        4. Replace either a or b with c depending on the sign of \( f(c) \).<br>
+        5. Repeat until the interval is small enough or root is found.<br><br>
+
+        This method is guaranteed to converge if the function is continuous on [a, b].</p>
+    </div>
+</div>
+
+            <div class="expandable-section">
+                <button class="expandable-header" data-method="secant">
+                    <div class="method-name">
+                        <div class="method-indicator green"></div>
+                        <span>Secant Method</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="chevron"></i>
+                </button>
+                <div class="expandable-content">
+                    <input type="text" class="expandable-input" placeholder="Little explanation about it">
+                </div>
+            </div>
+            <div class="expandable-section">
+                <button class="expandable-header" data-method="newton">
+                    <div class="method-name">
+                        <div class="method-indicator purple"></div>
+                        <span>Newton Raphson Method</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="chevron"></i>
+                </button>
+                <div class="expandable-content">
+                    <input type="text" class="expandable-input" placeholder="Little explanation about it">
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Table -->
+        <div class="section hidden" id="resultsSection">
+            <h2>Comparison Results</h2>
+            <div style="overflow-x: auto;">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Root Found</th>
+                            <th>Iterations</th>
+                            <th>Precision</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsTableBody">
+                        <!-- Results will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // State management
+        let selectedMethods = [];
+        let expandedMethod = null;
+
+        // Method definitions
+        const methods = {
+            bisection: { name: 'Bisection Method', color: 'blue' }, 
+            secant: { name: 'Secant Method', color: 'green' },
+            newton: { name: 'Newton Raphson Method', color: 'purple' }
+        };
+
+        // DOM elements
+        const methodButtons = document.querySelectorAll('.method-btn');
+        const compareBtn = document.getElementById('compareBtn');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsTableBody = document.getElementById('resultsTableBody');
+        const expandableHeaders = document.querySelectorAll('.expandable-header');
+
+        // Method selection handling
+        methodButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const method = btn.dataset.method;
+                
+                if (selectedMethods.includes(method)) {
+                    selectedMethods = selectedMethods.filter(m => m !== method);
+                    btn.classList.remove('selected');
+                } else {
+                    selectedMethods.push(method);
+                    btn.classList.add('selected');
+                }
+                
+                updateCompareButton();
+            });
+        });
+
+        // Compare button handling
+        compare-btn.addEventListener('click', () => {
+            if (selectedMethods.length > 0) {
+                showResults();
+            }
+        });
+
+        // Expandable sections handling
+        expandableHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const method = header.dataset.method;
+                const content = header.nextElementSibling;
+                const chevron = header.querySelector('.chevron');
+                
+                if (expandedMethod === method) {
+                    // Close current
+                    content.classList.remove('show');
+                    chevron.classList.remove('rotated');
+                    expandedMethod = null;
+                } else {
+                    // Close all first
+                    document.querySelectorAll('.expandable-content').forEach(c => c.classList.remove('show'));
+                    document.querySelectorAll('.chevron').forEach(c => c.classList.remove('rotated'));
+                    
+                    // Open selected
+                    content.classList.add('show');
+                    chevron.classList.add('rotated');
+                    expandedMethod = method;
+                }
+            });
+        });
+
+        // Update compare button state
+        function updateCompareButton() {
+            compareBtn.disabled = selectedMethods.length === 0;
+        }
+
+        // Show results table
+        function showResults() {
+            resultsSection.classList.remove('hidden');
+            
+            // Clear existing results   
+            resultsTableBody.innerHTML = '';
+            
+            // Add rows for selected methods
+            selectedMethods.forEach(methodId => {
+                const method = methods[methodId];
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="method-name">
+                            <div class="method-indicator ${method.color}"></div>
+                            <span>${method.name}</span>
+                        </div>
+                    </td>
+                    <td class="root-value">-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                `;
+                resultsTableBody.appendChild(row);
+            });
+
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize
+        updateCompareButton();
+        window.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+});
+    </script>
+</body>
+</html>
