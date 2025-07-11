@@ -3,26 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secant Method Root Finding</title>
-    <link rel="stylesheet" href="../css/secant.css">
+    <title>Newton-Raphson Method</title>
+    <link rel="stylesheet" href="../css/newton_raphson.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Root Finding Method & Comparision</h1>
-         <div class="header">
+        <h1>Newton-Raphson Method</h1>
+
+        <div class="header">
             <p></p>
         </div>
+
         <div class="method-section">
-            <h2 class="method-title">Secant Method </h2>
+            <h2 class="method-title">Newton-Raphson Root Finding</h2>
             <div class="input-grid">
                 <div class="input-group">
-                    <label for="initialGuess1">Initial Guess 1 (x₀):</label>
-                    <input type="number" id="initialGuess1" value="-2" step="0.1">
-                </div>
-                <div class="input-group">
-                    <label for="initialGuess2">Initial Guess 2 (x₁):</label>
-                    <input type="number" id="initialGuess2" value="2" step="0.1">
+                    <label for="initialGuess">Initial Guess (x₀):</label>
+                    <input type="number" id="initialGuess" value="1" step="0.1">
                 </div>
                 <div class="input-group">
                     <label for="tolerance">Tolerance:</label>
@@ -32,10 +30,21 @@
                     <label for="maxIterations">Max Iterations:</label>
                     <input type="number" id="maxIterations" value="100" min="1">
                 </div>
+                <div class="input-group">
+                    <label for="derivativeMethod">Derivative Method:</label>
+                    <select id="derivativeMethod">
+                        <option value="analytical">Analytical</option>
+                        <option value="numerical">Numerical</option>
+                    </select>
+                </div>
             </div>
             <div class="input-group">
                 <label for="functionInput">Function f(x):</label>
                 <input type="text" id="functionInput" value="x^3 - x - 1" placeholder="e.g., x^3 - x - 1">
+            </div>
+            <div class="input-group" id="derivativeInputGroup">
+                <label for="derivativeInput">Derivative f'(x):</label>
+                <input type="text" id="derivativeInput" value="3*x^2 - 1" placeholder="e.g., 3*x^2 - 1">
             </div>
             <button class="btn" onclick="findRoots()">Find Roots</button>
             <button class="btn" onclick="clearResults()">Clear Results</button>
@@ -58,15 +67,11 @@
                 <div class="stat-value" id="finalError">-</div>
                 <div class="stat-label">Final Error</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-value" id="convergenceRate">-</div>
-                <div class="stat-label">Convergence Rate</div>
-            </div>
         </div>
 
         <div class="results-section">
             <div class="chart-container">
-                <div class="chart-title">Function Graph & Secant Lines</div>
+                <div class="chart-title">Function & Derivative Graph</div>
                 <canvas id="functionChart"></canvas>
             </div>
 
@@ -78,26 +83,23 @@
 
         <div class="table-container">
             <div class="chart-title">Iteration Details</div>
-            <div class="table-wrapper">
-                <table id="iterationTable">
-                    <thead>
-                        <tr>
-                            <th>Iteration</th>
-                            <th>x₀</th>
-                            <th>x₁</th>
-                            <th>f(x₀)</th>
-                            <th>f(x₁)</th>
-                            <th>x₂</th>
-                            <th>f(x₂)</th>
-                            <th>Error</th>
-                        </tr>
-                    </thead>
-                    <tbody id="iterationTableBody"></tbody>
-                </table>
-            </div>
+            <table id="iterationTable">
+                <thead>
+                    <tr>
+                        <th>Iteration</th>
+                        <th>x_n</th>
+                        <th>f(x_n)</th>
+                        <th>f'(x_n)</th>
+                        <th>x_{n+1}</th>
+                        <th>Error</th>
+                    </tr>
+                </thead>
+                <tbody id="iterationTableBody">
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <script src="../js/secant.js"></script>
+    <script src="../js/newton_raphson.js"></script>
 </body>
 </html>
