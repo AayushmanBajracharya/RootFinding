@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Root Finding Method Comparison</title>
+    <link rel="stylesheet" href="../css/bisection.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Root Finding Method & Comparison</h1>
+
+        <div class="method-section">
+            <h2 class="method-title">Bisection Method</h2>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="lowerBound">Lower Bound:</label>
+                    <input type="number" id="lowerBound" value="-2" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label for="upperBound">Upper Bound:</label>
+                    <input type="number" id="upperBound" value="2" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label for="tolerance">Tolerance:</label>
+                    <input type="number" id="tolerance" value="0.0001" step="0.0001">
+                </div>
+                <div class="input-group">
+                    <label for="maxIterations">Max Iterations:</label>
+                    <input type="number" id="maxIterations" value="100" min="1">
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="functionInput">Function f(x):</label>
+                <input type="text" id="functionInput" value="x^3 - x - 1" placeholder="e.g., x^3 - x - 1">
+            </div>
+            <button class="btn" onclick="findRoots()">Find Roots</button>
+            <button class="btn" onclick="clearResults()">Clear Results</button>
+        </div>
+
+        <div class="stats-grid" id="statsGrid" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-value" id="rootValue">-</div>
+                <div class="stat-label">Root Found</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="iterationCount">-</div>
+                <div class="stat-label">Iterations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="timeTaken">-</div>
+                <div class="stat-label">Time (ms)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="finalError">-</div>
+                <div class="stat-label">Final Error</div>
+            </div>
+        </div>
+
+        <div class="results-section">
+            <div class="chart-container">
+                <div class="chart-title">Function Graph</div>
+                <canvas id="functionChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Convergence Analysis</div>
+                <canvas id="convergenceChart"></canvas>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="chart-title">Iteration Details</div>
+            <table id="iterationTable">
+                <thead>
+                    <tr>
+                        <th>Iteration</th>
+                        <th>Lower Bound</th>
+                        <th>Upper Bound</th>
+                        <th>Midpoint</th>
+                        <th>f(Midpoint)</th>
+                        <th>Error</th>
+                    </tr>
+                </thead>
+                <tbody id="iterationTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="../js/bisection.js"></script>
+</body>
+</html>

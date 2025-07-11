@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secant Method Root Finding</title>
+    <link rel="stylesheet" href="../css/secant.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Root Finding Method & Comparision</h1>
+        </div>
+        <div class="method-section">
+            <h2 class="method-title">Secant Method </h2>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="initialGuess1">Initial Guess 1 (x₀):</label>
+                    <input type="number" id="initialGuess1" value="-2" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label for="initialGuess2">Initial Guess 2 (x₁):</label>
+                    <input type="number" id="initialGuess2" value="2" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label for="tolerance">Tolerance:</label>
+                    <input type="number" id="tolerance" value="0.0001" step="0.0001">
+                </div>
+                <div class="input-group">
+                    <label for="maxIterations">Max Iterations:</label>
+                    <input type="number" id="maxIterations" value="100" min="1">
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="functionInput">Function f(x):</label>
+                <input type="text" id="functionInput" value="x^3 - x - 1" placeholder="e.g., x^3 - x - 1">
+            </div>
+            <button class="btn" onclick="findRoots()">Find Roots</button>
+            <button class="btn" onclick="clearResults()">Clear Results</button>
+        </div>
+
+        <div class="stats-grid" id="statsGrid" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-value" id="rootValue">-</div>
+                <div class="stat-label">Root Found</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="iterationCount">-</div>
+                <div class="stat-label">Iterations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="timeTaken">-</div>
+                <div class="stat-label">Time (ms)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="finalError">-</div>
+                <div class="stat-label">Final Error</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="convergenceRate">-</div>
+                <div class="stat-label">Convergence Rate</div>
+            </div>
+        </div>
+
+        <div class="results-section">
+            <div class="chart-container">
+                <div class="chart-title">Function Graph & Secant Lines</div>
+                <canvas id="functionChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Convergence Analysis</div>
+                <canvas id="convergenceChart"></canvas>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="chart-title">Iteration Details</div>
+            <div class="table-wrapper">
+                <table id="iterationTable">
+                    <thead>
+                        <tr>
+                            <th>Iteration</th>
+                            <th>x₀</th>
+                            <th>x₁</th>
+                            <th>f(x₀)</th>
+                            <th>f(x₁)</th>
+                            <th>x₂</th>
+                            <th>f(x₂)</th>
+                            <th>Error</th>
+                        </tr>
+                    </thead>
+                    <tbody id="iterationTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/secant.js"></script>
+</body>
+</html>

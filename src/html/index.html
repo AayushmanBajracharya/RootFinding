@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Root Finding Method & Comparison</title>
+ <link rel="stylesheet" href="../css/index.css" />
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1><i data-lucide="chevron-right" class="chevron"></i> Root Finding Method & Comparison</h1>
+      <p>Discover and compare powerful root finding methods for solving equations with precision & efficiency</p>
+    </div>
+
+    <!-- Equation Input -->
+    <div class="section">
+      <h2><i data-lucide="chevron-right" class="chevron"></i> Enter Your Equation</h2>
+      <div class="equation-input">
+        <input type="text" id="equationInput" placeholder="e.g., x^2 + 3*x" value="x^2 + 3*x" />
+        <div class="examples">
+          <p>Examples:</p>
+          <div class="example-tags">
+            <span class="example-tag">x^2 + 3*x</span>
+            <span class="example-tag">y^2 - 4*x + 4</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Method Selection -->
+    <div class="section">
+      <h2>Select Methods</h2>
+      <div class="methods-grid">
+        <button class="method-btn" data-method="bisection">
+          <span>Bisection Method</span>
+          <div class="method-indicator blue"></div>
+        </button>
+        <button class="method-btn" data-method="secant">
+          <span>Secant Method</span>
+          <div class="method-indicator green"></div>
+        </button>
+        <button class="method-btn" data-method="newton">
+          <span>Newton Raphson Method</span>
+          <div class="method-indicator purple"></div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Compare Button -->
+    <div class="compare-btn-container">
+      <button class="compare-btn" id="compareBtn" enabled>
+        <i data-lucide="bar-chart-3"></i> Compare Methods
+      </button>
+    </div>
+
+    <!-- Graphs -->
+    <div class="section">
+      <h2>Graphs</h2>
+      <div class="graphs-container">
+        <div class="graph-box">
+          <div class="graph-placeholder">
+            <div class="graph-indicator blue"></div> Bisection Method Graph
+          </div>
+        </div>
+        <div class="graph-box">
+          <div class="graph-placeholder">
+            <div class="graph-indicator green"></div> Secant Method Graph
+          </div>
+        </div>
+        <div class="graph-box">
+          <div class="graph-placeholder">
+            <div class="graph-indicator purple"></div> Newton Raphson Method Graph
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Method Explanations -->
+    <div class="section">
+      <h2><i data-lucide="info" style="color: #f59e0b;"></i> To Understand Better:</h2>
+
+      <div class="expandable-section">
+        <button class="expandable-header" data-method="bisection">
+          <div class="method-name">
+            <div class="method-indicator blue"></div>
+            <span>Bisection Method</span>
+          </div>
+          <i data-lucide="chevron-right" class="chevron"></i>
+        </button>
+        <div class="expandable-content">
+          <p>
+            <strong>What is the Bisection Method?</strong><br>
+            The Bisection Method is a numerical technique used to find roots of a function \( f(x) = 0 \).<br><br>
+            <strong>Steps:</strong><br>
+            1. Choose interval [a, b] where \( f(a) \cdot f(b) < 0 \).<br>
+            2. Compute midpoint \( c = \frac{a + b}{2} \).<br>
+            3. Evaluate \( f(c) \).<br>
+            4. Replace either a or b with c depending on the sign of \( f(c) \).<br>
+            5. Repeat until the interval is small enough or root is found.<br><br>
+            This method is guaranteed to converge if the function is continuous on [a, b].
+          </p>
+        </div>
+      </div>
+
+      <div class="expandable-section">
+        <button class="expandable-header" data-method="secant">
+          <div class="method-name">
+            <div class="method-indicator green"></div>
+            <span>Secant Method</span>
+          </div>
+          <i data-lucide="chevron-right" class="chevron"></i>
+        </button>
+        <div class="expandable-content">
+          <input type="text" class="expandable-input" placeholder="Little explanation about it">
+        </div>
+      </div>
+
+      <div class="expandable-section">
+        <button class="expandable-header" data-method="newton">
+          <div class="method-name">
+            <div class="method-indicator purple"></div>
+            <span>Newton Raphson Method</span>
+          </div>
+          <i data-lucide="chevron-right" class="chevron"></i>
+        </button>
+        <div class="expandable-content">
+          <input type="text" class="expandable-input" placeholder="Little explanation about it">
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="section hidden" id="resultsSection">
+      <h2>Comparison Results</h2>
+      <div style="overflow-x: auto;">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Root Found</th>
+              <th>Iterations</th>
+              <th>Precision</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="resultsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+<script src="../js/index.js"></script>
+
+
+</body>
+</html>

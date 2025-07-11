@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Root Finding Method Comparison</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .method-section {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .method-title {
+            color: #4a5568;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .results-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 2px solid #e2e8f0;
+        }
+
+        .chart-title {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 2px solid #e2e8f0;
+            grid-column: span 2;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        tr:hover {
+            background: #f1f5f9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .error-message {
+            color: #e53e3e;
+            background: #fed7d7;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 768px) {
+            .results-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-container {
+                grid-column: span 1;
+            }
+            
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Root Finding Method Comparison</h1>
+        
+        <div class="method-section">
+            <h2 class="method-title">Bisection Method</h2>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="lowerBound">Lower Bound:</label>
+                    <input type="number" id="lowerBound" value="-2" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label for="upperBound">Upper Bound:</label>
+                    <input type="number" id="upperBound" value="2" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label for="tolerance">Tolerance:</label>
+                    <input type="number" id="tolerance" value="0.0001" step="0.0001">
+                </div>
+                <div class="input-group">
+                    <label for="maxIterations">Max Iterations:</label>
+                    <input type="number" id="maxIterations" value="100" min="1">
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="functionInput">Function f(x):</label>
+                <input type="text" id="functionInput" value="x^3 - x - 1" placeholder="e.g., x^3 - x - 1">
+            </div>
+            <button class="btn" onclick="findRoots()">Find Roots</button>
+            <button class="btn" onclick="clearResults()">Clear Results</button>
+        </div>
+
+        <div class="stats-grid" id="statsGrid" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-value" id="rootValue">-</div>
+                <div class="stat-label">Root Found</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="iterationCount">-</div>
+                <div class="stat-label">Iterations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="timeTaken">-</div>
+                <div class="stat-label">Time (ms)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="finalError">-</div>
+                <div class="stat-label">Final Error</div>
+            </div>
+        </div>
+
+        <div class="results-section">
+            <div class="chart-container">
+                <div class="chart-title">Function Graph</div>
+                <canvas id="functionChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Convergence Analysis</div>
+                <canvas id="convergenceChart"></canvas>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="chart-title">Iteration Details</div>
+            <table id="iterationTable">
+                <thead>
+                    <tr>
+                        <th>Iteration</th>
+                        <th>Lower Bound</th>
+                        <th>Upper Bound</th>
+                        <th>Midpoint</th>
+                        <th>f(Midpoint)</th>
+                        <th>Error</th>
+                    </tr>
+                </thead>
+                <tbody id="iterationTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let functionChart = null;
+        let convergenceChart = null;
+        let iterationData = [];
+
+        function parseFunction(funcStr) {
+            // Simple function parser for common mathematical expressions
+            return function(x) {
+                try {
+                    // Replace mathematical notation with JavaScript syntax
+                    let jsFunc = funcStr
+                        .replace(/\^/g, '**')
+                        .replace(/sin/g, 'Math.sin')
+                        .replace(/cos/g, 'Math.cos')
+                        .replace(/tan/g, 'Math.tan')
+                        .replace(/log/g, 'Math.log')
+                        .replace(/sqrt/g, 'Math.sqrt')
+                        .replace(/exp/g, 'Math.exp')
+                        .replace(/pi/g, 'Math.PI')
+                        .replace(/e/g, 'Math.E');
+                    
+                    // Replace x with the actual value
+                    jsFunc = jsFunc.replace(/x/g, `(${x})`);
+                    
+                    return eval(jsFunc);
+                } catch (error) {
+                    throw new Error('Invalid function syntax');
+                }
+            };
+        }
+
+        function bisectionMethod(func, a, b, tolerance, maxIter) {
+            const startTime = performance.now();
+            const iterations = [];
+            
+            if (func(a) * func(b) > 0) {
+                throw new Error('Function must have opposite signs at the bounds');
+            }
+            
+            let iteration = 0;
+            let error = Math.abs(b - a);
+            
+            while (error > tolerance && iteration < maxIter) {
+                const c = (a + b) / 2;
+                const fc = func(c);
+                
+                iterations.push({
+                    iteration: iteration + 1,
+                    a: a,
+                    b: b,
+                    c: c,
+                    fc: fc,
+                    error: error
+                });
+                
+                if (Math.abs(fc) < tolerance) {
+                    break;
+                }
+                
+                if (func(a) * fc < 0) {
+                    b = c;
+                } else {
+                    a = c;
+                }
+                
+                error = Math.abs(b - a);
+                iteration++;
+            }
+            
+            const endTime = performance.now();
+            const root = (a + b) / 2;
+            
+            return {
+                root: root,
+                iterations: iterations,
+                converged: error <= tolerance,
+                timeTaken: endTime - startTime,
+                finalError: error
+            };
+        }
+
+        function findRoots() {
+            try {
+                const funcStr = document.getElementById('functionInput').value;
+                const lowerBound = parseFloat(document.getElementById('lowerBound').value);
+                const upperBound = parseFloat(document.getElementById('upperBound').value);
+                const tolerance = parseFloat(document.getElementById('tolerance').value);
+                const maxIterations = parseInt(document.getElementById('maxIterations').value);
+                
+                const func = parseFunction(funcStr);
+                const result = bisectionMethod(func, lowerBound, upperBound, tolerance, maxIterations);
+                
+                // Update statistics
+                document.getElementById('rootValue').textContent = result.root.toFixed(6);
+                document.getElementById('iterationCount').textContent = result.iterations.length;
+                document.getElementById('timeTaken').textContent = result.timeTaken.toFixed(2);
+                document.getElementById('finalError').textContent = result.finalError.toExponential(2);
+                
+                // Show stats
+                document.getElementById('statsGrid').style.display = 'grid';
+                
+                // Update iteration table
+                updateIterationTable(result.iterations);
+                
+                // Update charts
+                updateFunctionChart(func, lowerBound, upperBound, result.root);
+                updateConvergenceChart(result.iterations);
+                
+                iterationData = result.iterations;
+                
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        function updateIterationTable(iterations) {
+            const tbody = document.getElementById('iterationTableBody');
+            tbody.innerHTML = '';
+            
+            iterations.forEach(iter => {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = iter.iteration;
+                row.insertCell(1).textContent = iter.a.toFixed(6);
+                row.insertCell(2).textContent = iter.b.toFixed(6);
+                row.insertCell(3).textContent = iter.c.toFixed(6);
+                row.insertCell(4).textContent = iter.fc.toFixed(6);
+                row.insertCell(5).textContent = iter.error.toExponential(2);
+            });
+        }
+
+        function updateFunctionChart(func, a, b, root) {
+            const ctx = document.getElementById('functionChart').getContext('2d');
+            
+            if (functionChart) {
+                functionChart.destroy();
+            }
+            
+            const range = Math.abs(b - a);
+            const start = a - range * 0.5;
+            const end = b + range * 0.5;
+            const step = (end - start) / 200;
+            
+            const xData = [];
+            const yData = [];
+            
+            for (let x = start; x <= end; x += step) {
+                xData.push(x);
+                yData.push(func(x));
+            }
+            
+            functionChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xData.map(x => x.toFixed(2)),
+                    datasets: [{
+                        label: 'f(x)',
+                        data: yData,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.1,
+                        pointRadius: 0
+                    }, {
+                        label: 'Root',
+                        data: [{x: root, y: func(root)}],
+                        borderColor: '#e53e3e',
+                        backgroundColor: '#e53e3e',
+                        pointRadius: 8,
+                        showLine: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            title: {
+                                display: true,
+                                text: 'x'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'f(x)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateConvergenceChart(iterations) {
+            const ctx = document.getElementById('convergenceChart').getContext('2d');
+            
+            if (convergenceChart) {
+                convergenceChart.destroy();
+            }
+            
+            const iterationNumbers = iterations.map(iter => iter.iteration);
+            const errors = iterations.map(iter => Math.log10(iter.error));
+            
+            convergenceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: iterationNumbers,
+                    datasets: [{
+                        label: 'Log10(Error)',
+                        data: errors,
+                        borderColor: '#764ba2',
+                        backgroundColor: 'rgba(118, 75, 162, 0.1)',
+                        tension: 0.1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Iteration'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Log10(Error)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function clearResults() {
+            document.getElementById('statsGrid').style.display = 'none';
+            document.getElementById('iterationTableBody').innerHTML = '';
+            
+            if (functionChart) {
+                functionChart.destroy();
+                functionChart = null;
+            }
+            
+            if (convergenceChart) {
+                convergenceChart.destroy();
+                convergenceChart = null;
+            }
+            
+            iterationData = [];
+        }
+
+        // Initialize with default example
+        window.onload = function() {
+            findRoots();
+        };
+    </script>
+</body>
+</html>
