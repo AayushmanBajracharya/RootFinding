@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Root-Finding Methods Explanation</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+
+    header {
+      background-color: #4a90e2;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    main {
+      padding: 40px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    section {
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      color: #4a90e2;
+    }
+
+    code {
+      background-color: #eee;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    pre {
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Bisection, Secant, and Newton-Raphson Methods</h1>
+  </header>
+
+  <main>
+   
+
+    <section>
+      <h2>Newton-Raphson Method - Definition</h2>
+      <p>The <strong>Newton-Raphson Method</strong> is a powerful open root-finding method that uses tangents to approximate the root of a function. It requires the function and its derivative.</p>
+    </section>
+
+    <section>
+      <h2>Newton-Raphson Method - Requirements</h2>
+      <ul>
+        <li>A differentiable function <code>f(x)</code>.</li>
+        <li>Its derivative <code>f'(x)</code>.</li>
+        <li>An initial guess <code>x0</code>.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Newton-Raphson Method - Procedure</h2>
+      <ol>
+        <li>Start with an initial guess <code>x0</code>.</li>
+        <li>Compute <code>x1 = x0 - f(x0) / f'(x0)</code>.</li>
+        <li>Repeat using <code>x0 = x1</code> until the difference between consecutive values is less than a tolerance level.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Newton-Raphson Method - Example JavaScript Implementation</h2>
+      <pre><code class="language-javascript">
+function newtonRaphson(f, df, x0, tol = 1e-6, maxIter = 100) {
+  for (let i = 0; i < maxIter; i++) {
+    const fx = f(x0);
+    const dfx = df(x0);
+    if (Math.abs(dfx) < Number.EPSILON) {
+      throw new Error("Derivative near zero");
+    }
+    const x1 = x0 - fx / dfx;
+    if (Math.abs(x1 - x0) < tol) {
+      return x1;
+    }
+    x0 = x1;
+  }
+  return x0;
+}
+
+// Example usage:
+const root = newtonRaphson(x => x ** 3 - x - 2, x => 3 * x ** 2 - 1, 1.5);
+console.log("Root:", root);
+      </code></pre>
+    </section>
+  </main>
+</body>
+
+</html>

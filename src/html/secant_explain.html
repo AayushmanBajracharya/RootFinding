@@ -58,58 +58,7 @@
   </header>
 
   <main>
-    <section>
-      <h2>Bisection Method - Definition</h2>
-      <p>The <strong>Bisection Method</strong> is a root-finding technique that repeatedly divides an interval in half and then selects the subinterval in which a root exists. It is a type of bracketing method and is based on the Intermediate Value Theorem.</p>
-    </section>
-
-    <section>
-      <h2>Bisection Method - Requirements</h2>
-      <ul>
-        <li>A continuous function <code>f(x)</code>.</li>
-        <li>An interval <code>[a, b]</code> such that <code>f(a)</code> and <code>f(b)</code> have opposite signs, i.e. <code>f(a) * f(b) &lt; 0</code>.</li>
-      </ul>
-    </section>
-
-    <section>
-      <h2>Bisection Method - Procedure</h2>
-      <ol>
-        <li>Start with <code>[a, b]</code> where <code>f(a) * f(b) &lt; 0</code>.</li>
-        <li>Compute midpoint <code>c = (a + b) / 2</code>.</li>
-        <li>If <code>f(c) = 0</code>, then <code>c</code> is the root.</li>
-        <li>If <code>f(c) * f(a) &lt; 0</code>, set <code>b = c</code>, else set <code>a = c</code>.</li>
-        <li>Repeat until interval is sufficiently small.</li>
-      </ol>
-    </section>
-
-    <section>
-      <h2>Bisection Method - Example JavaScript Implementation</h2>
-      <pre><code class="language-javascript">
-function bisection(f, a, b, tol = 1e-6, maxIter = 100) {
-  if (f(a) * f(b) >= 0) {
-    throw new Error("Function has the same signs at a and b");
-  }
-  let mid;
-  for (let i = 0; i < maxIter; i++) {
-    mid = (a + b) / 2;
-    const fMid = f(mid);
-    if (Math.abs(fMid) < tol || (b - a) / 2 < tol) {
-      return mid;
-    }
-    if (fMid * f(a) < 0) {
-      b = mid;
-    } else {
-      a = mid;
-    }
-  }
-  return mid;
-}
-
-// Example usage:
-const root = bisection(x => x ** 3 - x - 2, 1, 2);
-console.log("Root:", root);
-      </code></pre>
-    </section>
+   
 
     <section>
       <h2>Secant Method - Definition</h2>
