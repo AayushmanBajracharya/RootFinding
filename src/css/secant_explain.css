@@ -1,0 +1,270 @@
+*{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f8f9fa;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 60px 0;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 3.5rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+       text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .subtitle {
+      font-size: 1.3rem;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+
+    .section {
+      background: white;
+      margin: 40px 0;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #667eea;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      border-bottom: 3px solid #667eea;
+      padding-bottom: 15px;
+    }
+
+    h3 {
+      color: #764ba2;
+      font-size: 1.8rem;
+      margin: 30px 0 20px 0;
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 10px;
+      margin: 25px 0;
+    }
+
+    .highlight-box p {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .highlight-box ul {
+      margin: 15px 0 0 20px;
+    }
+
+    .formula {
+      background: #f8f9fa;
+      border-left: 4px solid #667eea;
+      padding: 20px;
+      margin: 20px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 1.1rem;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .math-notation {
+      font-family: 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 1.1em;
+    }
+
+    .step-list {
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+
+    .step-list li {
+      margin: 15px 0;
+      padding-left: 10px;
+    }
+
+    .algorithm-complexity {
+      background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+      padding: 25px;
+      border-radius: 10px;
+      margin: 25px 0;
+      color: #2d3436;
+    }
+
+    .algorithm-complexity h3 {
+      color: #2d3436;
+      margin-bottom: 15px;
+    }
+
+    .example-box {
+      background: linear-gradient(135deg, #81ecec 0%, #74b9ff 100%);
+      padding: 25px;
+      border-radius: 10px;
+      margin: 25px 0;
+      color: #2d3436;
+    }
+
+    .example-box h3 {
+      color: #2d3436;
+      margin-bottom: 15px;
+    }
+
+    .pros-cons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin: 30px 0;
+    }
+
+    .pros, .cons {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      border: 2px solid #e9ecef;
+    }
+
+    .pros {
+      border-color: #00b894;
+    }
+
+    .cons {
+      border-color: #e17055;
+    }
+
+    .pros h3 {
+      color: #00b894;
+    }
+
+    .cons h3 {
+      color: #e17055;
+    }
+
+    .visualization {
+      background: linear-gradient(135deg, #fd79a8 0%, #a29bfe 100%);
+      padding: 25px;
+      border-radius: 10px;
+      margin: 25px 0;
+      color: white;
+    }
+
+    .visualization h3 {
+      color: white;
+      margin-bottom: 15px;
+    }
+
+    pre {
+      background: #2d3748;
+      color: #e2e8f0;
+      padding: 25px;
+      border-radius: 10px;
+      overflow-x: auto;
+      margin: 20px 0;
+      font-size: 0.9rem;
+    }
+
+    code {
+      font-family: 'Fira Code', 'Courier New', monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    th {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background: #f8f9fa;
+    }
+
+    .warning-box {
+      background: linear-gradient(135deg, #ff7675 0%, #fd79a8 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 10px;
+      margin: 25px 0;
+    }
+
+    .warning-box h3 {
+      color: white;
+      margin-bottom: 15px;
+    }
+
+    .comparison-table {
+      overflow-x: auto;
+      margin: 20px 0;
+    }
+
+    .flowchart {
+      background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+      padding: 25px;
+      border-radius: 10px;
+      margin: 25px 0;
+      color: white;
+    }
+
+    .flowchart h3 {
+      color: white;
+      margin-bottom: 15px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 15px;
+      }
+      
+      header h1 {
+        font-size: 2.5rem;
+      }
+      
+      .subtitle {
+        font-size: 1.1rem;
+      }
+      
+      .section {
+        padding: 25px;
+      }
+      
+      .pros-cons {
+        grid-template-columns: 1fr;
+      }
+    }

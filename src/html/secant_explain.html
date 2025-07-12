@@ -1,131 +1,841 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Root-Finding Methods Explanation</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secant Method - Complete Guide</title>
+  <link rel="stylesheet" href="../css/secant_explain.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+ 
   <script>hljs.highlightAll();</script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f9;
-      color: #333;
-    }
-
-    header {
-      background-color: #4a90e2;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-
-    main {
-      padding: 40px;
-      max-width: 900px;
-      margin: auto;
-    }
-
-    section {
-      margin-bottom: 30px;
-    }
-
-    h2 {
-      color: #4a90e2;
-    }
-
-    code {
-      background-color: #eee;
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-
-    pre {
-      padding: 15px;
-      border-radius: 6px;
-      overflow-x: auto;
-    }
-  </style>
 </head>
 
 <body>
   <header>
-    <h1>Secant Methods</h1>
+    <div class="container">
+      <h1>Secant Method</h1>
+      <p class="subtitle">A Complete Guide to Root-Finding Using the Secant Algorithm</p>
+    </div>
   </header>
 
   <main>
-   
+    <div class="container">
+      
+      <section class="section">
+        <h2>Introduction & Definition</h2>
+        <p>The <strong>Secant Method</strong> is a powerful numerical technique for finding roots of equations that combines the reliability of bracketing methods with the efficiency of open methods. Unlike Newton-Raphson method, the secant method doesn't require the computation of derivatives, making it more practical for complex functions or when derivatives are difficult to obtain.</p>
+        
+        <div class="highlight-box">
+          <p><strong>Key Concept:</strong> The secant method uses two initial points and iteratively approximates the root by finding where the secant line (straight line through two points) crosses the x-axis.</p>
+        </div>
 
-    <section>
-      <h2>Secant Method - Definition</h2>
-      <p>The <strong>Secant Method</strong> is an open root-finding method that uses two initial points to generate a sequence approximating the root of a function. It uses a secant line through the points to estimate the root.</p>
-    </section>
+        <p>This method is particularly valuable because it achieves superlinear convergence (faster than linear but slower than quadratic) without requiring derivative calculations. The method approximates the derivative using the slope of the secant line, making it a derivative-free alternative to Newton's method.</p>
+      </section>
 
-    <section>
-      <h2>Secant Method - Requirements</h2>
-      <ul>
-        <li>A continuous function <code>f(x)</code>.</li>
-        <li>Two initial guesses <code>x0</code> and <code>x1</code>.</li>
-      </ul>
-    </section>
+      <section class="section">
+        <h2>Mathematical Foundation</h2>
+        
+        <h3>The Secant Line Principle</h3>
+        <p>The secant method is based on the principle of linear interpolation. Given two points (x₀, f(x₀)) and (x₁, f(x₁)), the secant line equation is:</p>
+        
+        <div class="formula">
+          y - f(x₁) = [f(x₁) - f(x₀)] / (x₁ - x₀) × (x - x₁)
+        </div>
 
-    <section>
-      <h2>Secant Method - Procedure</h2>
-      <ol>
-        <li>Start with initial values <code>x0</code> and <code>x1</code>.</li>
-        <li>Compute <code>f(x0)</code> and <code>f(x1)</code>.</li>
-        <li>Use the formula: <code>x2 = x1 - f(x1) * (x1 - x0) / (f(x1) - f(x0))</code>.</li>
-        <li>Update <code>x0 = x1</code> and <code>x1 = x2</code>.</li>
-        <li>Repeat until <code>|x1 - x0|</code> is smaller than a tolerance level or maximum iterations are reached.</li>
-      </ol>
-    </section>
+        <p>Setting y = 0 to find where the secant line crosses the x-axis gives us the iterative formula:</p>
 
-    <section>
-      <h2>Secant Method - Example JavaScript Implementation</h2>
-      <pre><code class="language-javascript">
-function secant(f, x0, x1, tol = 1e-6, maxIter = 100) {
-  for (let i = 0; i < maxIter; i++) {
-    const f0 = f(x0);
-    const f1 = f(x1);
-    if (Math.abs(f1 - f0) < Number.EPSILON) {
-      throw new Error("Division by near-zero");
-    }
-    const x2 = x1 - f1 * (x1 - x0) / (f1 - f0);
-    if (Math.abs(x2 - x1) < tol) {
-      return x2;
-    }
-    x0 = x1;
-    x1 = x2;
+        <div class="formula">
+          x_{n+1} = x_n - f(x_n) × (x_n - x_{n-1}) / (f(x_n) - f(x_{n-1}))
+        </div>
+
+        <h3>Convergence Analysis</h3>
+        <div class="highlight-box">
+          <p><strong>Convergence Rate:</strong> The secant method has superlinear convergence with order φ ≈ 1.618 (golden ratio)</p>
+          <p><strong>Convergence Condition:</strong> |f'(r)| > 0 and f''(r) exists near the root r</p>
+          <p><strong>Error Relation:</strong> |e_{n+1}| ≈ C|e_n||e_{n-1}| where C is a constant</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Algorithm & Procedure</h2>
+        
+        <p>The secant method follows these systematic steps:</p>
+
+        <ol class="step-list">
+          <li><strong>Initialize:</strong> Choose two initial approximations x₀ and x₁ (preferably close to the root)</li>
+          <li><strong>Calculate Function Values:</strong> Compute f(x₀) and f(x₁)</li>
+          <li><strong>Check for Division by Zero:</strong> Ensure f(x₁) - f(x₀) ≠ 0</li>
+          <li><strong>Apply Secant Formula:</strong> Calculate x₂ = x₁ - f(x₁) × (x₁ - x₀) / (f(x₁) - f(x₀))</li>
+          <li><strong>Check Convergence:</strong> If |f(x₂)| < tolerance or |x₂ - x₁| < tolerance, stop</li>
+          <li><strong>Update Points:</strong> Set x₀ = x₁ and x₁ = x₂</li>
+          <li><strong>Repeat:</strong> Continue until convergence or maximum iterations reached</li>
+        </ol>
+
+        <div class="algorithm-complexity">
+          <h3>Complexity Analysis</h3>
+          <p><strong>Time Complexity:</strong> O(n) where n is the number of iterations</p>
+          <p><strong>Space Complexity:</strong> O(1) - constant space requirement</p>
+          <p><strong>Convergence Rate:</strong> Superlinear with order φ ≈ 1.618</p>
+          <p><strong>Function Evaluations:</strong> One per iteration (after initialization)</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Implementation Examples</h2>
+        
+        <h3>JavaScript Implementation</h3>
+        <pre><code class="language-javascript">function secantMethod(func, x0, x1, tolerance = 1e-10, maxIterations = 1000) {
+  // Validate inputs
+  if (typeof func !== 'function') {
+    throw new Error('First argument must be a function');
   }
-  return x1;
-}
+  
+  let iteration = 0;
+  let x_prev = x0;
+  let x_curr = x1;
+  let f_prev = func(x_prev);
+  let f_curr = func(x_curr);
+  
+  console.log('Iteration | x_{n-1}  | x_n      | f(x_n)   | x_{n+1}  | Error');
+  console.log('----------|----------|----------|----------|----------|----------');
+  
+  while (iteration < maxIterations) {
+    // Check for division by zero
+    if (Math.abs(f_curr - f_prev) < 1e-15) {
+      throw new Error('Division by zero: f(x_n) - f(x_{n-1}) is too small');
+    }
+    
+    // Calculate next approximation using secant formula
+    const x_next = x_curr - f_curr * (x_curr - x_prev) / (f_curr - f_prev);
+    const f_next = func(x_next);
+    const error = Math.abs(x_next - x_curr);
+    
+    // Log iteration details
+    console.log(`${iteration.toString().padStart(9)} | ${x_prev.toFixed(6)} | ${x_curr.toFixed(6)} | ${f_curr.toFixed(6)} | ${x_next.toFixed(6)} | ${error.toFixed(6)}`);
+    
+    // Check convergence
+    if (Math.abs(f_next) < tolerance || error < tolerance) {
+      console.log(`\nConverged after ${iteration + 1} iterations`);
+      return {
+        root: x_next,
+        functionValue: f_next,
+        iterations: iteration + 1,
+        error: error
+      };
+    }
+    
+    // Update values for next iteration
+    x_prev = x_curr;
+    x_curr = x_next;
+    f_prev = f_curr;
+    f_curr = f_next;
+    
+    iteration++;
+  }
+  
+  console.log(`\nMaximum iterations (${maxIterations}) reached`);
+  return {
+    root: x_curr,
+    functionValue: f_curr,
+    iterations: iteration,
+    error: Math.abs(x_curr - x_prev)
+  };
+}</code></pre>
 
-// Example usage:
-const root = secant(x => x ** 3 - x - 2, 1, 2);
-console.log("Root:", root);
-      </code></pre>
-    </section>
+        <h3>Python Implementation</h3>
+        <pre><code class="language-python">import math
+import numpy as np
 
-    <section>
-      <h2>Advantages of Secant Method</h2>
-      <ul>
-        <li>Does not require the function to change signs.</li>
-        <li>Faster convergence than bisection in many cases.</li>
-      </ul>
-    </section>
+def secant_method(func, x0, x1, tolerance=1e-10, max_iterations=1000, verbose=True):
+    """
+    Find root using secant method with detailed logging
+    """
+    
+    iteration = 0
+    x_prev = x0
+    x_curr = x1
+    f_prev = func(x_prev)
+    f_curr = func(x_curr)
+    
+    convergence_history = []
+    
+    if verbose:
+        print(f"{'Iter':<5} | {'x_prev':<12} | {'x_curr':<12} | {'f(x_curr)':<12} | {'x_next':<12} | {'Error':<12}")
+        print("-" * 75)
+    
+    while iteration < max_iterations:
+        # Check for division by zero
+        if abs(f_curr - f_prev) < 1e-15:
+            raise ValueError("Division by zero: f(x_n) - f(x_{n-1}) is too small")
+        
+        # Calculate next approximation
+        x_next = x_curr - f_curr * (x_curr - x_prev) / (f_curr - f_prev)
+        f_next = func(x_next)
+        error = abs(x_next - x_curr)
+        
+        convergence_history.append({
+            'iteration': iteration,
+            'x': x_next,
+            'fx': f_next,
+            'error': error
+        })
+        
+        if verbose:
+            print(f"{iteration:<5} | {x_prev:<12.8f} | {x_curr:<12.8f} | {f_curr:<12.8f} | {x_next:<12.8f} | {error:<12.8f}")
+        
+        # Check convergence
+        if abs(f_next) < tolerance or error < tolerance:
+            if verbose:
+                print(f"\nConverged after {iteration + 1} iterations")
+            return {
+                'root': x_next,
+                'function_value': f_next,
+                'iterations': iteration + 1,
+                'error': error,
+                'convergence_history': convergence_history
+            }
+        
+        # Update values for next iteration
+        x_prev = x_curr
+        x_curr = x_next
+        f_prev = f_curr
+        f_curr = f_next
+        
+        iteration += 1
+    
+    if verbose:
+        print(f"\nMaximum iterations ({max_iterations}) reached")
+    
+    return {
+        'root': x_curr,
+        'function_value': f_curr,
+        'iterations': iteration,
+        'error': abs(x_curr - x_prev),
+        'convergence_history': convergence_history
+    }</code></pre>
+      </section>
 
-    <section>
-      <h2>Disadvantages of Secant Method</h2>
-      <ul>
-        <li>Not guaranteed to converge.</li>
-        <li>Can fail if denominator approaches zero.</li>
-      </ul>
-    </section>
+      <section class="section">
+        <h2>Detailed Example Walkthrough</h2>
+        
+        <div class="example-box">
+          <h3>Problem: Find the root of f(x) = x³ - x - 2 starting with x₀ = 1, x₁ = 2</h3>
+        </div>
+
+        <p><strong>Step 1: Initial Setup</strong></p>
+        <ul>
+          <li>f(1) = 1³ - 1 - 2 = -2</li>
+          <li>f(2) = 2³ - 2 - 2 = 4</li>
+          <li>Initial points: (1, -2) and (2, 4)</li>
+        </ul>
+
+        <p><strong>Step 2: First Iteration</strong></p>
+        <div class="formula">
+          x₂ = x₁ - f(x₁) × (x₁ - x₀) / (f(x₁) - f(x₀))<br>
+          x₂ = 2 - 4 × (2 - 1) / (4 - (-2))<br>
+          x₂ = 2 - 4 × 1 / 6 = 2 - 4/6 = 1.333333
+        </div>
+        <p>f(1.333333) = (1.333333)³ - 1.333333 - 2 ≈ -0.962963</p>
+
+        <p><strong>Step 3: Second Iteration</strong></p>
+        <div class="formula">
+          x₃ = x₂ - f(x₂) × (x₂ - x₁) / (f(x₂) - f(x₁))<br>
+          x₃ = 1.333333 - (-0.962963) × (1.333333 - 2) / (-0.962963 - 4)<br>
+          x₃ = 1.333333 - (-0.962963) × (-0.666667) / (-4.962963)<br>
+          x₃ ≈ 1.463415
+        </div>
+
+        <p><strong>Step 4: Continuing Until Convergence</strong></p>
+        <p>The process continues until the difference between successive approximations is less than the tolerance. For this example, the root converges to approximately <strong>1.521379706804568</strong>.</p>
+
+        <table>
+          <tr>
+            <th>Iteration</th>
+            <th>x_{n-1}</th>
+            <th>x_n</th>
+            <th>f(x_n)</th>
+            <th>x_{n+1}</th>
+            <th>Error</th>
+          </tr>
+          <tr>
+            <td>0</td>
+            <td>1.000000</td>
+            <td>2.000000</td>
+            <td>4.000000</td>
+            <td>1.333333</td>
+            <td>0.666667</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>2.000000</td>
+            <td>1.333333</td>
+            <td>-0.962963</td>
+            <td>1.463415</td>
+            <td>0.130082</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>1.333333</td>
+            <td>1.463415</td>
+            <td>0.081699</td>
+            <td>1.518987</td>
+            <td>0.055572</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>1.463415</td>
+            <td>1.518987</td>
+            <td>-0.007692</td>
+            <td>1.521264</td>
+            <td>0.002277</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>1.518987</td>
+            <td>1.521264</td>
+            <td>0.000115</td>
+            <td>1.521380</td>
+            <td>0.000116</td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Advantages & Disadvantages</h2>
+        
+        <div class="pros-cons">
+          <div class="pros">
+            <h3>✓ Advantages</h3>
+            <ul>
+              <li><strong>No Derivative Required:</strong> Unlike Newton-Raphson, doesn't need analytical derivatives</li>
+              <li><strong>Superlinear Convergence:</strong> Faster than linear methods like bisection</li>
+              <li><strong>Simple Implementation:</strong> Straightforward algorithm with minimal complexity</li>
+              <li><strong>Memory Efficient:</strong> Requires only constant memory</li>
+              <li><strong>Robust for Smooth Functions:</strong> Works well when derivatives are continuous</li>
+              <li><strong>Fewer Function Evaluations:</strong> One evaluation per iteration after initialization</li>
+            </ul>
+          </div>
+          
+          <div class="cons">
+            <h3>✗ Disadvantages</h3>
+            <ul>
+              <li><strong>Slower than Newton-Raphson:</strong> Convergence rate is φ ≈ 1.618 vs 2 for Newton</li>
+              <li><strong>May Diverge:</strong> Poor initial guesses can lead to divergence</li>
+              <li><strong>Division by Zero Risk:</strong> When f(x_n) ≈ f(x_{n-1}), method fails</li>
+              <li><strong>Two Initial Points Required:</strong> Need good starting approximations</li>
+              <li><strong>No Guaranteed Convergence:</strong> Unlike bracketing methods, convergence not guaranteed</li>
+              <li><strong>Sensitive to Function Behavior:</strong> Problems with functions having horizontal tangents</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>When to Use the Secant Method</h2>
+        
+        <div class="flowchart">
+          <h3>Decision Flowchart</h3>
+          <p><strong>Use Secant Method When:</strong></p>
+          <ul>
+            <li>Derivatives are difficult or expensive to compute</li>
+            <li>Function is smooth and continuous</li>
+            <li>You have reasonable initial estimates</li>
+            <li>Faster convergence than bisection is needed</li>
+            <li>Newton-Raphson implementation is impractical</li>
+          </ul>
+        </div>
+
+        <div class="warning-box">
+          <h3>⚠ Avoid Secant Method When:</h3>
+          <ul>
+            <li>Function has discontinuities near the root</li>
+            <li>Initial guesses are far from the root</li>
+            <li>Function has regions where f(x_n) ≈ f(x_{n-1})</li>
+            <li>Guaranteed convergence is required (use bisection instead)</li>
+            <li>Derivatives are easily computable (use Newton-Raphson instead)</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Comparison with Other Methods</h2>
+        
+        <div class="comparison-table">
+          <table>
+            <tr>
+              <th>Method</th>
+              <th>Convergence Rate</th>
+              <th>Derivative Required</th>
+              <th>Initial Points</th>
+              <th>Guaranteed Convergence</th>
+              <th>Function Evaluations/Iter</th>
+            </tr>
+            <tr>
+              <td>Bisection</td>
+              <td>Linear (1.0)</td>
+              <td>No</td>
+              <td>2 (bracketing)</td>
+              <td>Yes</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td>Newton-Raphson</td>
+              <td>Quadratic (2.0)</td>
+              <td>Yes</td>
+              <td>1</td>
+              <td>No</td>
+              <td>2 (f and f')</td>
+            </tr>
+            <tr>
+              <td><strong>Secant</strong></td>
+              <td><strong>Superlinear (1.618)</strong></td>
+              <td><strong>No</strong></td>
+              <td><strong>2</strong></td>
+              <td><strong>No</strong></td>
+              <td><strong>1</strong></td>
+            </tr>
+            <tr>
+              <td>False Position</td>
+              <td>Linear to Superlinear</td>
+              <td>No</td>
+              <td>2 (bracketing)</td>
+              <td>Yes</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td>Fixed Point</td>
+              <td>Linear (varies)</td>
+              <td>No</td>
+              <td>1</td>
+              <td>Depends on g(x)</td>
+              <td>1</td>
+            </tr>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Error Analysis & Convergence Theory</h2>
+        
+        <h3>Mathematical Error Analysis</h3>
+        <p>The error in the secant method follows a specific pattern related to the golden ratio φ = (1 + √5)/2 ≈ 1.618.</p>
+        
+        <div class="formula">
+          |e_{n+1}| ≈ C × |e_n|^φ
+        </div>
+        
+        <p>Where C is a constant that depends on the function's second derivative at the root.</p>
+        
+        <h3>Convergence Conditions</h3>
+        <div class="highlight-box">
+          <p><strong>Sufficient Conditions for Convergence:</strong></p>
+          <ul>
+            <li>f(x) is twice continuously differentiable in an interval containing the root</li>
+            <li>f'(r) ≠ 0 at the root r</li>
+            <li>Initial approximations x₀ and x₁ are sufficiently close to the root</li>
+            <li>The secant lines don't become nearly horizontal (f(x_n) ≠ f(x_{n-1}))</li>
+          </ul>
+        </div>
+
+        <h3>Efficiency Index</h3>
+        <p>The efficiency index of a method is defined as p^(1/w), where p is the order of convergence and w is the number of function evaluations per iteration.</p>
+        
+        <div class="formula">
+          Efficiency Index = φ^(1/1) = 1.618
+        </div>
+        
+        <p>This makes the secant method more efficient than Newton-Raphson in terms of function evaluations when derivatives are expensive to compute.</p>
+      </section>
+
+      <section class="section">
+        <h2>Advanced Topics & Variations</h2>
+        
+        <h3>Modified Secant Methods</h3>
+        
+        <p><strong>1. Improved Secant Method</strong></p>
+        <p>Uses a small perturbation δ to approximate the derivative when points are too close:</p>
+        <div class="formula">
+          x_{n+1} = x_n - f(x_n) × δ × x_n / (f(x_n + δ × x_n) - f(x_n))
+        </div>
+        
+        <p><strong>2. Secant Method with Safeguards</strong></p>
+        <p>Combines secant with bisection to ensure convergence:</p>
+        <ul>
+          <li>Use secant when convergence is fast</li>
+          <li>Fall back to bisection when secant diverges</li>
+          <li>Maintain bracketing interval for safety</li>
+        </ul>
+        
+        <h3>Acceleration Techniques</h3>
+        
+        <p><strong>Aitken's Δ² Process</strong></p>
+        <p>Can be applied to accelerate convergence of slowly converging secant iterations:</p>
+        <div class="formula">
+          x_accelerated = x_n - (x_{n+1} - x_n)² / (x_{n+2} - 2x_{n+1} + x_n)
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Common Pitfalls & Troubleshooting</h2>
+        
+      <h3>Problem 1: Division by Zero</h3>
+        <p><strong>Symptom:</strong> f(x_n) ≈ f(x_{n-1}), causing division by nearly zero</p>
+        <p><strong>Solution:</strong></p>
+        <ul>
+          <li>Add a check for |f(x_n) - f(x_{n-1})| < ε before division</li>
+          <li>Use a small perturbation if values are too close</li>
+          <li>Switch to bisection method as fallback</li>
+        </ul>
+        <pre><code class="language-javascript">if (Math.abs(f_curr - f_prev) < 1e-15) {
+  // Apply small perturbation
+  const delta = 1e-8;
+  x_next = x_curr - f_curr * delta * x_curr / (func(x_curr + delta * x_curr) - f_curr);
+}</code></pre>
+
+        <h3>Problem 2: Divergence</h3>
+        <p><strong>Symptom:</strong> Successive approximations move away from the root</p>
+        <p><strong>Solutions:</strong></p>
+        <ul>
+          <li>Choose better initial points closer to the root</li>
+          <li>Use a hybrid method combining secant with bisection</li>
+          <li>Implement bounds checking to prevent wild oscillations</li>
+        </ul>
+
+        <h3>Problem 3: Slow Convergence</h3>
+        <p><strong>Symptom:</strong> Many iterations required for convergence</p>
+        <p><strong>Solutions:</strong></p>
+        <ul>
+          <li>Apply Aitken's acceleration technique</li>
+          <li>Use better initial approximations</li>
+          <li>Consider switching to Newton-Raphson if derivatives are available</li>
+        </ul>
+
+        <h3>Problem 4: Oscillating Behavior</h3>
+        <p><strong>Symptom:</strong> Alternating between values without convergence</p>
+        <p><strong>Solutions:</strong></p>
+        <ul>
+          <li>Implement step size limiting</li>
+          <li>Use adaptive tolerance based on function behavior</li>
+          <li>Apply damping factors to reduce oscillation</li>
+        </ul>
+
+        <div class="warning-box">
+          <h3>⚠ Debugging Checklist</h3>
+          <ul>
+            <li>Verify function is continuous in the search interval</li>
+            <li>Check that initial points don't make f(x₀) = f(x₁)</li>
+            <li>Ensure tolerance values are reasonable (not too small)</li>
+            <li>Monitor iteration count to detect infinite loops</li>
+            <li>Plot the function to visualize root location</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Practical Applications</h2>
+        
+        <h3>1. Financial Mathematics</h3>
+        <p><strong>Bond Yield Calculations:</strong> Finding the yield-to-maturity of bonds where the equation involves complex polynomial expressions.</p>
+        
+        <div class="example-box">
+          <h3>Example: Bond Yield Calculation</h3>
+          <p>Find the yield r for a bond with price P = $950, face value F = $1000, annual coupon C = $50, and maturity n = 10 years:</p>
+          <div class="formula">
+            950 = 50 × [1 - (1+r)^(-10)]/r + 1000 × (1+r)^(-10)
+          </div>
+        </div>
+
+        <h3>2. Engineering Applications</h3>
+        <p><strong>Heat Transfer:</strong> Solving non-linear temperature distribution equations in complex geometries.</p>
+        <p><strong>Fluid Dynamics:</strong> Finding pressure drops in pipe networks with varying flow rates.</p>
+        
+        <h3>3. Scientific Computing</h3>
+        <p><strong>Chemical Equilibrium:</strong> Solving systems where reaction rates depend on concentrations in complex ways.</p>
+        <p><strong>Astrophysics:</strong> Determining orbital parameters where gravitational equations become transcendental.</p>
+
+        <h3>4. Economics & Business</h3>
+        <p><strong>Break-even Analysis:</strong> Finding production levels where non-linear cost and revenue functions intersect.</p>
+        <p><strong>Market Equilibrium:</strong> Determining price points where supply and demand curves meet.</p>
+      </section>
+
+      <section class="section">
+        <h2>Performance Optimization</h2>
+        
+        <h3>Implementation Improvements</h3>
+        
+        <p><strong>1. Vectorized Implementation (Python)</strong></p>
+        <pre><code class="language-python">import numpy as np
+
+def vectorized_secant(func, x0_array, x1_array, tolerance=1e-10):
+    """
+    Vectorized secant method for multiple starting points
+    """
+    x_prev = np.array(x0_array)
+    x_curr = np.array(x1_array)
+    
+    for iteration in range(1000):
+        f_prev = func(x_prev)
+        f_curr = func(x_curr)
+        
+        # Avoid division by zero
+        mask = np.abs(f_curr - f_prev) > 1e-15
+        
+        x_next = np.zeros_like(x_curr)
+        x_next[mask] = x_curr[mask] - f_curr[mask] * (x_curr[mask] - x_prev[mask]) / (f_curr[mask] - f_prev[mask])
+        
+        # Check convergence
+        if np.all(np.abs(func(x_next)) < tolerance):
+            return x_next
+        
+        x_prev = x_curr
+        x_curr = x_next
+    
+    return x_curr</code></pre>
+
+        <p><strong>2. Adaptive Tolerance</strong></p>
+        <pre><code class="language-javascript">function adaptiveSecant(func, x0, x1, baseTolerance = 1e-10) {
+  let currentTolerance = baseTolerance;
+  
+  // Start with looser tolerance and tighten as we converge
+  const toleranceSchedule = [1e-4, 1e-6, 1e-8, 1e-10, 1e-12];
+  
+  for (let stage = 0; stage < toleranceSchedule.length; stage++) {
+    currentTolerance = toleranceSchedule[stage];
+    
+    const result = secantMethod(func, x0, x1, currentTolerance, 50);
+    
+    if (result.error < currentTolerance) {
+      x0 = result.root - 0.01;
+      x1 = result.root + 0.01;
+      
+      if (stage === toleranceSchedule.length - 1) {
+        return result;
+      }
+    }
+  }
+}</code></pre>
+
+        <h3>Memory Optimization</h3>
+        <p><strong>Circular Buffer for Convergence History:</strong></p>
+        <pre><code class="language-python">class CircularBuffer:
+    def __init__(self, size):
+        self.buffer = [None] * size
+        self.size = size
+        self.index = 0
+        self.count = 0
+    
+    def add(self, value):
+        self.buffer[self.index] = value
+        self.index = (self.index + 1) % self.size
+        self.count = min(self.count + 1, self.size)
+    
+    def get_last_n(self, n):
+        if n > self.count:
+            n = self.count
+        result = []
+        for i in range(n):
+            idx = (self.index - i - 1) % self.size
+            result.append(self.buffer[idx])
+        return result[::-1]</code></pre>
+      </section>
+
+      <section class="section">
+        <h2>Testing & Validation</h2>
+        
+        <h3>Test Cases</h3>
+        
+        <p><strong>1. Simple Polynomial Tests</strong></p>
+        <pre><code class="language-javascript">// Test functions with known roots
+const testCases = [
+  {
+    name: "Linear function",
+    func: x => 2*x - 4,
+    expected: 2.0,
+    x0: 0, x1: 1
+  },
+  {
+    name: "Quadratic function",
+    func: x => x*x - 4,
+    expected: 2.0,
+    x0: 1, x1: 3
+  },
+  {
+    name: "Cubic function",
+    func: x => x*x*x - x - 2,
+    expected: 1.521379706804568,
+    x0: 1, x1: 2
+  },
+  {
+    name: "Transcendental function",
+    func: x => Math.exp(x) - 2,
+    expected: Math.log(2),
+    x0: 0, x1: 1
+  }
+];
+
+function runTests() {
+  testCases.forEach(test => {
+    const result = secantMethod(test.func, test.x0, test.x1);
+    const error = Math.abs(result.root - test.expected);
+    
+    console.log(`${test.name}: ${error < 1e-10 ? 'PASS' : 'FAIL'}`);
+    console.log(`  Expected: ${test.expected}`);
+    console.log(`  Got: ${result.root}`);
+    console.log(`  Error: ${error}\n`);
+  });
+}</code></pre>
+
+        <h3>Convergence Analysis Tools</h3>
+        <pre><code class="language-python">def analyze_convergence(convergence_history):
+    """
+    Analyze convergence rate and pattern
+    """
+    errors = [abs(item['error']) for item in convergence_history]
+    
+    if len(errors) < 3:
+        return "Insufficient data for analysis"
+    
+    # Estimate convergence rate
+    convergence_rates = []
+    for i in range(2, len(errors)):
+        if errors[i-1] > 0 and errors[i-2] > 0:
+            rate = math.log(errors[i] / errors[i-1]) / math.log(errors[i-1] / errors[i-2])
+            convergence_rates.append(rate)
+    
+    avg_rate = sum(convergence_rates) / len(convergence_rates) if convergence_rates else 0
+    
+    return {
+        'estimated_convergence_rate': avg_rate,
+        'expected_secant_rate': 1.618,
+        'convergence_quality': 'Good' if abs(avg_rate - 1.618) < 0.2 else 'Poor',
+        'iterations_to_convergence': len(errors),
+        'final_error': errors[-1]
+    }</code></pre>
+
+        <h3>Benchmark Suite</h3>
+        <pre><code class="language-javascript">function benchmark() {
+  const functions = [
+    { name: "Polynomial", func: x => x**3 - 2*x - 5 },
+    { name: "Exponential", func: x => Math.exp(x) - 3*x },
+    { name: "Trigonometric", func: x => Math.sin(x) - x/2 },
+    { name: "Logarithmic", func: x => Math.log(x) - 1/x }
+  ];
+  
+  functions.forEach(test => {
+    const startTime = performance.now();
+    const result = secantMethod(test.func, 1, 2);
+    const endTime = performance.now();
+    
+    console.log(`${test.name}:`);
+    console.log(`  Time: ${(endTime - startTime).toFixed(2)}ms`);
+    console.log(`  Iterations: ${result.iterations}`);
+    console.log(`  Final error: ${result.error.toExponential(3)}`);
+  });
+}</code></pre>
+      </section>
+
+      <section class="section">
+        <h2>Summary & Best Practices</h2>
+        
+        <div class="highlight-box">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li><strong>Balance of Speed and Simplicity:</strong> Secant method offers superlinear convergence without derivative calculations</li>
+            <li><strong>Practical Choice:</strong> Ideal when derivatives are expensive or unavailable</li>
+            <li><strong>Robust Implementation:</strong> Include safeguards against division by zero and divergence</li>
+            <li><strong>Initial Guess Matters:</strong> Good starting points are crucial for convergence</li>
+          </ul>
+        </div>
+
+        <h3>Implementation Checklist</h3>
+        <div class="step-list">
+          <li><strong>Input Validation:</strong> Check function validity and reasonable initial points</li>
+          <li><strong>Convergence Criteria:</strong> Use both absolute and relative tolerance</li>
+          <li><strong>Error Handling:</strong> Implement safeguards for division by zero</li>
+          <li><strong>Iteration Limits:</strong> Set maximum iterations to prevent infinite loops</li>
+          <li><strong>Result Validation:</strong> Verify the final result by substituting back into the function</li>
+          <li><strong>Performance Monitoring:</strong> Track convergence rate and iteration count</li>
+        </div>
+
+        <h3>When to Choose Secant Method</h3>
+        <div class="decision-matrix">
+          <h3>Decision Matrix</h3>
+          <table>
+            <tr>
+              <th>Scenario</th>
+              <th>Secant Method</th>
+              <th>Alternative</th>
+            </tr>
+            <tr>
+              <td>Derivatives hard to compute</td>
+              <td>✓ Excellent choice</td>
+              <td>Finite difference Newton</td>
+            </tr>
+            <tr>
+              <td>Need guaranteed convergence</td>
+              <td>✗ Use bracketing method</td>
+              <td>Bisection, False Position</td>
+            </tr>
+            <tr>
+              <td>Derivatives readily available</td>
+              <td>△ Good option</td>
+              <td>Newton-Raphson preferred</td>
+            </tr>
+            <tr>
+              <td>Multiple roots expected</td>
+              <td>△ With multiple starts</td>
+              <td>Bracketing + refinement</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="visualization">
+          <h3>🎯 Final Recommendations</h3>
+          <ul>
+            <li><strong>Start Simple:</strong> Begin with basic implementation, add complexity as needed</li>
+            <li><strong>Test Thoroughly:</strong> Validate with known functions before using on real problems</li>
+            <li><strong>Monitor Performance:</strong> Track convergence patterns to identify issues early</li>
+            <li><strong>Have Fallbacks:</strong> Implement backup methods for when secant fails</li>
+            <li><strong>Document Assumptions:</strong> Clearly state function requirements and limitations</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>References & Further Reading</h2>
+        
+        <h3>Classical References</h3>
+        <ul>
+          <li><strong>Burden & Faires:</strong> "Numerical Analysis" - Comprehensive coverage of secant method theory</li>
+          <li><strong>Stoer & Bulirsch:</strong> "Introduction to Numerical Analysis" - Advanced mathematical treatment</li>
+          <li><strong>Press et al.:</strong> "Numerical Recipes" - Practical implementation guidance</li>
+        </ul>
+
+        <h3>Modern Applications</h3>
+        <ul>
+          <li><strong>Financial Engineering:</strong> Applications in option pricing and risk management</li>
+          <li><strong>Scientific Computing:</strong> Usage in simulation and modeling software</li>
+          <li><strong>Machine Learning:</strong> Root-finding in optimization algorithms</li>
+        </ul>
+
+        <h3>Online Resources</h3>
+        <ul>
+          <li><strong>Wolfram MathWorld:</strong> Mathematical definitions and proofs</li>
+          <li><strong>NumPy/SciPy Documentation:</strong> Production-ready implementations</li>
+          <li><strong>Academic Papers:</strong> Recent research on convergence acceleration</li>
+        </ul>
+      </section>
+    </div>
   </main>
-</body>
 
+  <footer style="background: #2d3748; color: white; text-align: center; padding: 40px 0; margin-top: 60px;">
+    <div class="container">
+      <p>&copy; 2024 Numerical Methods Guide. Educational content for learning numerical analysis.</p>
+      <p style="margin-top: 10px; opacity: 0.8;">Remember: Always validate your numerical solutions with theoretical analysis.</p>
+    </div>
+  </footer>
+
+ <script src="../js/secant_explain.js"></script>
+</body>
 </html>
