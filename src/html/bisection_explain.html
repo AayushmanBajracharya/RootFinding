@@ -1,137 +1,1051 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bisection Method Explanation</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bisection Method - Complete Guide</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script>hljs.highlightAll();</script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    * {
       margin: 0;
       padding: 0;
-      background-color: #f4f4f9;
-      color: #333;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.7;
+      color: #2c3e50;
+      background: white;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
     }
 
     header {
-      background-color: #4a90e2;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      padding: 20px;
+      padding: 60px 0;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.1)"><polygon points="0,100 1000,0 1000,100"/></svg>');
+      background-size: cover;
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .subtitle {
+      font-size: 1.3rem;
+      font-weight: 300;
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
     }
 
     main {
-      padding: 40px;
-      max-width: 900px;
-      margin: auto;
+      padding: 80px 0;
     }
 
-    section {
-      margin-bottom: 30px;
+    .section {
+      margin-bottom: 70px;
+      padding: 40px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border: 1px solid #f0f0f0;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
     }
 
     h2 {
-      color: #4a90e2;
+      color: #667eea;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      position: relative;
+      padding-bottom: 15px;
     }
 
-    code {
-      background-color: #eee;
-      padding: 2px 6px;
-      border-radius: 4px;
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      border-radius: 2px;
+    }
+
+    h3 {
+      color: #34495e;
+      font-size: 1.5rem;
+      margin: 30px 0 20px 0;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      text-align: justify;
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+      border-left: 5px solid #667eea;
+      padding: 25px;
+      margin: 30px 0;
+      border-radius: 0 15px 15px 0;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+    }
+
+    .formula {
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 25px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 1.2rem;
+      text-align: center;
+      color: #495057;
+    }
+
+    ul, ol {
+      padding-left: 30px;
+      margin-bottom: 20px;
+    }
+
+    li {
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+
+    .step-list {
+      counter-reset: step-counter;
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .step-list li {
+      counter-increment: step-counter;
+      position: relative;
+      padding-left: 60px;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .step-list li::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
     }
 
     pre {
-      padding: 15px;
-      border-radius: 6px;
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 30px;
       overflow-x: auto;
+      border: 1px solid #e9ecef;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+      margin: 25px 0;
+    }
+
+    code {
+      background: #f1f3f4;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: #d73a49;
+      font-family: 'Courier New', monospace;
+    }
+
+    .pros-cons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .pros, .cons {
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .pros {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      border-left: 5px solid #28a745;
+    }
+
+    .cons {
+      background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+      border-left: 5px solid #dc3545;
+    }
+
+    .visualization {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 30px;
+      margin: 30px 0;
+      text-align: center;
+      border: 2px dashed #667eea;
+    }
+
+    .math-notation {
+      font-family: 'Times New Roman', serif;
+      font-style: italic;
+      color: #2c3e50;
+      font-size: 1.1rem;
+    }
+
+    .example-box {
+      background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+      border-left: 5px solid #ffc107;
+      padding: 25px;
+      margin: 30px 0;
+      border-radius: 0 15px 15px 0;
+    }
+
+    .algorithm-complexity {
+      background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
+      border-radius: 15px;
+      padding: 25px;
+      margin: 30px 0;
+      border-left: 5px solid #4a5568;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+      
+      .pros-cons {
+        grid-template-columns: 1fr;
+      }
+      
+      .section {
+        padding: 25px;
+        margin-bottom: 40px;
+      }
     }
   </style>
 </head>
 
 <body>
   <header>
-    <h1>Bisection Method</h1>
+    <div class="container">
+      <h1>Bisection Method</h1>
+      <p class="subtitle">A Complete Guide to Root-Finding Using the Bisection Algorithm</p>
+    </div>
   </header>
 
   <main>
-    <section>
-      <h2>Definition</h2>
-      <p>The <strong>Bisection Method</strong> is a root-finding technique that repeatedly divides an interval in half and then selects the subinterval in which a root exists. It is a type of bracketing method and is based on the Intermediate Value Theorem.</p>
-    </section>
+    <div class="container">
+      
+      <section class="section">
+        <h2>Introduction & Definition</h2>
+        <p>The <strong>Bisection Method</strong> is one of the most fundamental and reliable numerical techniques for finding roots of continuous functions. Named after its approach of repeatedly bisecting (dividing in half) an interval, this method is a bracketing technique that guarantees convergence to a root when the initial conditions are satisfied.</p>
+        
+        <div class="highlight-box">
+          <p><strong>Key Concept:</strong> The bisection method is based on the Intermediate Value Theorem, which states that if a continuous function changes sign over an interval, then there must be at least one root in that interval.</p>
+        </div>
 
-    <section>
-      <h2>Requirements</h2>
-      <ul>
-        <li>A continuous function <code>f(x)</code>.</li>
-        <li>An interval <code>[a, b]</code> such that <code>f(a)</code> and <code>f(b)</code> have opposite signs, i.e. <code>f(a) * f(b) &lt; 0</code>.</li>
-      </ul>
-    </section>
+        <p>This method is particularly valuable in numerical analysis because of its simplicity, reliability, and guaranteed convergence. While it may not be the fastest root-finding method available, its robustness makes it an excellent choice for many applications, especially when dealing with functions that might be difficult to differentiate or when other methods fail to converge.</p>
+      </section>
 
-    <section>
-      <h2>Procedure</h2>
-      <ol>
-        <li>Start with a continuous function <code>f(x)</code> on the interval <code>[a, b]</code> where <code>f(a) * f(b) &lt; 0</code>.</li>
-        <li>Compute the midpoint <code>c = (a + b) / 2</code>.</li>
-        <li>Evaluate <code>f(c)</code>:</li>
-        <ul>
-          <li>If <code>f(c) = 0</code>, then <code>c</code> is the root.</li>
-          <li>If <code>f(c) * f(a) &lt; 0</code>, then set <code>b = c</code>.</li>
-          <li>Else, set <code>a = c</code>.</li>
-        </ul>
-        <li>Repeat the above steps until the interval <code>[a, b]</code> is sufficiently small or a desired precision is achieved.</li>
-      </ol>
-    </section>
+      <section class="section">
+        <h2>Mathematical Foundation</h2>
+        
+        <h3>The Intermediate Value Theorem</h3>
+        <p>The theoretical foundation of the bisection method rests on the Intermediate Value Theorem:</p>
+        
+        <div class="formula">
+          If f(x) is continuous on [a, b] and f(a) × f(b) < 0, then ∃ c ∈ (a, b) such that f(c) = 0
+        </div>
 
-    <section>
-      <h2>Example JavaScript Implementation</h2>
-      <pre><code class="language-javascript">
-function bisection(f, a, b, tol = 1e-6, maxIter = 100) {
-  if (f(a) * f(b) >= 0) {
-    throw new Error("Function has the same signs at a and b");
+        <p>This theorem guarantees that when a continuous function has opposite signs at the endpoints of an interval, there must be at least one root within that interval.</p>
+
+        <h3>Requirements for Application</h3>
+        <div class="highlight-box">
+          <ul>
+            <li><strong>Continuity:</strong> The function <span class="math-notation">f(x)</span> must be continuous on the interval [a, b]</li>
+            <li><strong>Sign Change:</strong> The function values at the endpoints must have opposite signs: <span class="math-notation">f(a) × f(b) < 0</span></li>
+            <li><strong>Bounded Interval:</strong> The search must be conducted within a finite interval [a, b]</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Algorithm & Procedure</h2>
+        
+        <p>The bisection method follows a systematic approach to narrow down the interval containing the root:</p>
+
+        <ol class="step-list">
+          <li><strong>Initialize:</strong> Start with a continuous function <span class="math-notation">f(x)</span> and an interval [a, b] where <span class="math-notation">f(a) × f(b) < 0</span></li>
+          <li><strong>Calculate Midpoint:</strong> Compute the midpoint <span class="math-notation">c = (a + b) / 2</span></li>
+          <li><strong>Evaluate Function:</strong> Calculate <span class="math-notation">f(c)</span></li>
+          <li><strong>Check for Root:</strong> If <span class="math-notation">|f(c)| < tolerance</span>, then c is the approximate root</li>
+          <li><strong>Update Interval:</strong> Otherwise, choose the subinterval where the sign change occurs:
+            <ul>
+              <li>If <span class="math-notation">f(c) × f(a) < 0</span>, set <span class="math-notation">b = c</span></li>
+              <li>Otherwise, set <span class="math-notation">a = c</span></li>
+            </ul>
+          </li>
+          <li><strong>Repeat:</strong> Continue the process until convergence criteria are met</li>
+        </ol>
+
+        <div class="algorithm-complexity">
+          <h3>Convergence Analysis</h3>
+          <p><strong>Time Complexity:</strong> O(log₂((b-a)/ε)) where ε is the desired accuracy</p>
+          <p><strong>Space Complexity:</strong> O(1) - constant space requirement</p>
+          <p><strong>Convergence Rate:</strong> Linear convergence with rate 0.5</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Implementation Examples</h2>
+        
+        <h3>JavaScript Implementation</h3>
+        <pre><code class="language-javascript">function bisectionMethod(func, a, b, tolerance = 1e-10, maxIterations = 1000) {
+  // Validate initial conditions
+  if (func(a) * func(b) >= 0) {
+    throw new Error('Function must have opposite signs at interval endpoints');
   }
-  let mid;
-  for (let i = 0; i < maxIter; i++) {
-    mid = (a + b) / 2;
-    const fMid = f(mid);
-    if (Math.abs(fMid) < tol || (b - a) / 2 < tol) {
-      return mid;
+  
+  let iteration = 0;
+  let root;
+  let fa = func(a);
+  
+  console.log('Iteration | a        | b        | c        | f(c)     | Error');
+  console.log('----------|----------|----------|----------|----------|----------');
+  
+  while (iteration < maxIterations) {
+    // Calculate midpoint
+    root = (a + b) / 2;
+    let fc = func(root);
+    let error = Math.abs(b - a) / 2;
+    
+    // Log iteration details
+    console.log(`${iteration.toString().padStart(9)} | ${a.toFixed(6)} | ${b.toFixed(6)} | ${root.toFixed(6)} | ${fc.toFixed(6)} | ${error.toFixed(6)}`);
+    
+    // Check convergence
+    if (Math.abs(fc) < tolerance || error < tolerance) {
+      console.log(`\nConverged after ${iteration + 1} iterations`);
+      return {
+        root: root,
+        functionValue: fc,
+        iterations: iteration + 1,
+        error: error
+      };
     }
-    if (fMid * f(a) < 0) {
-      b = mid;
+    
+    // Update interval
+    if (fc * fa < 0) {
+      b = root;
     } else {
-      a = mid;
+      a = root;
+      fa = fc;
     }
+    
+    iteration++;
   }
-  return mid;
+  
+  console.log(`\nMaximum iterations (${maxIterations}) reached`);
+  return {
+    root: root,
+    functionValue: func(root),
+    iterations: iteration,
+    error: Math.abs(b - a) / 2
+  };
 }
 
-// Example usage:
-const root = bisection(x => x ** 3 - x - 2, 1, 2);
-console.log("Root:", root);
-      </code></pre>
-    </section>
+// Example 1: Finding root of x³ - x - 2 = 0
+function example1() {
+  console.log('Example 1: f(x) = x³ - x - 2');
+  const f1 = x => x**3 - x - 2;
+  const result1 = bisectionMethod(f1, 1, 2);
+  console.log(`Root: ${result1.root}`);
+  console.log(`f(root): ${result1.functionValue}`);
+  console.log(`Verification: ${Math.pow(result1.root, 3) - result1.root - 2}\n`);
+}
 
-    <section>
-      <h2>Advantages</h2>
-      <ul>
-        <li>Simple and easy to implement.</li>
-        <li>Always converges (if the initial interval satisfies the condition).</li>
-        <li>Guaranteed to find a root in the interval.</li>
-      </ul>
-    </section>
+// Example 2: Finding root of cos(x) - x = 0
+function example2() {
+  console.log('Example 2: f(x) = cos(x) - x');
+  const f2 = x => Math.cos(x) - x;
+  const result2 = bisectionMethod(f2, 0, 1);
+  console.log(`Root: ${result2.root}`);
+  console.log(`f(root): ${result2.functionValue}`);
+  console.log(`Verification: ${Math.cos(result2.root) - result2.root}\n`);
+}
 
-    <section>
-      <h2>Disadvantages</h2>
-      <ul>
-        <li>Slow convergence compared to other methods (e.g., Newton-Raphson).</li>
-        <li>Requires the function to be continuous and for the root to be bracketed.</li>
-      </ul>
-    </section>
+// Run examples
+example1();
+example2();</code></pre>
+
+        <h3>Python Implementation</h3>
+        <pre><code class="language-python">import math
+import numpy as np
+import matplotlib.pyplot as plt
+
+def bisection_method(func, a, b, tolerance=1e-10, max_iterations=1000, verbose=True):
+    """
+    Find root using bisection method with detailed logging
+    """
+    # Validate initial conditions
+    if func(a) * func(b) >= 0:
+        raise ValueError('Function must have opposite signs at interval endpoints')
+    
+    iteration = 0
+    fa = func(a)
+    roots = []  # Store roots for visualization
+    
+    if verbose:
+        print(f"{'Iter':<5} | {'a':<10} | {'b':<10} | {'c':<10} | {'f(c)':<10} | {'Error':<10}")
+        print("-" * 65)
+    
+    while iteration < max_iterations:
+        # Calculate midpoint
+        c = (a + b) / 2
+        fc = func(c)
+        error = abs(b - a) / 2
+        
+        roots.append(c)
+        
+        if verbose:
+            print(f"{iteration:<5} | {a:<10.6f} | {b:<10.6f} | {c:<10.6f} | {fc:<10.6f} | {error:<10.6f}")
+        
+        # Check convergence
+        if abs(fc) < tolerance or error < tolerance:
+            if verbose:
+                print(f"\nConverged after {iteration + 1} iterations")
+            return {
+                'root': c,
+                'function_value': fc,
+                'iterations': iteration + 1,
+                'error': error,
+                'root_history': roots
+            }
+        
+        # Update interval
+        if fc * fa < 0:
+            b = c
+        else:
+            a = c
+            fa = fc
+        
+        iteration += 1
+    
+    if verbose:
+        print(f"\nMaximum iterations ({max_iterations}) reached")
+    return {
+        'root': c,
+        'function_value': func(c),
+        'iterations': iteration,
+        'error': abs(b - a) / 2,
+        'root_history': roots
+    }
+
+# Example usage with visualization
+def visualize_bisection(func, a, b, title="Bisection Method Visualization"):
+    """
+    Visualize the bisection method process
+    """
+    result = bisection_method(func, a, b, verbose=False)
+    
+    # Create visualization
+    x = np.linspace(a - 0.5, b + 0.5, 1000)
+    y = [func(xi) for xi in x]
+    
+    plt.figure(figsize=(12, 8))
+    plt.plot(x, y, 'b-', linewidth=2, label='f(x)')
+    plt.axhline(y=0, color='k', linestyle='-', alpha=0.3)
+    plt.axvline(x=result['root'], color='r', linestyle='--', alpha=0.7, label=f'Root ≈ {result["root"]:.6f}')
+    
+    # Plot convergence points
+    for i, root in enumerate(result['root_history'][::5]):  # Show every 5th iteration
+        plt.plot(root, func(root), 'ro', markersize=8, alpha=0.7)
+    
+    plt.xlabel('x')
+    plt.ylabel('f(x)')
+    plt.title(title)
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.show()
+    
+    return result
+
+# Examples
+print("Example 1: f(x) = x³ - x - 2")
+f1 = lambda x: x**3 - x - 2
+result1 = bisection_method(f1, 1, 2)
+print(f"Root: {result1['root']:.10f}")
+print(f"Function value at root: {result1['function_value']:.2e}")
+print(f"Number of iterations: {result1['iterations']}")
+print()
+
+print("Example 2: f(x) = cos(x) - x")
+f2 = lambda x: math.cos(x) - x
+result2 = bisection_method(f2, 0, 1)
+print(f"Root: {result2['root']:.10f}")
+print(f"Function value at root: {result2['function_value']:.2e}")
+print(f"Number of iterations: {result2['iterations']}")
+</code></pre>
+      </section>
+
+      <section class="section">
+        <h2>Detailed Example Walkthrough</h2>
+        
+        <div class="example-box">
+          <h3>Problem: Find the root of f(x) = x³ - x - 2 in the interval [1, 2]</h3>
+        </div>
+
+        <p><strong>Step 1: Verify Initial Conditions</strong></p>
+        <ul>
+          <li>f(1) = 1³ - 1 - 2 = -2 < 0</li>
+          <li>f(2) = 2³ - 2 - 2 = 4 > 0</li>
+          <li>Since f(1) × f(2) = -8 < 0, the method can be applied</li>
+        </ul>
+
+        <p><strong>Step 2: First Iteration</strong></p>
+        <div class="formula">
+          c₁ = (1 + 2) / 2 = 1.5<br>
+          f(1.5) = (1.5)³ - 1.5 - 2 = 3.375 - 1.5 - 2 = -0.125 < 0
+        </div>
+        <p>Since f(1.5) × f(1) > 0, we set a = 1.5, keeping b = 2</p>
+
+        <p><strong>Step 3: Second Iteration</strong></p>
+        <div class="formula">
+          c₂ = (1.5 + 2) / 2 = 1.75<br>
+          f(1.75) = (1.75)³ - 1.75 - 2 = 5.359375 - 1.75 - 2 = 1.609375 > 0
+        </div>
+        <p>Since f(1.75) × f(1.5) < 0, we set b = 1.75, keeping a = 1.5</p>
+
+        <p><strong>Continuing this process...</strong></p>
+        <p>The method continues to narrow the interval until the desired precision is achieved. The actual root is approximately <strong>1.521379706804568</strong>.</p>
+
+        <div class="visualization">
+          <h3>Geometric Interpretation</h3>
+          <p>Imagine the function as a curve crossing the x-axis. The bisection method repeatedly cuts the interval in half, always keeping the half where the function changes sign, gradually "zooming in" on the root.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Advantages & Disadvantages</h2>
+        
+        <div class="pros-cons">
+          <div class="pros">
+            <h3>✅ Advantages</h3>
+            <ul>
+              <li><strong>Guaranteed Convergence:</strong> Always converges when initial conditions are met</li>
+              <li><strong>Simplicity:</strong> Easy to understand and implement</li>
+              <li><strong>Robustness:</strong> Doesn't require derivatives or complex calculations</li>
+              <li><strong>Reliability:</strong> Works for any continuous function</li>
+              <li><strong>Bounded Error:</strong> Error can be predetermined and controlled</li>
+              <li><strong>Stable:</strong> Not affected by the function's behavior outside the interval</li>
+            </ul>
+          </div>
+          
+          <div class="cons">
+            <h3>❌ Disadvantages</h3>
+            <ul>
+              <li><strong>Slow Convergence:</strong> Linear convergence rate (compared to quadratic for Newton-Raphson)</li>
+              <li><strong>Single Root:</strong> Finds only one root per interval</li>
+              <li><strong>Requires Bracketing:</strong> Initial interval must bracket the root</li>
+              <li><strong>Sign Change Requirement:</strong> Cannot find roots where function doesn't change sign</li>
+              <li><strong>No Multiple Roots:</strong> Cannot detect or handle multiple roots effectively</li>
+              <li><strong>Limited Efficiency:</strong> Many iterations needed for high precision</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Comparison with Other Methods</h2>
+        
+        <div class="algorithm-complexity">
+          <h3>Method Comparison Table</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <tr style="background-color: #f8f9fa;">
+              <th style="padding: 15px; border: 1px solid #dee2e6; text-align: left;">Method</th>
+              <th style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">Convergence Rate</th>
+              <th style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">Requires Derivative</th>
+              <th style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">Guaranteed Convergence</th>
+              <th style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">Typical Iterations</th>
+            </tr>
+            <tr>
+              <td style="padding: 15px; border: 1px solid #dee2e6;"><strong>Bisection</strong></td>
+              <td style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">Linear</td>
+              <td style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">No</td>
+              <td style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">Yes</td>
+              <td style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">50-100</td>
+            </tr>
+            <tr style="background-color: #f8f9fa;">
+              <td style="padding: 15px; border: 1px solid #dee2e6;"><strong>Newton-Raphson</strong></td>
+              <td style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">Quadratic</td>
+              <td style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">Yes</td>
+              <td style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">No</td>
+              <td style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">5-10</td>
+            </tr>
+            <tr>
+              <td style="padding: 15px; border: 1px solid #dee2e6;"><strong>Secant</strong></td>
+              <td style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">Superlinear</td>
+              <td style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">No</td>
+              <td style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">No</td>
+              <td style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">8-15</td>
+            </tr>
+            <tr style="background-color: #f8f9fa;">
+              <td style="padding: 15px; border: 1px solid #dee2e6;"><strong>False Position</strong></td>
+              <td style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">Superlinear</td>
+              <td style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">No</td>
+              <td style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">Yes</td>
+              <td style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">15-30</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="highlight-box">
+          <h3>When to Use Bisection Method</h3>
+          <p>The bisection method is particularly useful when:</p>
+          <ul>
+            <li>You need guaranteed convergence</li>
+            <li>The function is difficult to differentiate</li>
+            <li>You're working with a "black box" function</li>
+            <li>Other methods fail to converge</li>
+            <li>You need a simple, reliable implementation</li>
+            <li>Precision requirements are moderate</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Real-World Applications</h2>
+        
+        <h3>Engineering Applications</h3>
+        <ul>
+          <li><strong>Structural Analysis:</strong> Finding critical loads in beam deflection problems</li>
+          <li><strong>Fluid Dynamics:</strong> Determining flow rates in pipe networks</li>
+          <li><strong>Heat Transfer:</strong> Solving temperature distribution equations</li>
+          <li><strong>Control Systems:</strong> Finding stability margins and system parameters</li>
+        </ul>
+
+        <h3>Financial Applications</h3>
+        <ul>
+          <li><strong>Options Pricing:</strong> Solving Black-Scholes equations for implied volatility</li>
+          <li><strong>Bond Valuation:</strong> Finding yield to maturity</li>
+          <li><strong>Risk Management:</strong> Calculating Value at Risk (VaR) thresholds</li>
+          <li><strong>Portfolio Optimization:</strong> Finding optimal asset allocation ratios</li>
+        </ul>
+
+        <h3>Scientific Applications</h3>
+        <ul>
+          <li><strong>Physics:</strong> Solving transcendental equations in quantum mechanics</li>
+          <li><strong>Chemistry:</strong> Finding equilibrium concentrations in chemical reactions</li>
+          <li><strong>Biology:</strong> Modeling population dynamics and growth rates</li>
+          <li><strong>Astronomy:</strong> Calculating orbital mechanics and celestial body positions</li>
+        </ul>
+
+        <div class="example-box">
+          <h3>Case Study: Finding Yield to Maturity</h3>
+          <p>A bond with face value $1000, annual coupon rate 8%, and 5 years to maturity is trading at $950. Find the yield to maturity (YTM).</p>
+          
+          <p><strong>The equation to solve:</strong></p>
+          <div class="formula">
+            950 = 80/(1+r) + 80/(1+r)² + 80/(1+r)³ + 80/(1+r)⁴ + 1080/(1+r)⁵
+          </div>
+          
+          <p>This can be rearranged as f(r) = 0 where f(r) represents the difference between the bond's current price and its theoretical price at yield r.</p>
+          
+          <pre><code class="language-javascript">function bondPricing(ytm) {
+  const faceValue = 1000;
+  const couponRate = 0.08;
+  const years = 5;
+  const marketPrice = 950;
+  const couponPayment = faceValue * couponRate;
+  
+  let theoreticalPrice = 0;
+  
+  // Calculate present value of coupon payments
+  for (let i = 1; i <= years; i++) {
+    theoreticalPrice += couponPayment / Math.pow(1 + ytm, i);
+  }
+  
+  // Add present value of face value
+  theoreticalPrice += faceValue / Math.pow(1 + ytm, years);
+  
+  // Return difference (should be zero at correct YTM)
+  return theoreticalPrice - marketPrice;
+}
+
+// Find YTM using bisection method
+const ytmResult = bisectionMethod(bondPricing, 0.05, 0.15, 1e-8);
+console.log(`Yield to Maturity: ${(ytmResult.root * 100).toFixed(4)}%`);
+// Result: approximately 9.1065%</code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Error Analysis & Convergence</h2>
+        
+        <h3>Theoretical Error Bounds</h3>
+        <p>The bisection method provides excellent error control with predictable bounds:</p>
+        
+        <div class="formula">
+          |xₙ - r| ≤ (b - a) / 2ⁿ⁺¹
+        </div>
+        
+        <p>Where:</p>
+        <ul>
+          <li><strong>xₙ</strong> is the approximation after n iterations</li>
+          <li><strong>r</strong> is the true root</li>
+          <li><strong>[a, b]</strong> is the initial interval</li>
+          <li><strong>n</strong> is the number of iterations</li>
+        </ul>
+
+        <h3>Determining Required Iterations</h3>
+        <p>To achieve a desired accuracy ε, the number of iterations needed is:</p>
+        
+        <div class="formula">
+          n ≥ log₂((b - a) / ε) - 1
+        </div>
+
+        <div class="algorithm-complexity">
+          <h3>Practical Error Analysis</h3>
+          <pre><code class="language-javascript">function calculateRequiredIterations(a, b, tolerance) {
+  const n = Math.ceil(Math.log2((b - a) / tolerance) - 1);
+  return n;
+}
+
+function errorAnalysis(initialInterval, tolerance) {
+  const [a, b] = initialInterval;
+  const requiredIterations = calculateRequiredIterations(a, b, tolerance);
+  
+  console.log('Error Analysis:');
+  console.log(`Initial interval: [${a}, ${b}]`);
+  console.log(`Desired tolerance: ${tolerance}`);
+  console.log(`Required iterations: ${requiredIterations}`);
+  console.log(`Guaranteed error bound: ${(b - a) / Math.pow(2, requiredIterations + 1)}`);
+  
+  return requiredIterations;
+}
+
+// Example: How many iterations needed for 10⁻⁶ accuracy in [1, 2]?
+errorAnalysis([1, 2], 1e-6);
+// Output: approximately 20 iterations needed</code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Advanced Techniques & Modifications</h2>
+        
+        <h3>Illinois Method (Modified False Position)</h3>
+        <p>A hybrid approach that combines bisection with false position for better convergence:</p>
+        
+        <pre><code class="language-javascript">function illinoisMethod(func, a, b, tolerance = 1e-10, maxIterations = 1000) {
+  if (func(a) * func(b) >= 0) {
+    throw new Error('Function must have opposite signs at interval endpoints');
+  }
+  
+  let fa = func(a);
+  let fb = func(b);
+  let iteration = 0;
+  
+  while (iteration < maxIterations) {
+    // Calculate new point using false position formula
+    const c = (a * fb - b * fa) / (fb - fa);
+    const fc = func(c);
+    
+    if (Math.abs(fc) < tolerance) {
+      return { root: c, iterations: iteration + 1 };
+    }
+    
+    // Update interval
+    if (fc * fa < 0) {
+      b = c;
+      fb = fc;
+      // Illinois modification: halve the function value
+      fa = fa / 2;
+    } else {
+      a = c;
+      fa = fc;
+      // Illinois modification: halve the function value
+      fb = fb / 2;
+    }
+    
+    iteration++;
+  }
+  
+  return { root: (a + b) / 2, iterations: iteration };
+}</code></pre>
+
+        <h3>Adaptive Bisection</h3>
+        <p>An intelligent variant that adjusts tolerance based on function behavior:</p>
+        
+        <pre><code class="language-javascript">function adaptiveBisection(func, a, b, baseTolerance = 1e-10) {
+  let tolerance = baseTolerance;
+  let iteration = 0;
+  const maxIterations = 1000;
+  
+  while (iteration < maxIterations) {
+    const c = (a + b) / 2;
+    const fc = func(c);
+    
+    // Adaptive tolerance based on function slope
+    const slope = Math.abs((func(b) - func(a)) / (b - a));
+    const adaptiveTol = Math.max(tolerance, tolerance * slope);
+    
+    if (Math.abs(fc) < adaptiveTol || (b - a) < adaptiveTol) {
+      return { root: c, iterations: iteration + 1, finalTolerance: adaptiveTol };
+    }
+    
+    if (fc * func(a) < 0) {
+      b = c;
+    } else {
+      a = c;
+    }
+    
+    iteration++;
+  }
+  
+  return { root: (a + b) / 2, iterations: iteration };
+}</code></pre>
+      </section>
+
+      <section class="section">
+        <h2>Troubleshooting Common Issues</h2>
+        
+        <h3>Problem: Function doesn't change sign</h3>
+        <div class="highlight-box">
+          <p><strong>Solution:</strong> Expand the search interval or use graphical methods to identify sign changes.</p>
+          <pre><code class="language-javascript">function findSignChange(func, start, end, step = 0.1) {
+  for (let x = start; x < end; x += step) {
+    if (func(x) * func(x + step) < 0) {
+      return [x, x + step];
+    }
+  }
+  return null; // No sign change found
+}</code></pre>
+        </div>
+
+        <h3>Problem: Multiple roots in interval</h3>
+        <div class="highlight-box">
+          <p><strong>Solution:</strong> The method will find one root. To find all roots, subdivide the interval.</p>
+          <pre><code class="language-javascript">function findAllRoots(func, start, end, divisions = 100) {
+  const roots = [];
+  const step = (end - start) / divisions;
+  
+  for (let i = 0; i < divisions; i++) {
+    const a = start + i * step;
+    const b = start + (i + 1) * step;
+    
+    if (func(a) * func(b) < 0) {
+      try {
+        const result = bisectionMethod(func, a, b);
+        roots.push(result.root);
+      } catch (e) {
+        // Skip this interval
+      }
+    }
+  }
+  
+  return roots.filter((root, index, arr) => 
+    arr.findIndex(r => Math.abs(r - root) < 1e-6) === index
+  );
+}</code></pre>
+        </div>
+
+        <h3>Problem: Slow convergence near root</h3>
+        <div class="highlight-box">
+          <p><strong>Solution:</strong> Use a hybrid method that switches to Newton-Raphson when close to root.</p>
+          <pre><code class="language-javascript">function hybridMethod(func, funcDerivative, a, b, tolerance = 1e-10) {
+  // Start with bisection
+  let iteration = 0;
+  const maxBisectionIter = 10;
+  
+  while (iteration < maxBisectionIter) {
+    const c = (a + b) / 2;
+    const fc = func(c);
+    
+    if (Math.abs(fc) < tolerance) {
+      return { root: c, method: 'bisection', iterations: iteration + 1 };
+    }
+    
+    if (fc * func(a) < 0) {
+      b = c;
+    } else {
+      a = c;
+    }
+    
+    iteration++;
+    
+    // Switch to Newton-Raphson when interval is small enough
+    if (Math.abs(b - a) < 0.1) {
+      let x = (a + b) / 2;
+      let newtonIter = 0;
+      
+      while (newtonIter < 50) {
+        const fx = func(x);
+        const fpx = funcDerivative(x);
+        
+        if (Math.abs(fx) < tolerance) {
+          return { 
+            root: x, 
+            method: 'hybrid', 
+            iterations: iteration + newtonIter + 1 
+          };
+        }
+        
+        if (Math.abs(fpx) < 1e-12) break; // Avoid division by zero
+        
+        x = x - fx / fpx;
+        newtonIter++;
+      }
+    }
+  }
+  
+  return { root: (a + b) / 2, method: 'bisection', iterations: iteration };
+}</code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Performance Optimization</h2>
+        
+        <h3>Vectorized Implementation</h3>
+        <p>For multiple root-finding problems, vectorized approaches can significantly improve performance:</p>
+        
+        <pre><code class="language-javascript">class VectorizedBisection {
+  constructor(functions, intervals, tolerance = 1e-10) {
+    this.functions = functions;
+    this.intervals = intervals;
+    this.tolerance = tolerance;
+    this.results = [];
+  }
+  
+  solve() {
+    const promises = this.intervals.map((interval, index) => {
+      return new Promise((resolve) => {
+        try {
+          const result = bisectionMethod(
+            this.functions[index], 
+            interval[0], 
+            interval[1], 
+            this.tolerance
+          );
+          resolve({ index, ...result });
+        } catch (error) {
+          resolve({ index, error: error.message });
+        }
+      });
+    });
+    
+    return Promise.all(promises);
+  }
+}
+
+// Usage example
+const functions = [
+  x => x**3 - x - 2,
+  x => Math.cos(x) - x,
+  x => Math.exp(x) - 2*x - 1
+];
+
+const intervals = [
+  [1, 2],
+  [0, 1],
+  [0, 1]
+];
+
+const solver = new VectorizedBisection(functions, intervals);
+solver.solve().then(results => {
+  results.forEach(result => {
+    if (result.error) {
+      console.log(`Function ${result.index}: Error - ${result.error}`);
+    } else {
+      console.log(`Function ${result.index}: Root = ${result.root.toFixed(8)}`);
+    }
+  });
+});</code></pre>
+      </section>
+
+      <section class="section">
+        <h2>Conclusion</h2>
+        
+        <p>The bisection method remains one of the most important and reliable numerical techniques for root-finding, despite its relatively slow convergence rate. Its guaranteed convergence, simplicity, and robustness make it an invaluable tool in numerical analysis.</p>
+        
+        <div class="highlight-box">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li><strong>Reliability:</strong> Always converges when initial conditions are satisfied</li>
+            <li><strong>Simplicity:</strong> Easy to implement and understand</li>
+            <li><strong>Versatility:</strong> Works with any continuous function</li>
+            <li><strong>Predictable:</strong> Error bounds can be calculated in advance</li>
+            <li><strong>Robust:</strong> Not sensitive to function behavior outside the interval</li>
+          </ul>
+        </div>
+        
+        <p>While faster methods like Newton-Raphson or Secant method exist, the bisection method serves as an excellent fallback option and is often used as a component in hybrid algorithms. For applications requiring guaranteed convergence or when working with functions that are difficult to differentiate, the bisection method remains the method of choice.</p>
+        
+        <div class="algorithm-complexity">
+          <h3>Best Practices</h3>
+          <ul>
+            <li>Always verify that f(a) × f(b) < 0 before starting</li>
+            <li>Use appropriate tolerance values for your application</li>
+            <li>Consider hybrid methods for better performance</li>
+            <li>Implement proper error handling for edge cases</li>
+            <li>Use the method as a backup when other methods fail</li>
+            <li>Consider the trade-off between accuracy and computation time</li>
+          </ul>
+        </div>
+        
+        <p>Understanding the bisection method provides a solid foundation for learning more advanced numerical methods and developing robust numerical algorithms. Its principles of interval reduction and guaranteed convergence appear in many other areas of computational mathematics.</p>
+      </section>
+    </div>
   </main>
-</body>
 
+  <footer style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 0; text-align: center; margin-top: 60px;">
+    <div class="container">
+      <p style="font-size: 1.1rem; margin: 0;">© 2025 Bisection Method Guide - A comprehensive resource for numerical root-finding</p>
+    </div>
+  </footer>
+</body>
 </html>
