@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bisection Method Explanation</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+
+    header {
+      background-color: #4a90e2;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    main {
+      padding: 40px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    section {
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      color: #4a90e2;
+    }
+
+    code {
+      background-color: #eee;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    pre {
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Bisection Method</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>Definition</h2>
+      <p>The <strong>Bisection Method</strong> is a root-finding technique that repeatedly divides an interval in half and then selects the subinterval in which a root exists. It is a type of bracketing method and is based on the Intermediate Value Theorem.</p>
+    </section>
+
+    <section>
+      <h2>Requirements</h2>
+      <ul>
+        <li>A continuous function <code>f(x)</code>.</li>
+        <li>An interval <code>[a, b]</code> such that <code>f(a)</code> and <code>f(b)</code> have opposite signs, i.e. <code>f(a) * f(b) &lt; 0</code>.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Procedure</h2>
+      <ol>
+        <li>Start with a continuous function <code>f(x)</code> on the interval <code>[a, b]</code> where <code>f(a) * f(b) &lt; 0</code>.</li>
+        <li>Compute the midpoint <code>c = (a + b) / 2</code>.</li>
+        <li>Evaluate <code>f(c)</code>:</li>
+        <ul>
+          <li>If <code>f(c) = 0</code>, then <code>c</code> is the root.</li>
+          <li>If <code>f(c) * f(a) &lt; 0</code>, then set <code>b = c</code>.</li>
+          <li>Else, set <code>a = c</code>.</li>
+        </ul>
+        <li>Repeat the above steps until the interval <code>[a, b]</code> is sufficiently small or a desired precision is achieved.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Example JavaScript Implementation</h2>
+      <pre><code class="language-javascript">
+function bisection(f, a, b, tol = 1e-6, maxIter = 100) {
+  if (f(a) * f(b) >= 0) {
+    throw new Error("Function has the same signs at a and b");
+  }
+  let mid;
+  for (let i = 0; i < maxIter; i++) {
+    mid = (a + b) / 2;
+    const fMid = f(mid);
+    if (Math.abs(fMid) < tol || (b - a) / 2 < tol) {
+      return mid;
+    }
+    if (fMid * f(a) < 0) {
+      b = mid;
+    } else {
+      a = mid;
+    }
+  }
+  return mid;
+}
+
+// Example usage:
+const root = bisection(x => x ** 3 - x - 2, 1, 2);
+console.log("Root:", root);
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Advantages</h2>
+      <ul>
+        <li>Simple and easy to implement.</li>
+        <li>Always converges (if the initial interval satisfies the condition).</li>
+        <li>Guaranteed to find a root in the interval.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Disadvantages</h2>
+      <ul>
+        <li>Slow convergence compared to other methods (e.g., Newton-Raphson).</li>
+        <li>Requires the function to be continuous and for the root to be bracketed.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+
+</html>

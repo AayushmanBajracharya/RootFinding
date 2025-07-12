@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Root-Finding Methods Explanation</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+
+    header {
+      background-color: #4a90e2;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    main {
+      padding: 40px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    section {
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      color: #4a90e2;
+    }
+
+    code {
+      background-color: #eee;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    pre {
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Bisection and Secant Methods</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>Bisection Method - Definition</h2>
+      <p>The <strong>Bisection Method</strong> is a root-finding technique that repeatedly divides an interval in half and then selects the subinterval in which a root exists. It is a type of bracketing method and is based on the Intermediate Value Theorem.</p>
+    </section>
+
+    <section>
+      <h2>Bisection Method - Requirements</h2>
+      <ul>
+        <li>A continuous function <code>f(x)</code>.</li>
+        <li>An interval <code>[a, b]</code> such that <code>f(a)</code> and <code>f(b)</code> have opposite signs, i.e. <code>f(a) * f(b) &lt; 0</code>.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Bisection Method - Procedure</h2>
+      <ol>
+        <li>Start with <code>[a, b]</code> where <code>f(a) * f(b) &lt; 0</code>.</li>
+        <li>Compute midpoint <code>c = (a + b) / 2</code>.</li>
+        <li>If <code>f(c) = 0</code>, then <code>c</code> is the root.</li>
+        <li>If <code>f(c) * f(a) &lt; 0</code>, set <code>b = c</code>, else set <code>a = c</code>.</li>
+        <li>Repeat until interval is sufficiently small.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Bisection Method - Example JavaScript Implementation</h2>
+      <pre><code class="language-javascript">
+function bisection(f, a, b, tol = 1e-6, maxIter = 100) {
+  if (f(a) * f(b) >= 0) {
+    throw new Error("Function has the same signs at a and b");
+  }
+  let mid;
+  for (let i = 0; i < maxIter; i++) {
+    mid = (a + b) / 2;
+    const fMid = f(mid);
+    if (Math.abs(fMid) < tol || (b - a) / 2 < tol) {
+      return mid;
+    }
+    if (fMid * f(a) < 0) {
+      b = mid;
+    } else {
+      a = mid;
+    }
+  }
+  return mid;
+}
+
+// Example usage:
+const root = bisection(x => x ** 3 - x - 2, 1, 2);
+console.log("Root:", root);
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Secant Method - Definition</h2>
+      <p>The <strong>Secant Method</strong> is an open root-finding method that uses two initial points to generate a sequence approximating the root of a function. It uses a secant line through the points to estimate the root.</p>
+    </section>
+
+    <section>
+      <h2>Secant Method - Requirements</h2>
+      <ul>
+        <li>A continuous function <code>f(x)</code>.</li>
+        <li>Two initial guesses <code>x0</code> and <code>x1</code>.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Secant Method - Procedure</h2>
+      <ol>
+        <li>Start with initial values <code>x0</code> and <code>x1</code>.</li>
+        <li>Compute <code>f(x0)</code> and <code>f(x1)</code>.</li>
+        <li>Use the formula: <code>x2 = x1 - f(x1) * (x1 - x0) / (f(x1) - f(x0))</code>.</li>
+        <li>Update <code>x0 = x1</code> and <code>x1 = x2</code>.</li>
+        <li>Repeat until <code>|x1 - x0|</code> is smaller than a tolerance level or maximum iterations are reached.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Secant Method - Example JavaScript Implementation</h2>
+      <pre><code class="language-javascript">
+function secant(f, x0, x1, tol = 1e-6, maxIter = 100) {
+  for (let i = 0; i < maxIter; i++) {
+    const f0 = f(x0);
+    const f1 = f(x1);
+    if (Math.abs(f1 - f0) < Number.EPSILON) {
+      throw new Error("Division by near-zero");
+    }
+    const x2 = x1 - f1 * (x1 - x0) / (f1 - f0);
+    if (Math.abs(x2 - x1) < tol) {
+      return x2;
+    }
+    x0 = x1;
+    x1 = x2;
+  }
+  return x1;
+}
+
+// Example usage:
+const root = secant(x => x ** 3 - x - 2, 1, 2);
+console.log("Root:", root);
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Advantages of Secant Method</h2>
+      <ul>
+        <li>Does not require the function to change signs.</li>
+        <li>Faster convergence than bisection in many cases.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Disadvantages of Secant Method</h2>
+      <ul>
+        <li>Not guaranteed to converge.</li>
+        <li>Can fail if denominator approaches zero.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+
+</html>
