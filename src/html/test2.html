@@ -665,6 +665,7 @@
           </div>
           <button class="view-details-btn" data-method="secant">
             View Details <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+
           </button>
         </div>
 
@@ -800,6 +801,19 @@
     window.location.href = 'newton_raphson.html'; // Change to your desired page
   });
 
+  
+  document.querySelectorAll('.view-details-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const method = button.getAttribute('data-method');
+      if (method === 'secant') {
+        window.location.href = 'secant_explain.html';
+      } else if (method === 'bisection') {
+        window.location.href = 'bisection_explain.html';
+      } else if (method === 'newton') {
+        window.location.href = 'newton_explain.html';
+      }
+    });
+  });
     </script>
   </body>
   </html>
