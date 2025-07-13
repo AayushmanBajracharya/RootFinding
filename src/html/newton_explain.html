@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Root-Finding Methods Explanation</title>
+  <title>Newton-Raphson Method - Complete Guide</title>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script>hljs.highlightAll();</script>
@@ -22,6 +23,25 @@
       color: white;
       padding: 20px;
       text-align: center;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .back-btn {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .back-btn i {
+      margin-right: 8px;
     }
 
     main {
@@ -54,12 +74,18 @@
 
 <body>
   <header>
-    <h1>Newton-Raphson Methods</h1>
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <a href="test2.html" class="back-btn" style="background: rgba(0,0,0,0.2); padding: 12px 24px; border-radius: 8px; color: white; text-decoration: none; font-weight: 500; border: 1px solid rgba(255,255,255,0.3); transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <i data-lucide="arrow-left"></i> Back
+        </a>
+        <h1 style="margin: 0; flex: 1; text-align: center; color: white;">Newton-Raphson Method</h1>
+        <div style="width: 100px;"></div> <!-- Spacer for balance -->
+      </div>
+    </div>
   </header>
 
   <main>
-   
-
     <section>
       <h2>Newton-Raphson Method - Definition</h2>
       <p>The <strong>Newton-Raphson Method</strong> is a powerful open root-finding method that uses tangents to approximate the root of a function. It requires the function and its derivative.</p>
@@ -108,6 +134,13 @@ console.log("Root:", root);
       </code></pre>
     </section>
   </main>
+
+  <script>
+    // Initialize Lucide icons
+    document.addEventListener('DOMContentLoaded', function() {
+      lucide.createIcons();
+    });
+  </script>
 </body>
 
 </html>

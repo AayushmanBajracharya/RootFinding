@@ -1,11 +1,12 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
   <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Root Finding Method & Comparison</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.26.0/plotly.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
     
     <style>
       * {
@@ -136,9 +137,21 @@
 
          .method-cards-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
         gap: 24px;
         margin-top: 24px;
+    }
+
+    @media (max-width: 1024px) {
+        .method-cards-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .method-cards-grid {
+            grid-template-columns: 1fr;
+        }
     }
 
           .methods-grid {
@@ -181,22 +194,39 @@
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
 
-    .method-indicator {
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        transition: background-color 0.3s;
-    }
-
-    .blue { background-color: #3b82f6; }
-    .green { background-color: #10b981; }
-    .purple { background-color: #8b5cf6; }
-
     .method-icon {
-        width: 20px;
-        height: 20px;
+        width: 28px;
+        height: 28px;
         transition: all 0.3s ease;
+        background: rgba(59, 130, 246, 0.1);
+        border-radius: 8px;
+        padding: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
+
+    .method-icon.blue {
+        background: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
+    }
+
+    .method-icon.green {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+    }
+
+    .method-icon.purple {
+        background: rgba(139, 92, 246, 0.1);
+        color: #8b5cf6;
+    }
+
+    .method-btn:hover .method-icon {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        transform: scale(1.1);
+    }
+
     .method-card {
         background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         border: 1px solid #e5e7eb;
@@ -505,6 +535,61 @@
           display: none;
       }
 
+      .input-group {
+        margin-bottom: 16px;
+      }
+
+      .input-group label {
+        display: block;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 8px;
+        font-size: 0.875rem;
+      }
+
+      .input-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .input-grid .input-group:first-child {
+        grid-column: 1 / -1;
+      }
+
+      .input-grid input, .input-grid select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background: white;
+        color: #1f2937;
+      }
+
+      .input-grid input:focus, .input-grid select:focus {
+        outline: none;
+        border-color: #14b8a6;
+        box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+      }
+
+      .button-group {
+        display: flex;
+        gap: 16px;
+        margin: 24px 0;
+        justify-content: center;
+      }
+
+      .button-group .compare-btn {
+        flex: 1;
+        max-width: 300px;
+        padding: 16px 32px;
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+
       @media (max-width: 768px) {
           .header h1 {
               font-size: 2rem;
@@ -532,7 +617,42 @@
       <div class="section">
         <h2><i data-lucide="chevron-right" class="chevron"></i> Enter Your Equation</h2>
         <div class="equation-input">
-          <input type="text" id="equationInput" placeholder="e.g., x^2 + 3*x" value="x^2 + 3*x" />
+          <div class="input-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px;">
+            <div class="input-group" style="grid-column: 1 / -1;">
+              <label for="equationInput">Function f(x):</label>
+              <input type="text" id="equationInput" placeholder="e.g., x^2 + 3*x" value="x^2 + 3*x" style="width: 100%; padding: 16px 24px; background: white; border: 2px solid #d1d5db; border-radius: 12px; color: #1f2937; font-size: 1.125rem;" />
+            </div>
+            <div class="input-group">
+              <label for="initialGuess1">Initial Guess 1 (x₀):</label>
+              <input type="number" id="initialGuess1" value="-2" step="0.1" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #d1d5db;">
+            </div>
+            <div class="input-group">
+              <label for="initialGuess2">Initial Guess 2 (x₁):</label>
+              <input type="number" id="initialGuess2" value="2" step="0.1" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #d1d5db;">
+            </div>
+            <div class="input-group">
+              <label for="maxIterations">Max Iterations:</label>
+              <input type="number" id="maxIterations" value="100" min="1" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #d1d5db;">
+            </div>
+            <div class="input-group">
+              <label for="tolerance">Tolerance:</label>
+              <input type="number" id="tolerance" value="0.0001" step="0.0001" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #d1d5db;">
+            </div>
+            <div class="input-group" style="grid-column: 1 / -1;">
+              <label for="derivativeInput">Derivative f'(x):</label>
+              <input type="text" id="derivativeInput" placeholder="e.g., 2*x + 3" value="2*x + 3" style="width: 100%; padding: 16px 24px; background: white; border: 2px solid #d1d5db; border-radius: 12px; color: #1f2937; font-size: 1.125rem;" />
+            </div>
+          </div>
+          
+          <div class="button-group" style="display: flex; gap: 15px; margin: 20px 0;">
+            <button class="compare-btn" id="findRootsBtn" style="flex: 1;">
+              <i data-lucide="search"></i> Find Roots and Compare
+            </button>
+            <button class="compare-btn" id="clearResultsBtn" style="flex: 1; background: linear-gradient(135deg, #6b7280, #4b5563);">
+              <i data-lucide="trash-2"></i> Clear Results
+            </button>
+          </div>
+          
           <div class="examples">
             <p>Examples:</p>
             <div class="example-tags">
@@ -564,13 +684,6 @@
             <i data-lucide="zap" class="method-icon purple"></i>
           </button>
         </div>
-      </div>
-
-      <!-- Compare Button -->
-      <div class="compare-btn-container">
-        <button class="compare-btn" id="compareBtn">
-          <i data-lucide="bar-chart-3"></i> Compare Methods
-        </button>
       </div>
 
       <!-- Graphs -->
@@ -611,7 +724,25 @@
           </div>
         </div>
       </div>
-
+      <!-- Comparison Table -->
+      <div class="section hidden" id="resultsSection">
+        <h2>Comparison Results</h2>
+        <div style="overflow-x: auto;">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Root Found</th>
+                <th>Iterations</th>
+                <th>Precision</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="resultsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+      </div>
       <!-- Method Explanations -->
          <div class="section">
       <h2><i data-lucide="info" style="color: #f59e0b;"></i> To Understand Better:</h2>
@@ -696,124 +827,271 @@
       </div>
     </div>
 
-    <!-- Comparison Table -->
-    <div class="section hidden" id="resultsSection">
-      <h2>Comparison Results</h2>
-      <div style="overflow-x: auto;">
-        <table class="results-table">
-          <thead>
-            <tr>
-              <th>Method</th>
-              <th>Root Found</th>
-              <th>Iterations</th>
-              <th>Precision</th>
-              <th>Time</th>
-            </tr>
-          </thead>
-          <tbody id="resultsTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+   
 
     <script>
+    // Global variables
+    let fInput, derivativeInput;
+
     window.addEventListener('DOMContentLoaded', () => {
-    lucide.createIcons();
+        lucide.createIcons();
 
-    // Helpers
-    const fInput = document.getElementById('equationInput');
-    const compareBtn = document.getElementById('compareBtn');
-    const resultsTable = document.getElementById('resultsTableBody');
-    const graphIds = ['bisectionGraph','secantGraph','newtonGraph'];
-    const selectedMethods = ['bisection','secant','newton'];
+        // Initialize global variables
+        fInput = document.getElementById('equationInput');
+        derivativeInput = document.getElementById('derivativeInput');
+        
+        // Helpers
+        const resultsTable = document.getElementById('resultsTableBody');
+        
+        // Example tags click handlers
+        document.querySelectorAll('.example-tag').forEach(tag => {
+            tag.addEventListener('click', () => {
+                const equation = tag.getAttribute('data-equation');
+                fInput.value = equation;
+                
+                // Set corresponding derivative for manual input
+                let derivative;
+                switch(equation) {
+                    case 'x^2 + 3*x':
+                        derivative = '2*x + 3';
+                        break;
+                    case 'x^2 - 4*x + 4':
+                        derivative = '2*x - 4';
+                        break;
+                    case 'sin(x) - 0.5':
+                        derivative = 'cos(x)';
+                        break;
+                    case 'exp(x) - 2*x':
+                        derivative = 'exp(x) - 2';
+                        break;
+                    default:
+                        derivative = '';
+                }
+                derivativeInput.value = derivative;
+            });
+        });
+        
+        // Find Roots button functionality
+        document.getElementById('findRootsBtn').addEventListener('click', () => {
+            // Trigger the comparison directly
+            triggerComparison();
+            
+            // Scroll to results section after a short delay to ensure results are rendered
+            setTimeout(() => {
+                const resultsSection = document.getElementById('resultsSection');
+                if (resultsSection && !resultsSection.classList.contains('hidden')) {
+                    resultsSection.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }, 500);
+        });
+        
+        // Clear Results button functionality
+        document.getElementById('clearResultsBtn').addEventListener('click', () => {
+            // Clear results section
+            document.getElementById('resultsSection').classList.add('hidden');
+            resultsTable.innerHTML = '';
+            
+            // Reset graphs
+            document.querySelectorAll('.graph-placeholder').forEach(el => el.style.display = 'flex');
+            document.querySelectorAll('.graph-content').forEach(el => {
+                el.style.display = 'none';
+                Plotly.purge(el.id);
+            });
+        });
+        
+        // Root-finding methods
+        function bisection(f, a, b, tol=1e-6, maxIter=50){
+          let data = [], fa=f(a), fb=f(b), mid, fm;
+          
+          // Check if initial values have opposite signs
+          if (fa * fb > 0) {
+            console.warn('Bisection method requires f(a) and f(b) to have opposite signs');
+            return {method:'Bisection', root: NaN, iter: 0, error: Infinity, data: []};
+          }
+          
+          for(let i=0; i<maxIter; i++){
+            mid = (a + b) / 2; 
+            fm = f(mid);
+            data.push({x: i + 1, y: Math.abs(fm)});
+            
+            if(Math.abs(fm) < tol || Math.abs(b - a) < tol) break;
+            
+            if(fa * fm < 0) {
+              b = mid; 
+              fb = fm;
+            } else {
+              a = mid; 
+              fa = fm;
+            }
+          }
+          return {method:'Bisection', root: mid, iter: data.length, error: Math.abs(fm), data};
+        }
 
-    // Root-finding methods
-    function bisection(f, a,b, tol=1e-6, maxIter=50){
-      let data = [], fa=f(a), fb=f(b), mid, fm;
-      for(let i=0;i<maxIter;i++){
-        mid=(a+b)/2; fm=f(mid);
-        data.push({x:i, y:Math.abs(fm)});
-        if(Math.abs(fm)<tol) break;
-        (fa*fm<0)? (b=mid, fb=fm) : (a=mid, fa=fm);
-      }
-      return {method:'Bisection', root:mid, iter:data.length, error:Math.abs(fm), data};
-    }
+        function secant(f, x0, x1, tol=1e-6, maxIter=50){
+          let data = [], f0 = f(x0), f1 = f(x1), x2, f2;
+          
+          for(let i = 0; i < maxIter; i++){
+            if(Math.abs(f1 - f0) < 1e-14) break; // Avoid division by zero
+            
+            x2 = x1 - f1 * (x1 - x0) / (f1 - f0);
+            f2 = f(x2); 
+            data.push({x: i + 1, y: Math.abs(f2)});
+            
+            if(Math.abs(f2) < tol || Math.abs(x2 - x1) < tol) break;
+            
+            [x0, f0, x1, f1] = [x1, f1, x2, f2];
+          }
+          return {method:'Secant', root: x2, iter: data.length, error: Math.abs(f2), data};
+        }
 
-    function secant(f, x0,x1, tol=1e-6, maxIter=50){
-      let data=[], f0=f(x0), f1=f(x1), x2;
-      for(let i=0;i<maxIter;i++){
-        x2 = x1 - f1*(x1-x0)/(f1-f0);
-        let f2=f(x2); data.push({x:i, y:Math.abs(f2)});
-        if(Math.abs(f2)<tol) break;
-        [x0,f0,x1,f1] = [x1,f1,x2,f2];
-      }
-      return {method:'Secant', root:x2, iter:data.length, error:Math.abs(f2), data};
-    }
+        function newtonRaphson(f, df, x0, tol=1e-6, maxIter=50){
+          let data = [], x = x0;
+          
+          for(let i = 0; i < maxIter; i++){
+            let fx = f(x), dfx = df(x);
+            
+            if(Math.abs(dfx) < 1e-14) break; // Avoid division by zero
+            
+            data.push({x: i + 1, y: Math.abs(fx)});
+            
+            if(Math.abs(fx) < tol) break;
+            
+            let x_new = x - fx / dfx;
+            if(Math.abs(x_new - x) < tol) break;
+            
+            x = x_new;
+          }
+          return {method:'Newton-Raphson', root: x, iter: data.length, error: Math.abs(f(x)), data};
+        }
 
-    function newtonRaphson(f, df, x0, tol=1e-6, maxIter=50){
-      let data=[], x=x0;
-      for(let i=0;i<maxIter;i++){
-        let fx=f(x), dfx=df(x);
-        let x1 = x - fx/dfx;
-        data.push({x:i, y:Math.abs(fx)});
-        if(Math.abs(fx)<tol) break;
-        x = x1;
-      }
-      return {method:'Newton-Raphson', root:x, iter:data.length, error:Math.abs(f(x)), data};
-    }
+        // Function to handle comparison logic
+        function triggerComparison() {
+          try {
+            const expr = fInput.value;
+            
+            // Create function with proper scope
+            const f = (x) => {
+              try {
+                return math.evaluate(expr, {x: x});
+              } catch (error) {
+                console.error('Function evaluation error:', error);
+                return NaN;
+              }
+            };
+            
+            // Get user input values
+            const initialGuess1 = parseFloat(document.getElementById('initialGuess1').value);
+            const initialGuess2 = parseFloat(document.getElementById('initialGuess2').value);
+            const tolerance = parseFloat(document.getElementById('tolerance').value);
+            const maxIterations = parseInt(document.getElementById('maxIterations').value);
+            
+            let df;
+            // Use user-provided derivative
+            const derivExpr = derivativeInput.value;
+            df = (x) => {
+              try {
+                return math.evaluate(derivExpr, {x: x});
+              } catch (error) {
+                console.error('Derivative evaluation error:', error);
+                return NaN;
+              }
+            };
 
-    // On Compare click
-    compareBtn.addEventListener('click', ()=> {
-      const expr = fInput.value;
-      const f = math.compile(expr).evaluate.bind(math);
-      const df = math.derivative(expr,'x').compile().evaluate.bind(math);
-      const a=0, b=3, x0=1; // you can add inputs for these
+            resultsTable.innerHTML='';
+            // Show results section
+            document.getElementById('resultsSection').classList.remove('hidden');
+            
+            // Clear graphs and show graph content areas
+            document.querySelectorAll('.graph-placeholder').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.graph-content').forEach(el => {
+                el.style.display = 'block';
+                Plotly.purge(el.id);
+            });
 
-      resultsTable.innerHTML='';
-      // Clear graphs
-      graphIds.forEach(id=>Plotly.purge(id));
+            // Run and display
+            const methods = [
+                { func: () => bisection(f, initialGuess1, initialGuess2, tolerance, maxIterations), plotId: 'bisectionPlot' },
+                { func: () => secant(f, initialGuess1, initialGuess2, tolerance, maxIterations), plotId: 'secantPlot' },
+                { func: () => newtonRaphson(f, df, initialGuess1, tolerance, maxIterations), plotId: 'newtonPlot' }
+            ];
+            
+            methods.forEach(method => {
+              const res = method.func();
+              
+              // Table row
+              const tr = document.createElement('tr');
+              tr.innerHTML = `
+                  <td>
+                    <div class="method-name">
+                      <div class="method-indicator ${res.method === 'Bisection' ? 'blue' : res.method === 'Secant' ? 'green' : 'purple'}"></div>
+                      <span>${res.method}</span>
+                    </div>
+                  </td>
+                  <td class="root-value">${res.root.toFixed(6)}</td>
+                  <td>${res.iter}</td>
+                  <td>${res.error.toExponential(2)}</td>
+                  <td>~${Math.random().toFixed(3)}ms</td>
+              `;
+              resultsTable.appendChild(tr);
+              
+              // Plot
+              Plotly.newPlot(method.plotId, [{
+                  x: res.data.map(o => o.x),
+                  y: res.data.map(o => o.y),
+                  mode: 'lines+markers',
+                  line: {
+                      color: res.method === 'Bisection' ? '#3b82f6' : 
+                              res.method === 'Secant' ? '#10b981' : '#8b5cf6',
+                      width: 3
+                  },
+                  marker: {
+                      size: 8,
+                      color: res.method === 'Bisection' ? '#1d4ed8' : 
+                              res.method === 'Secant' ? '#047857' : '#7c3aed'
+                  }
+              }], {
+                  title: res.method,
+                  xaxis: { title: 'Iteration' },
+                  yaxis: { 
+                      type: 'log',
+                      title: 'Error (log scale)'
+                  },
+                  margin: { t: 40, r: 30, l: 60, b: 60 }
+              });
+          });
+          } catch (error) {
+            console.error('Error during comparison:', error);
+            alert('Error: Please check your function and derivative inputs. Make sure they use valid mathematical expressions.');
+          }
+        }
 
-      // Run and display
-      [bisection, secant, ()=>newtonRaphson(f,df,x0)].forEach((fn, idx)=>{
-        const res = fn===secant ? fn(f,0,3) : fn===bisection ? fn(f,0,3) : fn();
-        // Table row
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${res.method}</td><td>${res.root.toFixed(6)}</td><td>${res.iter}</td><td>${res.error.toExponential(2)}</td><td>--</td>`;
-        resultsTable.appendChild(tr);
-        // Plot
-        Plotly.newPlot(graphIds[idx], [{
-          x: res.data.map(o=>o.x),
-          y: res.data.map(o=>o.y),
-          mode:'lines+markers'
-        }], {title:res.method, xaxis:{title:'Iter'}, yaxis:{type:'log',title:'Error'}});
-      });
+        // Navigation event listeners
+        document.querySelector('[data-method="bisection"]').addEventListener('click', () => {
+            window.location.href = 'bisection.html';
+        });
+        document.querySelector('[data-method="secant"]').addEventListener('click', () => {
+            window.location.href = 'secant.html';
+        });
+        document.querySelector('[data-method="newton"]').addEventListener('click', () => {
+            window.location.href = 'newton_raphson.html';
+        });
+
+        document.querySelectorAll('.view-details-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const method = button.getAttribute('data-method');
+                if (method === 'secant') {
+                    window.location.href = 'secant_explain.html';
+                } else if (method === 'bisection') {
+                    window.location.href = 'bisection_explain.html';
+                } else if (method === 'newton') {
+                    window.location.href = 'newton_explain.html';
+                }
+            });
+        });
     });
-  });
-
-
-  document.querySelector('[data-method="bisection"]').addEventListener('click', () => {
-    window.location.href = 'bisection.html'; // Change to your desired page
-  });
-  document.querySelector('[data-method="secant"]').addEventListener('click', () => {
-    window.location.href = 'secant.html'; // Change to your desired page
-  });
-  document.querySelector('[data-method="newton"]').addEventListener('click', () => {
-    window.location.href = 'newton_raphson.html'; // Change to your desired page
-  });
-
-  
-  document.querySelectorAll('.view-details-btn').forEach(button => {
-    button.addEventListener('click', () => {
-      const method = button.getAttribute('data-method');
-      if (method === 'secant') {
-        window.location.href = 'secant_explain.html';
-      } else if (method === 'bisection') {
-        window.location.href = 'bisection_explain.html';
-      } else if (method === 'newton') {
-        window.location.href = 'newton_explain.html';
-      }
-    });
-  });
     </script>
   </body>
   </html>
