@@ -9,23 +9,15 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="container">
-                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                    <a href="test2.html" style="background: rgba(0,0,0,0.1); padding: 10px 20px; border-radius: 8px; color: white; text-decoration: none; font-weight: 500; border: 1px solid rgba(255,255,255,0.3); transition: all 0.3s ease;">
-                        <i data-lucide="arrow-left"></i> Back
-                    </a>
-                    <h1 style="margin: 0; flex: 1; text-align: center;">
-                        <i data-lucide="zap" style="color: #8b5cf6;"></i>
-                        Newton-Raphson Method
-                    </h1>
-                    <div style="width: 80px;"></div> <!-- Spacer for balance -->
-                </div>
-            </div>
-        </header>
-
         <div class="method-section">
-            <h2 class="method-title">Newton-Raphson Root Finding</h2>
+            <div class="method-header">
+                <a href="test2.html" class="back-button">
+                    <span>←</span>
+                    <span>Back</span>
+                </a>
+                <h2 class="method-title">Newton-Raphson Root Finding</h2>
+                <div style="width: 80px;"></div> <!-- Spacer for balance -->
+            </div>
             <div class="input-grid">
                 <div class="input-group">
                     <label for="initialGuess">Initial Guess (x₀):</label>

@@ -23,6 +23,32 @@ body {
     backdrop-filter: blur(10px);
 }
 
+.method-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.back-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
 h1 {
     text-align: center;
     color: #2d3748;
@@ -43,9 +69,10 @@ h1 {
 .method-title {
     color: #4a5568;
     font-size: 1.5em;
-    margin-bottom: 20px;
+    margin: 0;
     text-align: center;
     font-weight: 600;
+    flex: 1;
 }
 
 .input-grid {

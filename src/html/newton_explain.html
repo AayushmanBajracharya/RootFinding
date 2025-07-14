@@ -4,10 +4,42 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Newton-Raphson Method - Complete Guide</title>
- <link rel="stylesheet" href="../css/newton_explain.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="stylesheet" href="../css/newton_explain.css">
+  <style>
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+      z-index: 1000;
+    }
+    
+    .back-button:hover {
+      transform: translateY(-2px);
+    }
+
+    .back-button i {
+      width: 20px;
+      height: 20px;
+    }
+  </style>
 </head>
 
 <body>
+  <a href="test2.html" class="back-button">
+    <i data-lucide="arrow-left"></i>
+    Back
+  </a>
   <header>
     <div class="container">
       <h1>Newton-Raphson Method</h1>
@@ -857,5 +889,12 @@ function runTests() {
       <p>© 2024 Newton-Raphson Method Guide. A comprehensive resource for numerical analysis.</p>
     </div>
   </footer>
+
+  <script>
+    // Initialize Lucide icons
+    document.addEventListener('DOMContentLoaded', function() {
+      lucide.createIcons();
+    });
+  </script>
 </body>
 </html>

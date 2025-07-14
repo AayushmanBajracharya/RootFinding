@@ -609,7 +609,7 @@
     <div class="container">
       <!-- Header --> 
       <div class="header">
-        <h1><i data-lucide="chevron-right" class="chevron"></i> Root Finding Method & Comparison</h1>
+        <h1>Root Finding Method & Comparison</h1>
         <p>Discover and compare powerful root finding methods for solving equations with precision & efficiency</p>
       </div>
 
@@ -893,6 +893,14 @@
             // Clear results section
             document.getElementById('resultsSection').classList.add('hidden');
             resultsTable.innerHTML = '';
+
+            // Clear all input fields
+            document.getElementById('equationInput').value = '';
+            document.getElementById('initialGuess1').value = '';
+            document.getElementById('initialGuess2').value = '';
+            document.getElementById('maxIterations').value = '';
+            document.getElementById('tolerance').value = '';
+            document.getElementById('derivativeInput').value = '';
             
             // Reset graphs
             document.querySelectorAll('.graph-placeholder').forEach(el => el.style.display = 'flex');
