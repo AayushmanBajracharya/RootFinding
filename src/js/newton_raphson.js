@@ -17,13 +17,31 @@ function calculateDerivative(expression) {
         }
         if (!term) continue;
 
+        // Handle exponential functions first
+        if (term === 'e^x') {
+            derivative.push(currentOperation + 'e^x');
+        } else if (term.startsWith('e^(')) {
+            // Handle more complex exponential expressions
+            const inside = term.slice(3, -1); // Remove 'e^(' and ')'
+            if (inside.includes('x')) {
+                derivative.push(currentOperation + term); // e^(f(x)) * f'(x)
+            }
+        } else if (term.includes('ln(x)')) {
+            derivative.push(currentOperation + '1/x');
+        }
         // Handle trigonometric functions
-        if (term.includes('sin(x)')) {
+        else if (term.includes('sin(x)')) {
             derivative.push(currentOperation + 'cos(x)');
         } else if (term.includes('cos(x)')) {
             derivative.push(currentOperation + '(-sin(x))');
         } else if (term.includes('tan(x)')) {
             derivative.push(currentOperation + 'sec^2(x)');
+        } else if (term.includes('sec(x)')) {
+            derivative.push(currentOperation + 'sec(x)tan(x)');
+        } else if (term.includes('csc(x)')) {
+            derivative.push(currentOperation + '(-csc(x)cot(x))');
+        } else if (term.includes('cot(x)')) {
+            derivative.push(currentOperation + '(-csc^2(x))');
         }
         // Handle polynomial expressions
         else if (term.includes('x^')) {
@@ -68,17 +86,27 @@ function parseFunction(funcStr) {
             // First, handle special cases of (-sin(x)) that might come from derivative
             let jsFunc = funcStr.replace(/\(-(sin|cos|tan)\(x\)\)/g, '-Math.$1(x)');
             
+            // Handle e^x specially
+            jsFunc = jsFunc.replace(/e\^x/g, 'Math.exp(x)');
+            jsFunc = jsFunc.replace(/e\^/g, 'Math.exp');
+            
+            // Handle ln(x)
+            jsFunc = jsFunc.replace(/ln\(/g, 'Math.log(');
+            
             // Then handle regular replacements
             jsFunc = jsFunc
                 .replace(/\^/g, '**')
                 .replace(/sin\(/g, 'Math.sin(')
                 .replace(/cos\(/g, 'Math.cos(')
                 .replace(/tan\(/g, 'Math.tan(')
-                .replace(/log\(/g, 'Math.log(')
+                .replace(/sec\(/g, '1/Math.cos(')
+                .replace(/csc\(/g, '1/Math.sin(')
+                .replace(/cot\(/g, '1/Math.tan(')
+                .replace(/log\(/g, 'Math.log10(')
                 .replace(/sqrt\(/g, 'Math.sqrt(')
                 .replace(/exp\(/g, 'Math.exp(')
                 .replace(/pi/g, 'Math.PI')
-                .replace(/e/g, 'Math.E');
+                .replace(/e(?![a-zA-Z])/g, 'Math.E');
 
             // Replace x with the actual value, but not if it's part of a function name
             jsFunc = jsFunc.replace(/([^a-zA-Z.])x|^x/g, `$1${x}`);
