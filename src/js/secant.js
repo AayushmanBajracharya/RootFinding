@@ -1,4 +1,4 @@
-// All the JavaScript from <script> tag in HTML
+// All the JavaScript from <<script>> tag in HTML
 
         let functionChart = null;
         let convergenceChart = null;

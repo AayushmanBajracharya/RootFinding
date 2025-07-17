@@ -884,58 +884,147 @@ window.addEventListener('DOMContentLoaded', () => {
     // Function to suggest better initial guesses based on the equation
     function suggestInitialGuesses(equation) {
         const lowerEq = equation.toLowerCase();
+        let initialGuess1, initialGuess2;
         
-        if (lowerEq.includes('cos(x)') && lowerEq.includes('+1')) {
-            // For cos(x) + 1, root is at π ≈ 3.14159
-            document.getElementById('initialGuess1').value = '2';
-            document.getElementById('initialGuess2').value = '4';
-        } else if (lowerEq.includes('sin(x)')) {
-            document.getElementById('initialGuess1').value = '-1';
-            document.getElementById('initialGuess2').value = '1';
-        } else if (lowerEq.includes('exp(x)')) {
-            document.getElementById('initialGuess1').value = '0';
-            document.getElementById('initialGuess2').value = '2';
-        } else if (lowerEq.includes('log(x)') || lowerEq.includes('ln(x)')) {
-            document.getElementById('initialGuess1').value = '0.5';
-            document.getElementById('initialGuess2').value = '2';
+        // Try to analyze function characteristics first
+        try {
+            const f = createFunction(equation);
+            let bestGuesses = findBetterInitialGuesses(f);
+            if (bestGuesses) {
+                initialGuess1 = bestGuesses.a;
+                initialGuess2 = bestGuesses.b;
+                console.log('Found optimal guesses through function analysis:', initialGuess1, initialGuess2);
+                updateGuessInputs(initialGuess1, initialGuess2);
+                return;
+            }
+        } catch (e) {
+            console.warn('Dynamic analysis failed, falling back to pattern matching');
         }
+
+        // Pattern-based suggestions if dynamic analysis fails
+        if (lowerEq.includes('sin(x)')) {
+            if (lowerEq.includes('-') && !lowerEq.includes('+')) {
+                // For functions like sin(x) - k, use points around expected root
+                initialGuess1 = 0;
+                initialGuess2 = Math.PI;
+            } else {
+                // For other sine functions, use symmetric interval
+                initialGuess1 = -Math.PI/2;
+                initialGuess2 = Math.PI/2;
+            }
+        } else if (lowerEq.includes('cos(x)')) {
+            if (lowerEq.includes('+1')) {
+                // For cos(x) + 1, roots are at π (3.14159...)
+                initialGuess1 = 3;
+                initialGuess2 = 3.5;
+            } else {
+                initialGuess1 = 0;
+                initialGuess2 = Math.PI;
+            }
+        } else if (lowerEq.includes('tan(x)')) {
+            // Avoid asymptotes at π/2 + nπ
+            initialGuess1 = -0.8;
+            initialGuess2 = 0.8;
+        } else if (lowerEq.includes('exp') || lowerEq.includes('e^')) {
+            // For exponential functions
+            if (lowerEq.includes('-') && !lowerEq.includes('+')) {
+                // For exp(x) - k type functions
+                initialGuess1 = -1;
+                initialGuess2 = Math.log(Math.abs(parseFloat(equation.match(/\d+$/)?.[0] || 2)));
+            } else {
+                initialGuess1 = -0.5;
+                initialGuess2 = 0.5;
+            }
+        } else if (lowerEq.includes('log') || lowerEq.includes('ln')) {
+            // For logarithmic functions, stay positive
+            initialGuess1 = 0.5;
+            initialGuess2 = 2;
+        } else if (lowerEq.includes('^')) {
+            // Analyze polynomial degree and coefficients
+            const terms = lowerEq.split(/[+\-]/).filter(t => t.trim());
+            const maxDegree = Math.max(...terms.map(term => {
+                const match = term.match(/x\^(\d+)/);
+                return match ? parseInt(match[1]) : term.includes('x') ? 1 : 0;
+            }));
+            
+            if (maxDegree % 2 === 0) {
+                // Even degree polynomials
+                initialGuess1 = -1;
+                initialGuess2 = 1;
+            } else {
+                // Odd degree polynomials
+                initialGuess1 = -2;
+                initialGuess2 = 2;
+            }
+        } else {
+            // Default case - try to analyze the function numerically
+            initialGuess1 = -1;
+            initialGuess2 = 1;
+        }
+
+        updateGuessInputs(initialGuess1, initialGuess2);
     }
-    
-    // Find better initial guesses automatically
-    function findBetterInitialGuesses(f, currentA, currentB, maxRange = 10) {
-        const testPoints = [];
+
+    function updateGuessInputs(guess1, guess2) {
+        // Update all relevant input fields with formatted values
+        document.getElementById('initialGuess1').value = Number(guess1).toFixed(4);
+        document.getElementById('initialGuess2').value = Number(guess2).toFixed(4);
+        showMessage(`Suggested initial guesses: x₀ = ${Number(guess1).toFixed(4)}, x₁ = ${Number(guess2).toFixed(4)}`, 'success');
+    }
+
+    function findBetterInitialGuesses(f, searchRange = 10) {
+        const numPoints = 100;
+        const step = (2 * searchRange) / numPoints;
+        const points = [];
         
-        // Generate test points around current guesses and beyond
-        for (let i = -maxRange; i <= maxRange; i += 0.5) {
+        // Sample points more densely around 0 and sparsely at extremes
+        for (let i = 0; i <= numPoints; i++) {
+            // Use a non-linear distribution to sample more points near 0
+            const t = i / numPoints;
+            const x = searchRange * (2 * t - 1) * (Math.abs(2 * t - 1) + 0.5);
+            
             try {
-                const val = f(i);
-                if (!isNaN(val) && isFinite(val)) {
-                    testPoints.push({ x: i, fx: val });
+                const fx = f(x);
+                if (!isNaN(fx) && isFinite(fx)) {
+                    points.push({ x, fx });
                 }
             } catch (e) {
-                // Skip invalid points
+                continue;
             }
         }
         
-        // Find points with opposite signs
-        for (let i = 0; i < testPoints.length - 1; i++) {
-            for (let j = i + 1; j < testPoints.length; j++) {
-                const p1 = testPoints[i];
-                const p2 = testPoints[j];
+        if (points.length < 2) {
+            return null;
+        }
+        
+        // Sort points by absolute function value to find potential roots
+        points.sort((a, b) => Math.abs(a.fx) - Math.abs(b.fx));
+        
+        // Find points with opposite signs that are not too close together
+        for (let i = 0; i < points.length - 1; i++) {
+            for (let j = i + 1; j < points.length; j++) {
+                const p1 = points[i];
+                const p2 = points[j];
                 
-                if (p1.fx * p2.fx < 0) {
-                    // Found opposite signs
+                if (p1.fx * p2.fx < 0 && Math.abs(p1.x - p2.x) >= 0.1) {
+                    // Found suitable interval with sign change
                     return {
-                        a: Math.min(p1.x, p2.x),
-                        b: Math.max(p1.x, p2.x),
-                        fa: p1.x < p2.x ? p1.fx : p2.fx,
-                        fb: p1.x < p2.x ? p2.fx : p1.fx
+                        a: p1.x,
+                        b: p2.x,
+                        fa: p1.fx,
+                        fb: p2.fx
                     };
                 }
             }
         }
         
-        return null;
+        // If no sign change found, return points with smallest absolute values
+        return {
+            a: points[0].x,
+            b: points[1].x,
+            fa: points[0].fx,
+            fb: points[1].fx
+        };
     }
     
     // Find Roots button functionality
