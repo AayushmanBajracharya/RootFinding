@@ -1,8 +1,133 @@
-  // All the JavaScript from <script> tag in HTML
+// All the JavaScript from <script> tag in HTML
 
         let functionChart = null;
         let convergenceChart = null;
         let iterationData = [];
+
+        function findValidGuesses(func, searchRanges = [
+            { start: -10, end: 10, step: 0.5 },
+            { start: -5, end: 5, step: 0.2 },
+            { start: -2, end: 2, step: 0.1 }
+        ]) {
+            const points = [];
+            
+            // Sample points and their function values
+            for (const range of searchRanges) {
+                for (let x = range.start; x <= range.end; x += range.step) {
+                    try {
+                        const fx = func(x);
+                        if (!isNaN(fx) && isFinite(fx)) {
+                            points.push({ x, fx });
+                        }
+                    } catch (e) {
+                        continue;
+                    }
+                }
+            }
+            
+            if (points.length < 2) {
+                throw new Error('Could not find suitable initial points');
+            }
+
+            // Sort points by their function values
+            points.sort((a, b) => Math.abs(a.fx) - Math.abs(b.fx));
+            
+            // Return the points with values closest to zero, but with some distance between them
+            let x0 = points[0].x;
+            let x1;
+            
+            // Find a second point that's at least 0.5 units away from x0
+            for (let i = 1; i < points.length; i++) {
+                if (Math.abs(points[i].x - x0) >= 0.5) {
+                    x1 = points[i].x;
+                    break;
+                }
+            }
+            
+            // If no point found with minimum distance, just take the second best point
+            if (x1 === undefined) {
+                x1 = points[1].x;
+            }
+
+            return { x0, x1 };
+        }
+
+        function autoSuggestGuesses() {
+            try {
+                const funcStr = document.getElementById('functionInput').value;
+                if (!funcStr.trim()) {
+                    showMessage('Please enter a function first.', 'error');
+                    return;
+                }
+
+                const func = parseFunction(funcStr);
+                const { x0, x1 } = findValidGuesses(func);
+                
+                document.getElementById('initialGuess1').value = x0.toFixed(4);
+                document.getElementById('initialGuess2').value = x1.toFixed(4);
+                
+                showMessage(`Suggested initial guesses: x₀ = ${x0.toFixed(4)}, x₁ = ${x1.toFixed(4)}`, 'success');
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error');
+            }
+        }
+
+        function showMessage(message, type = 'info') {
+            // Remove existing messages
+            const existingMessage = document.querySelector('.message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}-message`;
+            messageDiv.textContent = message;
+            
+            // Style the message
+            const styles = {
+                info: { background: '#e6fffa', border: '#81e6d9', color: '#234e52' },
+                success: { background: '#f0fff4', border: '#9ae6b4', color: '#22543d' },
+                error: { background: '#fed7d7', border: '#fc8181', color: '#742a2a' }
+            };
+            
+            const style = styles[type];
+            messageDiv.style.cssText = `
+                background: ${style.background};
+                border: 1px solid ${style.border};
+                color: ${style.color};
+                padding: 10px;
+                border-radius: 5px;
+                margin: 10px 0;
+                font-weight: 500;
+            `;
+
+            // Insert message after the function input
+            const functionInput = document.getElementById('functionInput').parentElement;
+            functionInput.insertAdjacentElement('afterend', messageDiv);
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (messageDiv.parentElement) {
+                    messageDiv.remove();
+                }
+            }, 5000);
+        }
+
+        // Add auto-suggest button when page loads
+        window.addEventListener('load', function() {
+            const container = document.querySelector('.method-section');
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.cssText = 'text-align: center; margin-top: 10px;';
+            
+            const autoSuggestBtn = document.createElement('button');
+            autoSuggestBtn.className = 'btn';
+            autoSuggestBtn.textContent = 'Auto-Suggest Initial Guesses';
+            autoSuggestBtn.onclick = autoSuggestGuesses;
+            autoSuggestBtn.style.cssText = 'background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);';
+            
+            buttonContainer.appendChild(autoSuggestBtn);
+            container.appendChild(buttonContainer);
+        });
 
         function parseFunction(funcStr) {
             return function(x) {
