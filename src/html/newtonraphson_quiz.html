@@ -57,6 +57,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
         // Quiz state
         let currentQuestion = 0;
         let score = 0;
@@ -497,9 +500,10 @@
             const countdownNumber = countdownContainer.querySelector('.countdown-number');
             let count = 10;
 
-            // Initialize quiz elements
+            // Initialize quiz elements and first set of questions
             document.getElementById('total-sets').textContent = totalSets;
             document.getElementById('current-set').textContent = currentSet + 1;
+            questions = allQuestions.slice(0, questionsPerSet);
 
             countdownContainer.classList.add('active');
             setInfo.style.display = 'none';
@@ -520,8 +524,58 @@
             }, 1000);
         }
 
-        // Start the quiz with countdown
-        startCountdown();
+        // Initialize particles.js
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: '#ffffff' },
+                shape: { type: 'circle' },
+                opacity: {
+                    value: 0.2,
+                    random: true,
+                    animation: { enable: true, speed: 1, minimumValue: 0.1, sync: false }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    animation: { enable: true, speed: 2, minimumValue: 0.1, sync: false }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#ffffff',
+                    opacity: 0.1,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1,
+                    direction: 'none',
+                    random: true,
+                    straight: false,
+                    outMode: 'out',
+                    bounce: false,
+                }
+            },
+            interactivity: {
+                detectsOn: 'canvas',
+                events: {
+                    onhover: { enable: true, mode: 'grab' },
+                    onclick: { enable: true, mode: 'push' },
+                    resize: true
+                },
+                modes: {
+                    grab: { distance: 140, line_linked: { opacity: 0.5 } },
+                    push: { particles_nb: 4 }
+                }
+            },
+            retina_detect: true
+        });
+
+        // Start the quiz with countdown when document is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            startCountdown();
+        });
     </script>
 </body>
 </html>
