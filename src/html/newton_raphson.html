@@ -6,17 +6,19 @@
     <title>Newton-Raphson Method</title>
     <link rel="stylesheet" href="../css/newton_raphson.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Newton-Raphson Method</h1>
-
-        <div class="header">
-            <p></p>
-        </div>
-
         <div class="method-section">
-            <h2 class="method-title">Newton-Raphson Root Finding</h2>
+            <div class="method-header">
+                <a href="test2.html" class="back-button">
+                    <span>←</span>
+                    <span>Back</span>
+                </a>
+                <h2 class="method-title">Newton-Raphson Root Finding</h2>
+                <div style="width: 80px;"></div> <!-- Spacer for balance -->
+            </div>
             <div class="input-grid">
                 <div class="input-group">
                     <label for="initialGuess">Initial Guess (x₀):</label>
@@ -42,9 +44,9 @@
                 <label for="functionInput">Function f(x):</label>
                 <input type="text" id="functionInput" value="x^3 - x - 1" placeholder="e.g., x^3 - x - 1">
             </div>
-            <div class="input-group" id="derivativeInputGroup">
+            <div class="input-group">
                 <label for="derivativeInput">Derivative f'(x):</label>
-                <input type="text" id="derivativeInput" value="3*x^2 - 1" placeholder="e.g., 3*x^2 - 1">
+                <input type="text" id="derivativeInput" placeholder="Auto-calculated" readonly>
             </div>
             <button class="btn" onclick="findRoots()">Find Roots</button>
             <button class="btn" onclick="clearResults()">Clear Results</button>
@@ -83,20 +85,22 @@
 
         <div class="table-container">
             <div class="chart-title">Iteration Details</div>
-            <table id="iterationTable">
-                <thead>
-                    <tr>
-                        <th>Iteration</th>
-                        <th>x_n</th>
-                        <th>f(x_n)</th>
-                        <th>f'(x_n)</th>
-                        <th>x_{n+1}</th>
-                        <th>Error</th>
-                    </tr>
-                </thead>
-                <tbody id="iterationTableBody">
-                </tbody>
-            </table>
+            <div class="table-wrapper">
+                <table id="iterationTable">
+                    <thead>
+                        <tr>
+                            <th>Iteration</th>
+                            <th>x_n</th>
+                            <th>f(x_n)</th>
+                            <th>f'(x_n)</th>
+                            <th>x_{n+1}</th>
+                            <th>Error</th>
+                        </tr>
+                    </thead>
+                    <tbody id="iterationTableBody">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

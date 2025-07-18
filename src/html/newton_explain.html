@@ -4,10 +4,793 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Newton-Raphson Method - Complete Guide</title>
+
  <link rel="stylesheet" href="../css/newton_raphson_explain.css">
 </head>
 
 <body>
+  <header>
+    <div class="container">
+      <h1>Newton-Raphson Method</h1>
+      <p class="subtitle">A Complete Guide to the Most Powerful Root-Finding Algorithm</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      
+      <section class="section">
+        
+        <h2>Introduction & Definition</h2>
+        <p>The <strong>Newton-Raphson Method</strong> is arguably the most powerful and widely used iterative technique for finding roots of equations. Named after Isaac Newton and Joseph Raphson, this method combines exceptional convergence speed with geometric intuition, making it the gold standard for numerical root-finding algorithms.</p>
+        
+        <div class="highlight-box">
+          <p><strong>Key Concept:</strong> The Newton-Raphson method uses the tangent line at a point to iteratively approximate the root by finding where the tangent crosses the x-axis.</p>
+        </div>
+
+        <p>What makes this method exceptional is its quadratic convergence rate, meaning the number of correct decimal places roughly doubles with each iteration when near the root. This rapid convergence, combined with its geometric simplicity, has made it indispensable in scientific computing, engineering, and financial applications.</p>
+      </section>
+
+      <section class="section">
+        <h2>Mathematical Foundation</h2>
+        
+        <h3>The Tangent Line Principle</h3>
+        <p>The Newton-Raphson method is derived from Taylor series expansion. For a function f(x) around a point x_n, the linear approximation is:</p>
+        
+        <div class="formula">
+          f(x) ≈ f(x_n) + f'(x_n)(x - x_n)
+        </div>
+
+        <p>Setting f(x) = 0 and solving for x gives us the iterative formula:</p>
+
+        <div class="formula">
+          x_{n+1} = x_n - f(x_n) / f'(x_n)
+        </div>
+
+        <h3>Geometric Interpretation</h3>
+        <p>Geometrically, the method draws a tangent line at the point (x_n, f(x_n)) and follows it to where it crosses the x-axis. This intersection point becomes the next approximation x_{n+1}.</p>
+
+        <h3>Convergence Analysis</h3>
+        <div class="highlight-box">
+          <p><strong>Convergence Rate:</strong> Quadratic convergence with order 2.0</p>
+          <p><strong>Convergence Condition:</strong> |f'(r)| > 0 and f''(r) is continuous near the root r</p>
+          <p><strong>Error Relation:</strong> |e_{n+1}| ≈ (f''(r)/2f'(r))|e_n|² where e_n = x_n - r</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Algorithm & Procedure</h2>
+        
+        <p>The Newton-Raphson method follows these systematic steps:</p>
+
+        <ol class="step-list">
+          <li><strong>Initialize:</strong> Choose an initial approximation x₀ (preferably close to the root)</li>
+          <li><strong>Calculate Function Values:</strong> Compute f(x₀) and f'(x₀)</li>
+          <li><strong>Check for Zero Derivative:</strong> Ensure f'(x₀) ≠ 0 to avoid division by zero</li>
+          <li><strong>Apply Newton Formula:</strong> Calculate x₁ = x₀ - f(x₀) / f'(x₀)</li>
+          <li><strong>Check Convergence:</strong> If |f(x₁)| < tolerance or |x₁ - x₀| < tolerance, stop</li>
+          <li><strong>Update Point:</strong> Set x₀ = x₁</li>
+          <li><strong>Repeat:</strong> Continue until convergence or maximum iterations reached</li>
+        </ol>
+
+        <div class="algorithm-complexity">
+          <h3>Complexity Analysis</h3>
+          <p><strong>Time Complexity:</strong> O(n) where n is the number of iterations</p>
+          <p><strong>Space Complexity:</strong> O(1) - constant space requirement</p>
+          <p><strong>Convergence Rate:</strong> Quadratic with order 2.0</p>
+          <p><strong>Function Evaluations:</strong> Two per iteration (f and f')</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Implementation Examples</h2>
+        
+        <h3>JavaScript Implementation</h3>
+        <pre><code>function newtonRaphson(func, derivative, x0, tolerance = 1e-10, maxIterations = 1000) {
+  // Validate inputs
+  if (typeof func !== 'function' || typeof derivative !== 'function') {
+    throw new Error('First two arguments must be functions');
+  }
+  
+  let iteration = 0;
+  let x_curr = x0;
+  let f_curr = func(x_curr);
+  let df_curr = derivative(x_curr);
+  
+  console.log('Iteration | x_n      | f(x_n)   | f\'(x_n) | x_{n+1}  | Error');
+  console.log('----------|----------|----------|----------|----------|----------');
+  
+  while (iteration < maxIterations) {
+    // Check for zero derivative
+    if (Math.abs(df_curr) < 1e-15) {
+      throw new Error('Zero derivative encountered: f\'(x_n) is too small');
+    }
+    
+    // Calculate next approximation using Newton-Raphson formula
+    const x_next = x_curr - f_curr / df_curr;
+    const f_next = func(x_next);
+    const df_next = derivative(x_next);
+    const error = Math.abs(x_next - x_curr);
+    
+    // Log iteration details
+    console.log(`${iteration.toString().padStart(9)} | ${x_curr.toFixed(6)} | ${f_curr.toFixed(6)} | ${df_curr.toFixed(6)} | ${x_next.toFixed(6)} | ${error.toFixed(6)}`);
+    
+    // Check convergence
+    if (Math.abs(f_next) < tolerance || error < tolerance) {
+      console.log(`\nConverged after ${iteration + 1} iterations`);
+      return {
+        root: x_next,
+        functionValue: f_next,
+        iterations: iteration + 1,
+        error: error
+      };
+    }
+    
+    // Update values for next iteration
+    x_curr = x_next;
+    f_curr = f_next;
+    df_curr = df_next;
+    
+    iteration++;
+  }
+  
+  console.log(`\nMaximum iterations (${maxIterations}) reached`);
+  return {
+    root: x_curr,
+    functionValue: f_curr,
+    iterations: iteration,
+    error: Math.abs(f_curr / df_curr)
+  };
+}</code></pre>
+
+        <h3>Python Implementation</h3>
+        <pre><code>import math
+import numpy as np
+
+def newton_raphson(func, derivative, x0, tolerance=1e-10, max_iterations=1000, verbose=True):
+    """
+    Find root using Newton-Raphson method with detailed logging
+    """
+    
+    iteration = 0
+    x_curr = x0
+    f_curr = func(x_curr)
+    df_curr = derivative(x_curr)
+    
+    convergence_history = []
+    
+    if verbose:
+        print(f"{'Iter':<5} | {'x_n':<12} | {'f(x_n)':<12} | {'f\'(x_n)':<12} | {'x_next':<12} | {'Error':<12}")
+        print("-" * 80)
+    
+    while iteration < max_iterations:
+        # Check for zero derivative
+        if abs(df_curr) < 1e-15:
+            raise ValueError("Zero derivative encountered: f'(x_n) is too small")
+        
+        # Calculate next approximation
+        x_next = x_curr - f_curr / df_curr
+        f_next = func(x_next)
+        df_next = derivative(x_next)
+        error = abs(x_next - x_curr)
+        
+        convergence_history.append({
+            'iteration': iteration,
+            'x': x_next,
+            'fx': f_next,
+            'dfx': df_next,
+            'error': error
+        })
+        
+        if verbose:
+            print(f"{iteration:<5} | {x_curr:<12.8f} | {f_curr:<12.8f} | {df_curr:<12.8f} | {x_next:<12.8f} | {error:<12.8f}")
+        
+        # Check convergence
+        if abs(f_next) < tolerance or error < tolerance:
+            if verbose:
+                print(f"\nConverged after {iteration + 1} iterations")
+            return {
+                'root': x_next,
+                'function_value': f_next,
+                'iterations': iteration + 1,
+                'error': error,
+                'convergence_history': convergence_history
+            }
+        
+        # Update values for next iteration
+        x_curr = x_next
+        f_curr = f_next
+        df_curr = df_next
+        
+        iteration += 1
+    
+    if verbose:
+        print(f"\nMaximum iterations ({max_iterations}) reached")
+    
+    return {
+        'root': x_curr,
+        'function_value': f_curr,
+        'iterations': iteration,
+        'error': abs(f_curr / df_curr),
+        'convergence_history': convergence_history
+    }</code></pre>
+      </section>
+
+      <section class="section">
+        <h2>Detailed Example Walkthrough</h2>
+        
+        <div class="example-box">
+          <h3>Problem: Find the root of f(x) = x² - 2 starting with x₀ = 1</h3>
+          <p>This finds √2 ≈ 1.414213562373095</p>
+        </div>
+
+        <p><strong>Step 1: Define Functions</strong></p>
+        <ul>
+          <li>f(x) = x² - 2</li>
+          <li>f'(x) = 2x</li>
+          <li>Initial guess: x₀ = 1</li>
+        </ul>
+
+        <p><strong>Step 2: First Iteration</strong></p>
+        <div class="formula">
+          f(1) = 1² - 2 = -1<br>
+          f'(1) = 2(1) = 2<br>
+          x₁ = 1 - (-1)/2 = 1 + 0.5 = 1.5
+        </div>
+
+        <p><strong>Step 3: Second Iteration</strong></p>
+        <div class="formula">
+          f(1.5) = (1.5)² - 2 = 2.25 - 2 = 0.25<br>
+          f'(1.5) = 2(1.5) = 3<br>
+          x₂ = 1.5 - 0.25/3 = 1.5 - 0.083333 = 1.416667
+        </div>
+
+        <p><strong>Step 4: Third Iteration</strong></p>
+        <div class="formula">
+          f(1.416667) = (1.416667)² - 2 ≈ 0.006945<br>
+          f'(1.416667) = 2(1.416667) = 2.833334<br>
+          x₃ = 1.416667 - 0.006945/2.833334 ≈ 1.414216
+        </div>
+
+        <p><strong>Step 5: Convergence Table</strong></p>
+        <table>
+          <tr>
+            <th>Iteration</th>
+            <th>x_n</th>
+            <th>f(x_n)</th>
+            <th>f'(x_n)</th>
+            <th>x_{n+1}</th>
+            <th>Error</th>
+          </tr>
+          <tr>
+            <td>0</td>
+            <td>1.000000</td>
+            <td>-1.000000</td>
+            <td>2.000000</td>
+            <td>1.500000</td>
+            <td>0.500000</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>1.500000</td>
+            <td>0.250000</td>
+            <td>3.000000</td>
+            <td>1.416667</td>
+            <td>0.083333</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>1.416667</td>
+            <td>0.006945</td>
+            <td>2.833334</td>
+            <td>1.414216</td>
+            <td>0.002451</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>1.414216</td>
+            <td>0.000006</td>
+            <td>2.828432</td>
+            <td>1.414214</td>
+            <td>0.000002</td>
+          </tr>
+        </table>
+
+        <p>Notice how the error decreases quadratically - the number of correct decimal places roughly doubles with each iteration!</p>
+      </section>
+
+      <section class="section">
+        <h2>Advantages & Disadvantages</h2>
+        
+        <div class="pros-cons">
+          <div class="pros">
+            <h3>✓ Advantages</h3>
+            <ul>
+              <li><strong>Quadratic Convergence:</strong> Fastest convergence rate among common methods</li>
+              <li><strong>Geometric Intuition:</strong> Easy to understand and visualize</li>
+              <li><strong>Simple Implementation:</strong> Straightforward algorithm</li>
+              <li><strong>Wide Applicability:</strong> Works for most smooth functions</li>
+              <li><strong>Established Theory:</strong> Well-understood mathematical properties</li>
+              <li><strong>Efficient Near Root:</strong> Extremely fast when close to solution</li>
+            </ul>
+          </div>
+          
+          <div class="cons">
+            <h3>✗ Disadvantages</h3>
+            <ul>
+              <li><strong>Requires Derivative:</strong> Must compute or approximate f'(x)</li>
+              <li><strong>May Diverge:</strong> Poor initial guess can lead to divergence</li>
+              <li><strong>Zero Derivative Problems:</strong> Fails when f'(x) = 0</li>
+              <li><strong>Sensitive to Starting Point:</strong> Convergence depends on x₀</li>
+              <li><strong>No Guaranteed Convergence:</strong> Unlike bracketing methods</li>
+              <li><strong>Multiple Function Evaluations:</strong> Requires both f(x) and f'(x)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>When to Use Newton-Raphson Method</h2>
+        
+        <div class="flowchart">
+          <h3>Decision Flowchart</h3>
+          <p><strong>Use Newton-Raphson When:</strong></p>
+          <ul>
+            <li>Derivatives are easily computable</li>
+            <li>Function is smooth and differentiable</li>
+            <li>Fast convergence is required</li>
+            <li>Good initial estimate is available</li>
+            <li>Working with well-behaved functions</li>
+          </ul>
+        </div>
+
+        <div class="warning-box">
+          <h3>⚠ Avoid Newton-Raphson When:</h3>
+          <ul>
+            <li>Derivatives are difficult to compute</li>
+            <li>Function has discontinuities or sharp turns</li>
+            <li>f'(x) = 0 near the root</li>
+            <li>Initial guess is far from root</li>
+            <li>Guaranteed convergence is essential</li>
+            <li>Function has multiple roots close together</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Comparison with Other Methods</h2>
+        
+        <div class="comparison-table">
+          <table>
+            <tr>
+              <th>Method</th>
+              <th>Convergence Rate</th>
+              <th>Derivative Required</th>
+              <th>Initial Points</th>
+              <th>Guaranteed Convergence</th>
+              <th>Function Evaluations/Iter</th>
+            </tr>
+            <tr>
+              <td>Bisection</td>
+              <td>Linear (1.0)</td>
+              <td>No</td>
+              <td>2 (bracketing)</td>
+              <td>Yes</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td><strong>Newton-Raphson</strong></td>
+              <td><strong>Quadratic (2.0)</strong></td>
+              <td><strong>Yes</strong></td>
+              <td><strong>1</strong></td>
+              <td><strong>No</strong></td>
+              <td><strong>2 (f and f')</strong></td>
+            </tr>
+            <tr>
+              <td>Secant</td>
+              <td>Superlinear (1.618)</td>
+              <td>No</td>
+              <td>2</td>
+              <td>No</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td>False Position</td>
+              <td>Linear to Superlinear</td>
+              <td>No</td>
+              <td>2 (bracketing)</td>
+              <td>Yes</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td>Fixed Point</td>
+              <td>Linear (varies)</td>
+              <td>No</td>
+              <td>1</td>
+              <td>Depends on g(x)</td>
+              <td>1</td>
+            </tr>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Error Analysis & Convergence Theory</h2>
+        
+        <h3>Mathematical Error Analysis</h3>
+        <p>The error in Newton-Raphson method follows a quadratic pattern:</p>
+        
+        <div class="formula">
+          |e_{n+1}| ≈ |f''(r)| / |2f'(r)| × |e_n|²
+        </div>
+        
+        <p>Where r is the true root and e_n = x_n - r is the error at iteration n.</p>
+        
+        <h3>Convergence Conditions</h3>
+        <div class="highlight-box">
+          <p><strong>Sufficient Conditions for Convergence:</strong></p>
+          <ul>
+            <li>f(x) is twice continuously differentiable in an interval containing the root</li>
+            <li>f'(r) ≠ 0 at the root r</li>
+            <li>Initial approximation x₀ is sufficiently close to the root</li>
+            <li>f'(x) doesn't change sign near the root</li>
+          </ul>
+        </div>
+
+        <h3>Efficiency Analysis</h3>
+        <p>The efficiency index compares methods based on convergence order and function evaluations:</p>
+        
+        <div class="formula">
+          Efficiency Index = 2^(1/2) = √2 ≈ 1.414
+        </div>
+        
+        <p>Despite requiring two function evaluations per iteration, Newton-Raphson is often more efficient than single-evaluation methods due to its quadratic convergence.</p>
+      </section>
+
+      <section class="section">
+        <h2>Advanced Topics & Variations</h2>
+        
+        <h3>Modified Newton Methods</h3>
+        
+        <p><strong>1. Damped Newton Method</strong></p>
+        <p>Uses a damping factor λ to improve convergence for poor initial guesses:</p>
+        <div class="formula">
+          x_{n+1} = x_n - λ × f(x_n) / f'(x_n)
+        </div>
+        
+        <p><strong>2. Newton's Method with Line Search</strong></p>
+        <p>Finds optimal step size to ensure sufficient decrease:</p>
+        <ul>
+          <li>Compute Newton direction: d = -f(x_n) / f'(x_n)</li>
+          <li>Find step size α minimizing f(x_n + α×d)</li>
+          <li>Update: x_{n+1} = x_n + α×d</li>
+        </ul>
+        
+        <p><strong>3. Quasi-Newton Methods</strong></p>
+        <p>Approximate derivatives using finite differences or secant updates:</p>
+        <div class="formula">
+          f'(x_n) ≈ (f(x_n + h) - f(x_n)) / h
+        </div>
+        
+        <h3>Multidimensional Newton</h3>
+        <p>For systems of equations F(x) = 0 where x is a vector:</p>
+        <div class="formula">
+          x_{n+1} = x_n - J^(-1)(x_n) × F(x_n)
+        </div>
+        <p>Where J is the Jacobian matrix of partial derivatives.</p>
+      </section>
+
+      <section class="section">
+        <h2>Common Pitfalls & Troubleshooting</h2>
+        
+        <h3>Problem 1: Zero Derivative</h3>
+        <p><strong>Symptom:</strong> f'(x_n) = 0 or very close to zero</p>
+        <p><strong>Solutions:</strong></p>
+        <ul>
+          <li>Check for critical points before starting</li>
+          <li>Use a different initial guess</li>
+          <li>Switch to secant method as fallback</li>
+        </ul>
+        <pre><code>if (Math.abs(df_curr) < 1e-15) {
+  // Try perturbed Newton step
+  const h = 1e-8;
+  const df_approx = (func(x_curr + h) - func(x_curr - h)) / (2 * h);
+  if (Math.abs(df_approx) > 1e-15) {
+    x_next = x_curr - f_curr / df_approx;
+  } else {
+    throw new Error('Critical point encountered');
+  }
+}</code></pre>
+
+<h3>Problem 2: Divergence or Oscillation</h3>
+        <p><strong>Symptom:</strong> Method fails to converge or oscillates between values</p>
+        <p><strong>Solutions:</strong></p>
+        <ul>
+          <li>Choose initial guess closer to the root</li>
+          <li>Use damping factor: x_{n+1} = x_n - λ × f(x_n) / f'(x_n) with λ < 1</li>
+          <li>Implement convergence detection with maximum iterations</li>
+          <li>Switch to a more robust method like bisection</li>
+        </ul>
+        <pre><code>// Damped Newton-Raphson with adaptive damping
+function dampedNewtonRaphson(func, derivative, x0, tolerance = 1e-10) {
+  let x_curr = x0;
+  let damping = 1.0;
+  
+  for (let i = 0; i < 1000; i++) {
+    const f_curr = func(x_curr);
+    const df_curr = derivative(x_curr);
+    
+    // Try full Newton step
+    let x_next = x_curr - damping * f_curr / df_curr;
+    let f_next = func(x_next);
+    
+    // If function value doesn't decrease, reduce damping
+    while (Math.abs(f_next) > Math.abs(f_curr) && damping > 0.01) {
+      damping *= 0.5;
+      x_next = x_curr - damping * f_curr / df_curr;
+      f_next = func(x_next);
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="stylesheet" href="../css/newton_explain.css">
+  <style>
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+      z-index: 1000;
+    }
+    
+    .back-button:hover {
+      transform: translateY(-2px);
+
+    }
+    
+    if (Math.abs(f_next) < tolerance) return x_next;
+    
+    x_curr = x_next;
+    damping = Math.min(1.0, damping * 1.1); // Gradually increase damping
+  }
+  
+  throw new Error('Failed to converge');
+}</code></pre>
+
+        <h3>Problem 3: Multiple Roots</h3>
+        <p><strong>Symptom:</strong> Method finds different roots depending on starting point</p>
+        <p><strong>Solutions:</strong></p>
+        <ul>
+          <li>Use multiple initial guesses to find all roots</li>
+          <li>Implement deflation to find subsequent roots</li>
+          <li>Use graphical analysis to identify approximate root locations</li>
+        </ul>
+
+        <h3>Problem 4: Slow Convergence near Multiple Roots</h3>
+        <p><strong>Symptom:</strong> Linear convergence instead of quadratic</p>
+        <p><strong>Cause:</strong> Root has multiplicity > 1 (f'(r) = 0)</p>
+        <p><strong>Solution:</strong> Modified Newton method for multiple roots:</p>
+        <div class="formula">
+          x_{n+1} = x_n - m × f(x_n) / f'(x_n)
+        </div>
+        <p>Where m is the multiplicity of the root.</p>
+      </section>
+
+      <section class="section">
+        <h2>Real-World Applications</h2>
+        
+        <h3>Engineering Applications</h3>
+        <div class="example-box">
+          <h3>1. Circuit Analysis</h3>
+          <p>Finding operating points in nonlinear circuits using Kirchhoff's laws:</p>
+          <ul>
+            <li>Diode circuits with exponential I-V characteristics</li>
+            <li>Transistor bias point calculations</li>
+            <li>Power system load flow analysis</li>
+          </ul>
+        </div>
+
+        <h3>2. Structural Engineering</h3>
+        <ul>
+          <li>Buckling load calculations for columns</li>
+          <li>Nonlinear stress-strain relationships</li>
+          <li>Optimization of structural parameters</li>
+        </ul>
+
+
+        <h3>3. Chemical Engineering</h3>
+        <ul>
+          <li>Chemical equilibrium calculations</li>
+          <li>Phase equilibrium in distillation</li>
+          <li>Reaction kinetics parameter estimation</li>
+        </ul>
+
+        <h3>Financial Mathematics</h3>
+        <div class="example-box">
+          <h3>Black-Scholes Implied Volatility</h3>
+          <p>Finding implied volatility from option prices using Newton-Raphson:</p>
+        </div>
+        <pre><code>function impliedVolatility(optionPrice, S, K, T, r, optionType = 'call') {
+  // Black-Scholes formula and its vega (derivative w.r.t. volatility)
+  function blackScholes(sigma) {
+    const d1 = (Math.log(S/K) + (r + sigma*sigma/2)*T) / (sigma*Math.sqrt(T));
+    const d2 = d1 - sigma*Math.sqrt(T);
+    
+    if (optionType === 'call') {
+      return S * normalCDF(d1) - K * Math.exp(-r*T) * normalCDF(d2);
+    } else {
+      return K * Math.exp(-r*T) * normalCDF(-d2) - S * normalCDF(-d1);
+
+    .back-button i {
+      width: 20px;
+      height: 20px;
+
+    }
+  }
+  
+  function vega(sigma) {
+    const d1 = (Math.log(S/K) + (r + sigma*sigma/2)*T) / (sigma*Math.sqrt(T));
+    return S * Math.sqrt(T) * normalPDF(d1);
+  }
+  
+  function objective(sigma) {
+    return blackScholes(sigma) - optionPrice;
+  }
+  
+  // Use Newton-Raphson to find implied volatility
+  return newtonRaphson(objective, vega, 0.2, 1e-8);
+}</code></pre>
+
+
+        <h3>Machine Learning</h3>
+        <ul>
+          <li>Logistic regression parameter optimization</li>
+          <li>Neural network training (second-order methods)</li>
+          <li>Support vector machine optimization</li>
+          <li>Maximum likelihood estimation</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>Performance Optimization</h2>
+        
+        <h3>Computational Efficiency</h3>
+        <div class="algorithm-complexity">
+          <h3>Optimization Strategies</h3>
+          <ul>
+            <li><strong>Analytical Derivatives:</strong> Always prefer analytical over numerical derivatives</li>
+            <li><strong>Function Caching:</strong> Cache expensive function evaluations</li>
+            <li><strong>Vectorization:</strong> Use SIMD instructions for multiple root finding</li>
+            <li><strong>Parallel Processing:</strong> Find multiple roots simultaneously</li>
+          </ul>
+        </div>
+
+        <h3>Optimized Implementation</h3>
+        <pre><code>class OptimizedNewtonRaphson {
+  constructor(func, derivative, options = {}) {
+    this.func = func;
+    this.derivative = derivative;
+    this.tolerance = options.tolerance || 1e-10;
+    this.maxIterations = options.maxIterations || 1000;
+    this.cache = new Map();
+    this.enableCaching = options.enableCaching || false;
+  }
+  
+  evaluateFunction(x) {
+    if (this.enableCaching && this.cache.has(x)) {
+      return this.cache.get(x);
+    }
+    
+    const result = {
+      f: this.func(x),
+      df: this.derivative(x)
+    };
+    
+    if (this.enableCaching) {
+      this.cache.set(x, result);
+    }
+    
+    return result;
+  }
+  
+  solve(x0) {
+    let x = x0;
+    let iteration = 0;
+    
+    while (iteration < this.maxIterations) {
+      const { f, df } = this.evaluateFunction(x);
+      
+      // Check for convergence
+      if (Math.abs(f) < this.tolerance) {
+        return { root: x, iterations: iteration, converged: true };
+      }
+      
+      // Check for zero derivative
+      if (Math.abs(df) < 1e-15) {
+        return { root: x, iterations: iteration, converged: false, error: 'Zero derivative' };
+      }
+      
+      // Newton-Raphson update
+      const x_new = x - f / df;
+      
+      // Check for convergence by x difference
+      if (Math.abs(x_new - x) < this.tolerance) {
+        return { root: x_new, iterations: iteration + 1, converged: true };
+      }
+      
+      x = x_new;
+      iteration++;
+    }
+    
+    return { root: x, iterations: iteration, converged: false, error: 'Max iterations reached' };
+  }
+  
+  // Find multiple roots with different starting points
+  findMultipleRoots(startingPoints) {
+    return startingPoints.map(x0 => ({
+      initialGuess: x0,
+      result: this.solve(x0)
+    }));
+  }
+}</code></pre>
+      </section>
+
+      <section class="section">
+        <h2>Testing & Validation</h2>
+        
+        <h3>Test Cases</h3>
+        <div class="example-box">
+          <h3>Standard Test Functions</h3>
+          <p>Use these functions to validate your Newton-Raphson implementation:</p>
+        </div>
+
+        <pre><code>// Test Suite for Newton-Raphson Method
+const testCases = [
+  {
+    name: "Square Root of 2",
+    func: x => x*x - 2,
+    derivative: x => 2*x,
+    initialGuess: 1,
+    expectedRoot: Math.sqrt(2),
+    tolerance: 1e-10
+  },
+  {
+    name: "Cube Root of 8",
+    func: x => x*x*x - 8,
+    derivative: x => 3*x*x,
+    initialGuess: 2,
+    expectedRoot: 2,
+    tolerance: 1e-10
+  },
+  {
+    name: "Trigonometric Function",
+    func: x => Math.sin(x) - x/2,
+    derivative: x => Math.cos(x) - 0.5,
+    initialGuess: 1,
+    expectedRoot: 1.895494267,
+    tolerance: 1e-8
+  },
+  {
+    name: "Exponential Function",
+    func: x => Math.exp(x) - 2,
+    derivative: x => Math.exp(x),
+    initialGuess: 1,
+    expectedRoot: Math.log(2),
+    tolerance: 1e-10
+  }
+
+<body>
+  <a href="test2.html" class="back-button">
+    <i data-lucide="arrow-left"></i>
+    Back
+  </a>
   <header>
     <div class="container">
       <h1>Newton-Raphson Method</h1>
@@ -753,6 +1536,7 @@ const testCases = [
     expectedRoot: Math.log(2),
     tolerance: 1e-10
   }
+
 ];
 
 function runTests() {
@@ -857,5 +1641,15 @@ function runTests() {
       <p>© 2024 Newton-Raphson Method Guide. A comprehensive resource for numerical analysis.</p>
     </div>
   </footer>
+
+
+
+  <script>
+    // Initialize Lucide icons
+    document.addEventListener('DOMContentLoaded', function() {
+      lucide.createIcons();
+    });
+  </script>
+
 </body>
 </html>

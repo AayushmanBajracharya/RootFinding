@@ -6,16 +6,20 @@
     <title>Root Finding Method Comparison</title>
     <link rel="stylesheet" href="../css/bisection.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    
-
 </head>
 <body>
     
-    <div class="container">
-        <h1>Root Finding Method & Comparison</h1>
 
+
+    <div class="container">
         <div class="method-section">
-            <h2 class="method-title">Bisection Method</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <a href="test2.html" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 10px 20px; border-radius: 8px; color: white; text-decoration: none; font-weight: 500; transition: all 0.3s ease;">
+                    ← Back
+                </a>
+                <h2 class="method-title" style="margin: 0; flex: 1; text-align: center;">Bisection Method</h2>
+                <div style="width: 80px;"></div> <!-- Spacer for balance -->
+            </div>
             <div class="input-grid">
                 <div class="input-group">
                     <label for="lowerBound">Lower Bound:</label>
@@ -75,20 +79,22 @@
 
         <div class="table-container">
             <div class="chart-title">Iteration Details</div>
-            <table id="iterationTable">
-                <thead>
-                    <tr>
-                        <th>Iteration</th>
-                        <th>Lower Bound</th>
-                        <th>Upper Bound</th>
-                        <th>Midpoint</th>
-                        <th>f(Midpoint)</th>
-                        <th>Error</th>
-                    </tr>
-                </thead>
-                <tbody id="iterationTableBody">
-                </tbody>
-            </table>
+            <div class="table-wrapper">
+                <table id="iterationTable">
+                    <thead>
+                        <tr>
+                            <th>Iteration</th>
+                            <th>Lower Bound</th>
+                            <th>Upper Bound</th>
+                            <th>Midpoint</th>
+                            <th>f(Midpoint)</th>
+                            <th>Error</th>
+                        </tr>
+                    </thead>
+                    <tbody id="iterationTableBody">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
