@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bisection Method Quiz</title>
+    <link rel="stylesheet" href="../css/quiz.css">
+    <link rel="stylesheet" href="../css/bisection_quiz.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="particles-js" class="particles-container"></div>
+
+    <div class="container">
+        <div class="quiz-container">
+            <div class="timer-container">
+                <div class="timer">20s</div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress" style="width: 0%"></div>
+            </div>
+
+            <div id="set-info" class="set-info">
+                Set <span id="current-set">1</span> of <span id="total-sets">7</span>
+            </div>
+
+            <div id="question-container" class="question-container active">
+                <div class="question"></div>
+                <div class="options"></div>
+                <div class="feedback"></div>
+                <div class="navigation">
+                    <button id="submit-btn" class="nav-btn">Submit Answer</button>
+                </div>
+            </div>
+
+            <div id="score-container" class="score-container">
+                <h2>Set Complete!</h2>
+                <div class="score">0%</div>
+                <p class="score-message"></p>
+                <button id="next-set-btn" class="nav-btn">Start Next Set</button>
+                <p class="progress-info">Your overall progress: <span id="overall-progress">0</span>%</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Quiz state
+        let currentQuestion = 0;
+        let score = 0;
+        let timeLeft = 20;
+        let timer;
+        let selectedAnswer = null;
+        let totalScore = 0;
+        let questionsAnswered = 0;
+
+        const allQuestions = [
+            {
+                question: "What is the primary concept behind the bisection method?",
+                options: [
+                    "Repeatedly dividing the interval into thirds",
+                    "Repeatedly dividing the interval in half",
+                    "Using derivatives to find roots",
+                    "Using tangent lines to approximate roots"
+                ],
+                correct: 1,
+                explanation: "The bisection method works by repeatedly dividing an interval in half and selecting the subinterval where the root lies."
+            },
+            {
+                question: "What is a necessary condition for the bisection method to work?",
+                options: [
+                    "The function must be linear",
+                    "The function must be continuous and have opposite signs at the interval endpoints",
+                    "The function must be differentiable",
+                    "The function must be polynomial"
+                ],
+                correct: 1,
+                explanation: "The bisection method requires the function to be continuous and have opposite signs at the endpoints (Intermediate Value Theorem)."
+            },
+            {
+                question: "What is the convergence rate of the bisection method?",
+                options: [
+                    "Linear convergence",
+                    "Quadratic convergence",
+                    "Cubic convergence",
+                    "Exponential convergence"
+                ],
+                correct: 0,
+                explanation: "The bisection method has linear convergence, meaning the error approximately halves with each iteration."
+            },
+            {
+                question: "What is the main advantage of the bisection method?",
+                options: [
+                    "It's the fastest method",
+                    "It's guaranteed to converge if initial conditions are met",
+                    "It requires derivatives",
+                    "It works on discontinuous functions"
+                ],
+                correct: 1,
+                explanation: "The bisection method's main advantage is its guaranteed convergence when the initial conditions are satisfied."
+            },
+            {
+                question: "If [a,b] is the initial interval, what is the maximum error after n iterations?",
+                options: [
+                    "(b-a)/2^n",
+                    "2^n(b-a)",
+                    "(b-a)/n",
+                    "(b-a)^n"
+                ],
+                correct: 0,
+                explanation: "The maximum error after n iterations is (b-a)/2^n, where b-a is the initial interval length."
+            },
+            {
+                question: "Which of the following is NOT a requirement for the bisection method?",
+                options: [
+                    "Function must be continuous on [a,b]",
+                    "f(a) and f(b) must have opposite signs",
+                    "Function must be differentiable",
+                    "Function must be defined on the interval [a,b]"
+                ],
+                correct: 2,
+                explanation: "The bisection method doesn't require the function to be differentiable, only continuous with opposite signs at endpoints."
+            },
+            {
+                question: "How many iterations are needed to achieve an accuracy of 0.001 for an interval of length 1?",
+                options: [
+                    "5 iterations",
+                    "7 iterations",
+                    "10 iterations",
+                    "15 iterations"
+                ],
+                correct: 2,
+                explanation: "Using the formula n ≥ log₂((b-a)/ε), where ε=0.001 and b-a=1, we need 10 iterations."
+            },
+            {
+                question: "What happens if f(a) and f(b) have the same sign?",
+                options: [
+                    "The method will still work but slower",
+                    "The method is not guaranteed to find a root",
+                    "The method will find complex roots",
+                    "The method will converge faster"
+                ],
+                correct: 1,
+                explanation: "The bisection method requires opposite signs at endpoints to guarantee a root exists in the interval."
+            },
+            {
+                question: "What is the relationship between iterations (n) and error (E) in the bisection method?",
+                options: [
+                    "E = (b-a)/2ⁿ",
+                    "E = 2ⁿ(b-a)",
+                    "E = (b-a)/n",
+                    "E = n(b-a)"
+                ],
+                correct: 0,
+                explanation: "The error after n iterations is (b-a)/2ⁿ, where b-a is the initial interval length."
+            },
+            {
+                question: "What is the primary limitation of the bisection method?",
+                options: [
+                    "It requires complex calculations",
+                    "It's not guaranteed to converge",
+                    "It has slow convergence compared to other methods",
+                    "It requires many initial conditions"
+                ],
+                correct: 2,
+                explanation: "While reliable, the bisection method has relatively slow (linear) convergence compared to methods like Newton-Raphson."
+            },
+            {
+                question: "If a root lies exactly at the midpoint of an interval, what happens?",
+                options: [
+                    "The method fails",
+                    "The method finds the root immediately",
+                    "The method still requires multiple iterations",
+                    "The method becomes unstable"
+                ],
+                correct: 1,
+                explanation: "If the midpoint is exactly the root, f(midpoint) = 0 and the method finds the root in that iteration."
+            },
+            {
+                question: "What is the significance of the Intermediate Value Theorem for the bisection method?",
+                options: [
+                    "It guarantees the existence of a root",
+                    "It determines the speed of convergence",
+                    "It helps calculate derivatives",
+                    "It determines the initial interval"
+                ],
+                correct: 0,
+                explanation: "The Intermediate Value Theorem guarantees that a continuous function with opposite signs at endpoints must have a root in the interval."
+            },
+            {
+                question: "How does the bisection method handle multiple roots in an interval?",
+                options: [
+                    "It finds all roots simultaneously",
+                    "It finds the leftmost root first",
+                    "It finds one root but can't guarantee which one",
+                    "It always finds the rightmost root"
+                ],
+                correct: 2,
+                explanation: "The bisection method will find one root but cannot determine if multiple roots exist in the interval."
+            },
+            {
+                question: "What is the best case scenario for the bisection method?",
+                options: [
+                    "When the function is linear",
+                    "When the root is at an endpoint",
+                    "When the root is at the midpoint",
+                    "When the function is polynomial"
+                ],
+                correct: 2,
+                explanation: "The best case is when the root is at a midpoint, as it will be found in that iteration."
+            },
+            {
+                question: "How does increasing the desired accuracy affect the number of iterations?",
+                options: [
+                    "Linearly increases iterations",
+                    "Exponentially increases iterations",
+                    "Logarithmically increases iterations",
+                    "Does not affect iterations"
+                ],
+                correct: 2,
+                explanation: "Due to the logarithmic relationship, doubling accuracy only requires one additional iteration."
+            }
+            // Continue with more questions...
+        ];
+        
+        // Initialize with first set of questions
+        const questionsPerSet = 3;
+        const totalSets = Math.ceil(allQuestions.length / questionsPerSet);
+        let currentSet = 0;
+        let questions = allQuestions.slice(0, questionsPerSet);
+
+        function loadNextSet() {
+            currentSet++;
+            const start = currentSet * questionsPerSet;
+            questions = allQuestions.slice(start, start + questionsPerSet);
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('current-set').textContent = currentSet + 1;
+            document.getElementById('score-container').classList.remove('active');
+            document.getElementById('question-container').classList.add('active');
+            showQuestion(0);
+            startTimer();
+        }
+
+        function updateOverallProgress() {
+            const progress = Math.round((questionsAnswered / allQuestions.length) * 100);
+            document.getElementById('overall-progress').textContent = progress;
+        }
+
+        function showQuestion(index) {
+            const question = questions[index];
+            const container = document.getElementById('question-container');
+            
+            // Clear previous content
+            container.innerHTML = '';
+            
+            // Create question element
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question';
+            questionDiv.textContent = `${index + 1}. ${question.question}`;
+            container.appendChild(questionDiv);
+            
+            // Create options container
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options';
+            
+            // Add options
+            question.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.setAttribute('data-index', i);
+                optionDiv.textContent = option;
+                optionsDiv.appendChild(optionDiv);
+            });
+            
+            container.appendChild(optionsDiv);
+            
+            // Add feedback div
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'feedback';
+            container.appendChild(feedbackDiv);
+            
+            // Add navigation div with submit button
+            const navigationDiv = document.createElement('div');
+            navigationDiv.className = 'navigation';
+            const submitBtn = document.createElement('button');
+            submitBtn.id = 'submit-btn';
+            submitBtn.className = 'nav-btn';
+            submitBtn.textContent = 'Submit Answer';
+            navigationDiv.appendChild(submitBtn);
+            container.appendChild(navigationDiv);
+            
+            updateProgress();
+            attachOptionListeners();
+        }
+
+        function startTimer() {
+            clearInterval(timer);  // Clear any existing timer
+            timeLeft = 20;
+            updateTimerDisplay();
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timer = null;
+                    checkAnswer();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerElement = document.querySelector('.timer');
+            timerElement.textContent = `${timeLeft}s`;
+            
+            // Add warning colors
+            if (timeLeft <= 5) {
+                timerElement.style.color = '#ff4757';
+            } else if (timeLeft <= 10) {
+                timerElement.style.color = '#f1c40f';
+            } else {
+                timerElement.style.color = '#fff';
+            }
+        }
+
+        function attachOptionListeners() {
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', () => {
+                    if (!timer) return; // Don't allow selection if timer has expired
+                    document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    selectedAnswer = parseInt(option.dataset.index);
+                });
+            });
+        }
+
+        function checkAnswer() {
+            clearInterval(timer);
+            timer = null;
+            const question = questions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            const feedback = document.querySelector('.feedback');
+            
+            if (selectedAnswer === null) {
+                feedback.textContent = "Time's up! Please select an answer.";
+                feedback.className = 'feedback wrong';
+                return;
+            }
+            
+            options.forEach(option => {
+                const index = parseInt(option.dataset.index);
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedAnswer) {
+                    option.classList.add('wrong');
+                }
+                option.style.pointerEvents = 'none';
+            });
+
+            if (selectedAnswer === question.correct) {
+                score++;
+                feedback.textContent = `Correct! ${question.explanation}`;
+                feedback.className = 'feedback correct';
+            } else {
+                feedback.textContent = `Incorrect. ${question.explanation}`;
+                feedback.className = 'feedback wrong';
+            }
+
+            const submitBtn = document.getElementById('submit-btn');
+            if (currentQuestion < questions.length - 1) {
+                submitBtn.textContent = 'Next Question';
+                submitBtn.onclick = nextQuestion;
+            } else {
+                submitBtn.textContent = 'Show Score';
+                submitBtn.onclick = showScore;
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                selectedAnswer = null;
+                showQuestion(currentQuestion);
+                const submitBtn = document.getElementById('submit-btn');
+                submitBtn.textContent = 'Submit Answer';
+                submitBtn.onclick = checkAnswer;
+                startTimer();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.querySelector('.progress').style.width = `${progress}%`;
+        }
+
+        function showScore() {
+            document.getElementById('question-container').classList.remove('active');
+            const scoreContainer = document.getElementById('score-container');
+            scoreContainer.classList.add('active');
+            
+            const percentage = Math.round((score / questions.length) * 100);
+            scoreContainer.querySelector('.score').textContent = `${percentage}%`;
+            
+            totalScore += score;
+            questionsAnswered += questions.length;
+            updateOverallProgress();
+            
+            let message;
+            if (percentage >= 90) message = "Excellent! Keep going!";
+            else if (percentage >= 70) message = "Good job! Ready for the next set?";
+            else if (percentage >= 50) message = "Not bad! Let's try another set!";
+            else message = "Keep practicing! Next set might be better!";
+            
+            scoreContainer.querySelector('.score-message').textContent = message;
+            
+            // Show or hide next set button
+            const nextSetBtn = document.getElementById('next-set-btn');
+            if (currentSet < totalSets - 1) {
+                nextSetBtn.style.display = 'block';
+                nextSetBtn.onclick = loadNextSet;
+            } else {
+                nextSetBtn.style.display = 'none';
+                scoreContainer.querySelector('h2').textContent = 'Quiz Complete!';
+                const finalScore = Math.round((totalScore / allQuestions.length) * 100);
+                scoreContainer.querySelector('.score-message').textContent = 
+                    `Final Score: ${finalScore}%\n` + 
+                    (finalScore >= 70 ? "Great job! You've mastered the Bisection Method!" : 
+                     "Keep practicing to improve your understanding of the Bisection Method!");
+            }
+        }
+
+        // Initialize particles.js
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: '#ffffff' },
+                shape: { type: 'circle' },
+                opacity: {
+                    value: 0.2,
+                    random: true,
+                    animation: { enable: true, speed: 1, minimumValue: 0.1, sync: false }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    animation: { enable: true, speed: 2, minimumValue: 0.1, sync: false }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#ffffff',
+                    opacity: 0.1,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1,
+                    direction: 'none',
+                    random: true,
+                    straight: false,
+                    outMode: 'out',
+                    bounce: false,
+                }
+            },
+            interactivity: {
+                detectsOn: 'canvas',
+                events: {
+                    onhover: { enable: true, mode: 'grab' },
+                    onclick: { enable: true, mode: 'push' },
+                    resize: true
+                },
+                modes: {
+                    grab: { distance: 140, line_linked: { opacity: 0.5 } },
+                    push: { particles_nb: 4 }
+                }
+            },
+            retina_detect: true
+        });
+
+        // Initialize quiz
+        document.getElementById('total-sets').textContent = totalSets;
+        document.getElementById('current-set').textContent = currentSet + 1;
+        document.getElementById('submit-btn').addEventListener('click', checkAnswer);
+        showQuestion(0);
+        startTimer();
+    </script>
+</body>
+</html>
