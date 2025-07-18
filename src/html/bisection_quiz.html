@@ -13,6 +13,10 @@
 
     <div class="container">
         <div class="quiz-container">
+            <button class="quit-btn" onclick="location.href='quiz.html'">
+                <i data-lucide="x-circle"></i>
+                Quit Quiz
+            </button>
             <div class="timer-container">
                 <div class="timer">20s</div>
             </div>
@@ -21,11 +25,17 @@
                 <div class="progress" style="width: 0%"></div>
             </div>
 
-            <div id="set-info" class="set-info">
+            <div id="countdown-container" class="countdown-container active">
+                <div class="countdown-number">10</div>
+                <div class="countdown-message">Get ready to test your knowledge of the Bisection Method!</div>
+                <div class="countdown-subtext">Take a deep breath and trust your preparation. You've got this! 🌟</div>
+            </div>
+
+            <div id="set-info" class="set-info" style="display: none;">
                 Set <span id="current-set">1</span> of <span id="total-sets">7</span>
             </div>
 
-            <div id="question-container" class="question-container active">
+            <div id="question-container" class="question-container">
                 <div class="question"></div>
                 <div class="options"></div>
                 <div class="feedback"></div>
@@ -51,6 +61,7 @@
         let score = 0;
         let timeLeft = 20;
         let timer;
+        let countdownTimer;
         let selectedAnswer = null;
         let totalScore = 0;
         let questionsAnswered = 0;
@@ -288,6 +299,7 @@
             submitBtn.id = 'submit-btn';
             submitBtn.className = 'nav-btn';
             submitBtn.textContent = 'Submit Answer';
+            submitBtn.onclick = checkAnswer;
             navigationDiv.appendChild(submitBtn);
             container.appendChild(navigationDiv);
             
@@ -478,12 +490,38 @@
             retina_detect: true
         });
 
-        // Initialize quiz
-        document.getElementById('total-sets').textContent = totalSets;
-        document.getElementById('current-set').textContent = currentSet + 1;
-        document.getElementById('submit-btn').addEventListener('click', checkAnswer);
-        showQuestion(0);
-        startTimer();
+        function startCountdown() {
+            const countdownContainer = document.getElementById('countdown-container');
+            const setInfo = document.getElementById('set-info');
+            const questionContainer = document.getElementById('question-container');
+            const countdownNumber = countdownContainer.querySelector('.countdown-number');
+            let count = 10;
+
+            // Initialize quiz elements
+            document.getElementById('total-sets').textContent = totalSets;
+            document.getElementById('current-set').textContent = currentSet + 1;
+
+            countdownContainer.classList.add('active');
+            setInfo.style.display = 'none';
+            questionContainer.classList.remove('active');
+
+            countdownTimer = setInterval(() => {
+                count--;
+                countdownNumber.textContent = count;
+                
+                if (count <= 0) {
+                    clearInterval(countdownTimer);
+                    countdownContainer.classList.remove('active');
+                    setInfo.style.display = 'block';
+                    questionContainer.classList.add('active');
+                    showQuestion(0);
+                    startTimer();
+                }
+            }, 1000);
+        }
+
+        // Start the quiz with countdown
+        startCountdown();
     </script>
 </body>
 </html>
