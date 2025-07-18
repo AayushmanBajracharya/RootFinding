@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang=            <div id="countdown-container" class="countdown-container active">
+                <div class="countdown-number">10</div>
+                <div class="countdown-message">Get ready to test your knowledge of the Secant Method!</div>
+                <div class="countdown-subtext">This method is all about approximation without derivatives. Let's see how well you understand it! 🎯</div>
+            </div>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +11,7 @@
     <link rel="stylesheet" href="../css/quiz.css">
     <link rel="stylesheet" href="../css/secant_quiz.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
     <div id="particles-js" class="particles-container"></div>
@@ -68,26 +73,26 @@
 
         const allQuestions = [
             {
-                question: "What is the main concept behind the Secant Method?",
+                question: "What is the main principle behind the Secant Method?",
                 options: [
                     "Using derivatives to find roots",
-                    "Using two points to approximate the derivative",
+                    "Using two points to create a line and find intersection",
                     "Dividing intervals repeatedly",
-                    "Using parallel lines to find intersections"
+                    "Using tangent lines to find roots"
                 ],
                 correct: 1,
-                explanation: "The Secant Method uses two points to approximate the derivative, making it a modification of Newton's Method that doesn't require explicit derivatives."
+                explanation: "The Secant Method works by using two points to create a secant line and finding where it intersects the x-axis, approximating the derivative without needing it explicitly."
             },
             {
-                question: "How many initial points are needed for the Secant Method?",
+                question: "What is required to use the Secant Method?",
                 options: [
-                    "One point",
-                    "Two points",
-                    "Three points",
-                    "No points, just an interval"
+                    "The function's derivative",
+                    "Two initial points and the function",
+                    "An interval containing the root",
+                    "Three initial points"
                 ],
                 correct: 1,
-                explanation: "The Secant Method requires two initial points to begin the iteration process."
+                explanation: "The Secant Method only needs two initial points and the function itself - no derivatives required!"
             },
             {
                 question: "What is the convergence rate of the Secant Method?",

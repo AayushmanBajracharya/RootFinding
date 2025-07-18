@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../css/quiz.css">
     <link rel="stylesheet" href="../css/newton_raphson_quiz.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
     <div id="particles-js" class="particles-container"></div>
@@ -27,8 +28,8 @@
 
             <div id="countdown-container" class="countdown-container active">
                 <div class="countdown-number">10</div>
-                <div class="countdown-message">Get ready to test your knowledge of the Newton-Raphson Method!</div>
-                <div class="countdown-subtext">Take a deep breath and trust your preparation. You've got this! 🌟</div>
+                <div class="countdown-message">Get ready to test your knowledge of Newton-Raphson Method!</div>
+                <div class="countdown-subtext">Master the power of derivatives and tangent lines! Let's begin! 📈</div>
             </div>
 
             <div id="set-info" class="set-info" style="display: none;">
@@ -68,34 +69,34 @@
 
         const allQuestions = [
             {
-                question: "What is the main concept behind the Newton-Raphson Method?",
+                question: "What is the fundamental principle of Newton-Raphson method?",
                 options: [
                     "Using interval bisection",
-                    "Using tangent lines to find better approximations",
-                    "Using secant lines",
+                    "Using tangent lines to find intersections with x-axis",
+                    "Using secant lines to find roots",
                     "Using polynomial division"
                 ],
                 correct: 1,
-                explanation: "The Newton-Raphson method uses tangent lines at each point to find increasingly better approximations to the root."
+                explanation: "The Newton-Raphson method uses tangent lines at each point to find increasingly better approximations to the root by finding their x-axis intersections."
             },
             {
-                question: "What mathematical concept is essential for the Newton-Raphson Method?",
+                question: "What is required to use Newton-Raphson method?",
                 options: [
-                    "Integration",
-                    "Derivatives",
-                    "Complex numbers",
-                    "Matrices"
+                    "Just the function",
+                    "Function and its derivative",
+                    "Two initial points",
+                    "An interval containing the root"
                 ],
                 correct: 1,
-                explanation: "The Newton-Raphson method requires the derivative of the function to construct tangent lines."
+                explanation: "Newton-Raphson method requires both the function and its derivative to calculate the tangent lines at each point."
             },
             {
-                question: "What is the convergence rate of the Newton-Raphson Method?",
+                question: "What is the convergence rate of Newton-Raphson method?",
                 options: [
-                    "Linear",
-                    "Quadratic",
-                    "Cubic",
-                    "Exponential"
+                    "Linear convergence",
+                    "Quadratic convergence",
+                    "Cubic convergence",
+                    "Superlinear convergence"
                 ],
                 correct: 1,
                 explanation: "Newton-Raphson method exhibits quadratic convergence, meaning the number of correct digits roughly doubles with each iteration."
