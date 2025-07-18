@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Root Finding Methods Quiz</title>
+    <link rel="stylesheet" href="../css/quiz.css">
+    <link rel="stylesheet" href="../css/quiz-cards.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+</head>
+<body>
+    <!-- Particles background -->
+    <div id="particles-js" class="particles-container"></div>
+
+    <div class="container">
+        <div class="floating-shapes">
+            <div class="shape circle"></div>
+            <div class="shape triangle"></div>
+            <div class="shape square"></div>
+            <div class="shape x">×</div>
+        </div>
+        <div class="main-title">
+            <h1 class="mega-title">Root Finding Method Quiz</h1>
+            <p class="mega-subtitle">Let's See What You Know About Root-Finding!</p>
+            <div class="title-decoration">
+                <div class="decoration-line"></div>
+                <i data-lucide="code" class="decoration-icon"></i>
+                <div class="decoration-line"></div>
+            </div>
+        </div>
+        <header class="header">
+            <div class="brand">
+                <div class="logo">
+                    <div class="logo-glow"></div>
+                    <i data-lucide="function-square" class="logo-icon"></i>
+                </div>
+                <h1 class="glowing-text">Root Finding <span class="accent">Methods</span></h1>
+            </div>
+            <div class="header-content">
+                <div class="math-symbols">∫ ∑ ∂ √</div>
+                <h2 class="subtitle">Master Your Mathematical Skills</h2>
+                <p class="animate-text">Challenge yourself with interactive quizzes on numerical methods and enhance your problem-solving skills</p>
+                <div class="header-decoration">
+                    <span class="line"></span>
+                    <i data-lucide="arrow-down" class="scroll-icon"></i>
+                    <span class="line"></span>
+                </div>
+                <div class="glow-line"></div>
+            </div>
+        </header>
+
+        <main class="quiz-selection">
+            <!-- Bisection Method Card -->
+            <div class="quiz-card" onclick="location.href='bisection_quiz.html'">
+                <div class="quiz-icon-wrapper">
+                    <i data-lucide="git-fork" class="quiz-icon"></i>
+                </div>
+                <h2>Bisection Method</h2>
+                <p>Master interval halving techniques and understand convergence through practical examples.</p>
+                <button class="start-btn">Begin Challenge</button>
+            </div>
+
+            <!-- Newton-Raphson Method Card -->
+            <div class="quiz-card" onclick="location.href='newtonraphson_quiz.html'">
+                <div class="quiz-icon-wrapper">
+                    <i data-lucide="trending-up" class="quiz-icon"></i>
+                </div>
+                <h2>Newton-Raphson</h2>
+                <p>Dive deep into derivatives and discover the power of quadratic convergence.</p>
+                <button class="start-btn">Begin Challenge</button>
+            </div>
+
+            <!-- Secant Method Card -->
+            <div class="quiz-card" onclick="location.href='secant_quiz.html'">
+                <div class="quiz-icon-wrapper">
+                    <i data-lucide="line-chart" class="quiz-icon"></i>
+                </div>
+                <h2>Secant Method</h2>
+                <p>Learn the practical applications of secant method in real-world problem-solving.</p>
+                <button class="start-btn">Begin Challenge</button>
+            </div>
+
+            <!-- Comprehensive Quiz Card -->
+            <div class="quiz-card" onclick="location.href='all_quiz.html'">
+                <div class="quiz-icon-wrapper">
+                    <i data-lucide="layout-grid" class="quiz-icon"></i>
+                </div>
+                <h2>Ultimate Challenge</h2>
+                <p>Test your expertise across all root-finding methods in this comprehensive assessment.</p>
+                <button class="start-btn">Begin Challenge</button>
+            </div>
+        </main> 
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Add hover effect
+        const cards = document.querySelectorAll('.quiz-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const icon = card.querySelector('.quiz-icon');
+                icon.style.transform = 'scale(1.1) rotate(5deg)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                const icon = card.querySelector('.quiz-icon');
+                icon.style.transform = 'scale(1) rotate(0)';
+            });
+        });
+    </script>
+
+    <script>
+        // Initialize particles.js
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: '#ffffff' },
+                shape: { type: 'circle' },
+                opacity: {
+                    value: 0.2,
+                    random: true,
+                    animation: { enable: true, speed: 1, minimumValue: 0.1, sync: false }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    animation: { enable: true, speed: 2, minimumValue: 0.1, sync: false }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#ffffff',
+                    opacity: 0.1,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1,
+                    direction: 'none',
+                    random: true,
+                    straight: false,
+                    outMode: 'out',
+                    bounce: false,
+                }
+            },
+            interactivity: {
+                detectsOn: 'canvas',
+                events: {
+                    onhover: { enable: true, mode: 'grab' },
+                    onclick: { enable: true, mode: 'push' },
+                    resize: true
+                },
+                modes: {
+                    grab: { distance: 140, line_linked: { opacity: 0.5 } },
+                    push: { particles_nb: 4 }
+                }
+            },
+            retina_detect: true
+        });
+
+        // Smooth scroll animation
+        const scrollIcon = document.querySelector('.scroll-icon');
+        scrollIcon.addEventListener('click', () => {
+            document.querySelector('.quiz-selection').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        });
+
+        // Add card hover effects with tilt
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const angleX = (y - centerY) / 20;
+                const angleY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) scale3d(1.05, 1.05, 1.05)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            });
+        });
+
+        // Add floating animation to logo
+        const logo = document.querySelector('.logo');
+        let angle = 0;
+        
+        function floatAnimation() {
+            angle += 0.05;
+            const y = Math.sin(angle) * 10;
+            logo.style.transform = `translateY(${y}px)`;
+            requestAnimationFrame(floatAnimation);
+        }
+        
+        floatAnimation();
+    </script>
+</body>
+</html>

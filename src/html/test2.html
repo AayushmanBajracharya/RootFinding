@@ -65,6 +65,71 @@
           box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
       }
 
+      .quiz-section {
+          text-align: center;
+          padding: 40px;
+      }
+
+      .quiz-section h2 {
+          font-size: 2rem;
+          color: #1f2937;
+          margin-bottom: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+      }
+
+      .quiz-section p {
+          color: #4b5563;
+          font-size: 1.125rem;
+          margin-bottom: 30px;
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
+      }
+
+      .start-quiz-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 12px;
+          background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+          color: white;
+          padding: 16px 32px;
+          border-radius: 12px;
+          font-size: 1.125rem;
+          font-weight: 600;
+          border: none;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          text-decoration: none;
+          margin-top: 30px;
+      }
+
+      .start-quiz-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+
+      .quiz-features {
+          display: flex;
+          justify-content: center;
+          gap: 32px;
+          margin-top: 40px;
+      }
+
+      .quiz-feature {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: #4b5563;
+      }
+
+      .quiz-feature i {
+          width: 20px;
+          height: 20px;
+      }
+
       .section h2 {
           font-size: 1.5rem;
           font-weight: 600;
@@ -827,10 +892,61 @@
       </div>
     </div>
 
+
+    <!-- Quiz Section -->
+    <div class="section quiz-section">
+      <h2>
+        <i data-lucide="brain" style="color: #14b8a6;"></i>
+        Test Your Knowledge
+      </h2>
+      <p>Ready to challenge yourself? Take our comprehensive quiz on root-finding methods and see how well you understand the concepts!</p>
+      
+      <div class="quiz-features">
+        <div class="quiz-feature">
+          <i data-lucide="check-circle" style="color: #14b8a6;"></i>
+          Multiple Methods
+        </div>
+        <div class="quiz-feature">
+          <i data-lucide="timer" style="color: #14b8a6;"></i>
+          Timed Challenges
+        </div>
+        <div class="quiz-feature">
+          <i data-lucide="bar-chart" style="color: #14b8a6;"></i>
+          Instant Feedback
+        </div>
+      </div>
+
+      <a href="quiz.html" class="start-quiz-btn">
+        <i data-lucide="play" style="color: white;"></i>
+        Start Quiz
+      </a>
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="section hidden" id="resultsSection">
+      <h2>Comparison Results</h2>
+      <div style="overflow-x: auto;">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Root Found</th>
+              <th>Iterations</th>
+              <th>Precision</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="resultsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+=======
    
 <script>
   // Global variables
 let fInput, derivativeInput;
+
 
 window.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();

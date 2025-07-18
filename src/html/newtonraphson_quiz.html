@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newton-Raphson Method Quiz</title>
+    <link rel="stylesheet" href="../css/quiz.css">
+    <link rel="stylesheet" href="../css/newton_raphson_quiz.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="particles-js" class="particles-container"></div>
+
+    <div class="container">
+        <div class="quiz-container">
+            <button class="quit-btn" onclick="location.href='quiz.html'">
+                <i data-lucide="x-circle"></i>
+                Quit Quiz
+            </button>
+            <div class="timer-container">
+                <div class="timer">20s</div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress" style="width: 0%"></div>
+            </div>
+
+            <div id="countdown-container" class="countdown-container active">
+                <div class="countdown-number">10</div>
+                <div class="countdown-message">Get ready to test your knowledge of the Newton-Raphson Method!</div>
+                <div class="countdown-subtext">Take a deep breath and trust your preparation. You've got this! 🌟</div>
+            </div>
+
+            <div id="set-info" class="set-info" style="display: none;">
+                Set <span id="current-set">1</span> of <span id="total-sets">5</span>
+            </div>
+
+            <div id="question-container" class="question-container">
+                <div class="question"></div>
+                <div class="options"></div>
+                <div class="feedback"></div>
+                <div class="navigation">
+                    <button id="submit-btn" class="nav-btn">Submit Answer</button>
+                </div>
+            </div>
+
+            <div id="score-container" class="score-container">
+                <h2>Set Complete!</h2>
+                <div class="score">0%</div>
+                <p class="score-message"></p>
+                <button id="next-set-btn" class="nav-btn">Start Next Set</button>
+                <p class="progress-info">Your overall progress: <span id="overall-progress">0</span>%</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Quiz state
+        let currentQuestion = 0;
+        let score = 0;
+        let timeLeft = 20;
+        let timer;
+        let countdownTimer;
+        let selectedAnswer = null;
+        let totalScore = 0;
+        let questionsAnswered = 0;
+
+        const allQuestions = [
+            {
+                question: "What is the main concept behind the Newton-Raphson Method?",
+                options: [
+                    "Using interval bisection",
+                    "Using tangent lines to find better approximations",
+                    "Using secant lines",
+                    "Using polynomial division"
+                ],
+                correct: 1,
+                explanation: "The Newton-Raphson method uses tangent lines at each point to find increasingly better approximations to the root."
+            },
+            {
+                question: "What mathematical concept is essential for the Newton-Raphson Method?",
+                options: [
+                    "Integration",
+                    "Derivatives",
+                    "Complex numbers",
+                    "Matrices"
+                ],
+                correct: 1,
+                explanation: "The Newton-Raphson method requires the derivative of the function to construct tangent lines."
+            },
+            {
+                question: "What is the convergence rate of the Newton-Raphson Method?",
+                options: [
+                    "Linear",
+                    "Quadratic",
+                    "Cubic",
+                    "Exponential"
+                ],
+                correct: 1,
+                explanation: "Newton-Raphson method exhibits quadratic convergence, meaning the number of correct digits roughly doubles with each iteration."
+            },
+            {
+                question: "What is a potential drawback of the Newton-Raphson Method?",
+                options: [
+                    "It's too slow",
+                    "It requires too much memory",
+                    "It may not converge if initial guess is poor",
+                    "It only works on polynomials"
+                ],
+                correct: 2,
+                explanation: "The method may fail to converge or converge to the wrong root if the initial guess isn't close enough to the actual root."
+            },
+            {
+                question: "When is Newton-Raphson Method particularly efficient?",
+                options: [
+                    "When dealing with discontinuous functions",
+                    "When the function and derivative are easy to compute",
+                    "When working with complex roots",
+                    "When working with non-differentiable functions"
+                ],
+                correct: 1,
+                explanation: "The method is most efficient when both the function and its derivative are easy to compute and evaluate."
+            },
+            {
+                question: "What is the iterative formula for Newton-Raphson Method?",
+                options: [
+                    "xn+1 = xn + f(xn)",
+                    "xn+1 = xn - f(xn)/f'(xn)",
+                    "xn+1 = (xn + f(xn))/2",
+                    "xn+1 = xn * f(xn)"
+                ],
+                correct: 1,
+                explanation: "The Newton-Raphson formula is xn+1 = xn - f(xn)/f'(xn), where f'(xn) is the derivative at xn."
+            },
+            {
+                question: "What happens if f'(x) = 0 at any iteration?",
+                options: [
+                    "The method continues normally",
+                    "The method finds the root immediately",
+                    "The method fails due to division by zero",
+                    "The method switches to bisection"
+                ],
+                correct: 2,
+                explanation: "The method fails when f'(x) = 0 because this leads to division by zero in the formula."
+            },
+            {
+                question: "How many initial values does Newton-Raphson Method need?",
+                options: [
+                    "One initial guess",
+                    "Two initial guesses",
+                    "Three initial guesses",
+                    "An interval"
+                ],
+                correct: 0,
+                explanation: "Newton-Raphson method needs only one initial guess (x0) to start the iteration process."
+            },
+            {
+                question: "What is the geometric interpretation of Newton-Raphson Method?",
+                options: [
+                    "Finding midpoints",
+                    "Finding intersections of tangent lines with x-axis",
+                    "Finding area under curve",
+                    "Finding maximum points"
+                ],
+                correct: 1,
+                explanation: "Geometrically, the method finds where the tangent line at each point intersects the x-axis."
+            },
+            {
+                question: "Which of these is NOT a requirement for Newton-Raphson Method?",
+                options: [
+                    "Function must be differentiable",
+                    "Derivative must be continuous",
+                    "Function must be polynomial",
+                    "Initial guess must be sufficiently close"
+                ],
+                correct: 2,
+                explanation: "The method works on any differentiable function, not just polynomials. Being a polynomial is not a requirement."
+            },
+            {
+                question: "What advantage does Newton-Raphson have over Bisection Method?",
+                options: [
+                    "It's always guaranteed to converge",
+                    "It's easier to implement",
+                    "It converges much faster",
+                    "It doesn't require derivatives"
+                ],
+                correct: 2,
+                explanation: "Newton-Raphson method typically converges much faster (quadratically) compared to the linear convergence of bisection."
+            },
+            {
+                question: "What is a 'basin of attraction' in Newton-Raphson Method?",
+                options: [
+                    "The root itself",
+                    "The set of initial values that converge to a specific root",
+                    "The derivative at a point",
+                    "The final error margin"
+                ],
+                correct: 1,
+                explanation: "The basin of attraction is the set of all initial guesses that will lead to convergence to a particular root."
+            },
+            {
+                question: "Why might Newton-Raphson Method fail for multiple roots?",
+                options: [
+                    "It can't handle multiple roots",
+                    "The derivative is zero at multiple roots",
+                    "Multiple roots don't exist",
+                    "The function is undefined at multiple roots"
+                ],
+                correct: 1,
+                explanation: "At multiple roots, both f(x) and f'(x) are zero, which can cause problems with the method's convergence."
+            },
+            {
+                question: "How can you improve Newton-Raphson for multiple roots?",
+                options: [
+                    "Use a different method",
+                    "Modify the formula using multiplicity",
+                    "Use complex numbers",
+                    "Increase iterations"
+                ],
+                correct: 1,
+                explanation: "For multiple roots, the formula can be modified by considering the multiplicity of the root to improve convergence."
+            },
+            {
+                question: "What is the effect of concavity on Newton-Raphson Method?",
+                options: [
+                    "No effect",
+                    "Can affect which root it converges to",
+                    "Always improves convergence",
+                    "Makes it fail"
+                ],
+                correct: 1,
+                explanation: "The function's concavity can affect which root the method converges to from a given starting point."
+            }
+        ];
+        
+        // Initialize with first set of questions
+        const questionsPerSet = 3;
+        const totalSets = Math.ceil(allQuestions.length / questionsPerSet);
+        let currentSet = 0;
+        let questions = allQuestions.slice(0, questionsPerSet);
+
+        function loadNextSet() {
+            currentSet++;
+            const start = currentSet * questionsPerSet;
+            questions = allQuestions.slice(start, start + questionsPerSet);
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('current-set').textContent = currentSet + 1;
+            document.getElementById('score-container').classList.remove('active');
+            document.getElementById('question-container').classList.add('active');
+            showQuestion(0);
+            startTimer();
+        }
+
+        function updateOverallProgress() {
+            const progress = Math.round((questionsAnswered / allQuestions.length) * 100);
+            document.getElementById('overall-progress').textContent = progress;
+        }
+
+        function showQuestion(index) {
+            const question = questions[index];
+            const container = document.getElementById('question-container');
+            
+            // Clear previous content
+            container.innerHTML = '';
+            
+            // Create question element
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question';
+            questionDiv.textContent = `${index + 1}. ${question.question}`;
+            container.appendChild(questionDiv);
+            
+            // Create options container
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options';
+            
+            // Add options
+            question.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.setAttribute('data-index', i);
+                optionDiv.textContent = option;
+                optionsDiv.appendChild(optionDiv);
+            });
+            
+            container.appendChild(optionsDiv);
+            
+            // Add feedback div
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'feedback';
+            container.appendChild(feedbackDiv);
+            
+            // Add navigation div with submit button
+            const navigationDiv = document.createElement('div');
+            navigationDiv.className = 'navigation';
+            const submitBtn = document.createElement('button');
+            submitBtn.id = 'submit-btn';
+            submitBtn.className = 'nav-btn';
+            submitBtn.textContent = 'Submit Answer';
+            submitBtn.onclick = checkAnswer;
+            navigationDiv.appendChild(submitBtn);
+            container.appendChild(navigationDiv);
+            
+            updateProgress();
+            attachOptionListeners();
+        }
+
+        function startTimer() {
+            clearInterval(timer);  // Clear any existing timer
+            timeLeft = 20;
+            updateTimerDisplay();
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timer = null;
+                    checkAnswer();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerElement = document.querySelector('.timer');
+            timerElement.textContent = `${timeLeft}s`;
+            
+            // Add warning colors
+            if (timeLeft <= 5) {
+                timerElement.style.color = '#ff4757';
+            } else if (timeLeft <= 10) {
+                timerElement.style.color = '#f1c40f';
+            } else {
+                timerElement.style.color = '#fff';
+            }
+        }
+
+        function attachOptionListeners() {
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', () => {
+                    if (!timer) return; // Don't allow selection if timer has expired
+                    document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    selectedAnswer = parseInt(option.dataset.index);
+                });
+            });
+        }
+
+        function checkAnswer() {
+            clearInterval(timer);
+            timer = null;
+            const question = questions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            const feedback = document.querySelector('.feedback');
+            
+            if (selectedAnswer === null) {
+                feedback.textContent = "Time's up! Please select an answer.";
+                feedback.className = 'feedback wrong';
+                return;
+            }
+            
+            options.forEach(option => {
+                const index = parseInt(option.dataset.index);
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedAnswer) {
+                    option.classList.add('wrong');
+                }
+                option.style.pointerEvents = 'none';
+            });
+
+            if (selectedAnswer === question.correct) {
+                score++;
+                feedback.textContent = `Correct! ${question.explanation}`;
+                feedback.className = 'feedback correct';
+            } else {
+                feedback.textContent = `Incorrect. ${question.explanation}`;
+                feedback.className = 'feedback wrong';
+            }
+
+            const submitBtn = document.getElementById('submit-btn');
+            if (currentQuestion < questions.length - 1) {
+                submitBtn.textContent = 'Next Question';
+                submitBtn.onclick = nextQuestion;
+            } else {
+                submitBtn.textContent = 'Show Score';
+                submitBtn.onclick = showScore;
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                selectedAnswer = null;
+                showQuestion(currentQuestion);
+                const submitBtn = document.getElementById('submit-btn');
+                submitBtn.textContent = 'Submit Answer';
+                submitBtn.onclick = checkAnswer;
+                startTimer();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.querySelector('.progress').style.width = `${progress}%`;
+        }
+
+        function showScore() {
+            document.getElementById('question-container').classList.remove('active');
+            const scoreContainer = document.getElementById('score-container');
+            scoreContainer.classList.add('active');
+            
+            const percentage = Math.round((score / questions.length) * 100);
+            scoreContainer.querySelector('.score').textContent = `${percentage}%`;
+            
+            totalScore += score;
+            questionsAnswered += questions.length;
+            updateOverallProgress();
+            
+            let message;
+            if (percentage >= 90) message = "Excellent! Keep going!";
+            else if (percentage >= 70) message = "Good job! Ready for the next set?";
+            else if (percentage >= 50) message = "Not bad! Let's try another set!";
+            else message = "Keep practicing! Next set might be better!";
+            
+            scoreContainer.querySelector('.score-message').textContent = message;
+            
+            // Show or hide next set button
+            const nextSetBtn = document.getElementById('next-set-btn');
+            if (currentSet < totalSets - 1) {
+                nextSetBtn.style.display = 'block';
+                nextSetBtn.onclick = loadNextSet;
+            } else {
+                nextSetBtn.style.display = 'none';
+                scoreContainer.querySelector('h2').textContent = 'Quiz Complete!';
+                const finalScore = Math.round((totalScore / allQuestions.length) * 100);
+                scoreContainer.querySelector('.score-message').textContent = 
+                    `Final Score: ${finalScore}%\n` + 
+                    (finalScore >= 70 ? "Great job! You've mastered the Newton-Raphson Method!" : 
+                     "Keep practicing to improve your understanding of the Newton-Raphson Method!");
+            }
+        }
+
+        // Initialize particles.js
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: '#ffffff' },
+                shape: { type: 'circle' },
+                opacity: {
+                    value: 0.2,
+                    random: true,
+                    animation: { enable: true, speed: 1, minimumValue: 0.1, sync: false }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    animation: { enable: true, speed: 2, minimumValue: 0.1, sync: false }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#ffffff',
+                    opacity: 0.1,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1,
+                    direction: 'none',
+                    random: true,
+                    straight: false,
+                    outMode: 'out',
+                    bounce: false,
+                }
+            },
+            interactivity: {
+                detectsOn: 'canvas',
+                events: {
+                    onhover: { enable: true, mode: 'grab' },
+                    onclick: { enable: true, mode: 'push' },
+                    resize: true
+                },
+                modes: {
+                    grab: { distance: 140, line_linked: { opacity: 0.5 } },
+                    push: { particles_nb: 4 }
+                }
+            },
+            retina_detect: true
+        });
+
+        function startCountdown() {
+            const countdownContainer = document.getElementById('countdown-container');
+            const setInfo = document.getElementById('set-info');
+            const questionContainer = document.getElementById('question-container');
+            const countdownNumber = countdownContainer.querySelector('.countdown-number');
+            let count = 10;
+
+            // Initialize quiz elements
+            document.getElementById('total-sets').textContent = totalSets;
+            document.getElementById('current-set').textContent = currentSet + 1;
+
+            countdownContainer.classList.add('active');
+            setInfo.style.display = 'none';
+            questionContainer.classList.remove('active');
+
+            countdownTimer = setInterval(() => {
+                count--;
+                countdownNumber.textContent = count;
+                
+                if (count <= 0) {
+                    clearInterval(countdownTimer);
+                    countdownContainer.classList.remove('active');
+                    setInfo.style.display = 'block';
+                    questionContainer.classList.add('active');
+                    showQuestion(0);
+                    startTimer();
+                }
+            }, 1000);
+        }
+
+        // Start the quiz with countdown
+        startCountdown();
+    </script>
+</body>
+</html>
