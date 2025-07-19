@@ -43,6 +43,69 @@ let totalScore = 0;
 let questionsAnswered = 0;
 let shuffledQuestions = [];
 
+// Initialize when document is ready
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize Lucide icons
+    lucide.createIcons();
+    
+    // Initialize particles.js
+    particlesJS('particles-js', {
+        particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: '#ffffff' },
+            shape: { type: 'circle' },
+            opacity: {
+                value: 0.2,
+                random: true,
+                animation: { enable: true, speed: 1, minimumValue: 0.1, sync: false }
+            },
+            size: {
+                value: 3,
+                random: true,
+                animation: { enable: true, speed: 2, minimumValue: 0.1, sync: false }
+            },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#ffffff',
+                opacity: 0.1,
+                width: 1
+            },
+            move: {
+                enable: true,
+                speed: 1,
+                direction: 'none',
+                random: true,
+                straight: false,
+                outMode: 'out',
+                bounce: false,
+            }
+        },
+        interactivity: {
+            detectsOn: 'canvas',
+            events: {
+                onhover: { enable: true, mode: 'grab' },
+                onclick: { enable: true, mode: 'push' },
+                resize: true
+            },
+            modes: {
+                grab: { distance: 140, line_linked: { opacity: 0.5 } },
+                push: { particles_nb: 4 }
+            }
+        },
+        retina_detect: true
+    });
+
+        // Reset all displays
+    countdownContainer.style.display = 'block';
+    questionContainer.style.display = 'none';
+    document.getElementById('set-info').style.display = 'none';
+    scoreContainer.style.display = 'none';
+    
+    // Start countdown
+    startCountdown();
+});
+
 // DOM Elements
 const countdownContainer = document.getElementById('countdown-container');
 const questionContainer = document.getElementById('question-container');

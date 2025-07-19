@@ -4,9 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Root Finding Methods Quiz</title>
-    <link rel="stylesheet" href="../css/quiz.css">
-    <link rel="stylesheet" href="../css/all_quiz.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/all_quiz_new.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #1a1a2e;
+            color: #fff;
+            overflow-x: hidden;
+        }
+    </style>
 </head>
 <body>
     <div id="particles-js" class="particles-container"></div>
@@ -35,7 +44,7 @@
                 Set <span id="current-set">1</span> of <span id="total-sets">5</span>
             </div>
 
-            <div id="question-container" class="question-container" style="display: none;">
+            <div id="question-container" class="question-container">
                 <div class="question"></div>
                 <div class="options"></div>
                 <div class="feedback"></div>
@@ -55,86 +64,92 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
-    <script src="../js/all_quiz.js">
-        // Initialize particles.js with a darker, more subtle theme
-        particlesJS('particles-js', {
-            particles: {
-                number: {
-                    value: 60,
-                    density: {
-                        enable: true,
-                        value_area: 900
-                    }
-                },
-                color: {
-                    value: '#4cd137'
-                },
-                shape: {
-                    type: 'circle'
-                },
-                opacity: {
-                    value: 0.15,
-                    random: true,
-                    anim: {
-                        enable: true,
-                        speed: 1,
-                        opacity_min: 0.05,
-                        sync: false
-                    }
-                },
-                size: {
-                    value: 3,
-                    random: true,
-                    anim: {
-                        enable: true,
-                        speed: 2,
-                        size_min: 0.1,
-                        sync: false
-                    }
-                },
-                line_linked: {
-                    enable: true,
-                    distance: 150,
-                    color: '#4cd137',
-                    opacity: 0.1,
-                    width: 1
-                },
-                move: {
-                    enable: true,
-                    speed: 1.5,
-                    direction: 'none',
-                    random: true,
-                    straight: false,
-                    out_mode: 'out',
-                    bounce: false,
-                }
-            },
-            interactivity: {
-                detect_on: 'canvas',
-                events: {
-                    onhover: {
-                        enable: true,
-                        mode: 'grab'
-                    },
-                    onclick: {
-                        enable: true,
-                        mode: 'push'
-                    },
-                    resize: true
-                },
-                modes: {
-                    grab: {
-                        distance: 140,
-                        line_linked: {
-                            opacity: 0.3
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="../js/quiz-logic.js"></script>
+    <script>
+        // Initialize Lucide icons when document is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            // Initialize particles.js configuration
+            particlesJS('particles-js', {
+                particles: {
+                    number: {
+                        value: 60,
+                        density: {
+                            enable: true,
+                            value_area: 900
                         }
                     },
-                    push: {
-                        particles_nb: 3
+                    color: {
+                        value: '#4cd137'
+                    },
+                    shape: {
+                        type: 'circle'
+                    },
+                    opacity: {
+                        value: 0.15,
+                        random: true,
+                        anim: {
+                            enable: true,
+                            speed: 1,
+                            opacity_min: 0.05,
+                            sync: false
+                        }
+                    },
+                    size: {
+                        value: 3,
+                        random: true,
+                        anim: {
+                            enable: true,
+                            speed: 2,
+                            size_min: 0.1,
+                            sync: false
+                        }
+                    },
+                    line_linked: {
+                        enable: true,
+                        distance: 150,
+                        color: '#4cd137',
+                        opacity: 0.1,
+                        width: 1
+                    },
+                    move: {
+                        enable: true,
+                        speed: 1.5,
+                        direction: 'none',
+                        random: true,
+                        straight: false,
+                        out_mode: 'out',
+                        bounce: false,
                     }
-                }
-            },
-            retina_detect: true
+                },
+                interactivity: {
+                    detect_on: 'canvas',
+                    events: {
+                        onhover: {
+                            enable: true,
+                            mode: 'grab'
+                        },
+                        onclick: {
+                            enable: true,
+                            mode: 'push'
+                        },
+                        resize: true
+                    },
+                    modes: {
+                        grab: {
+                            distance: 140,
+                            line_linked: {
+                                opacity: 0.3
+                            }
+                        },
+                        push: {
+                            particles_nb: 3
+                        }
+                    }
+                },
+                retina_detect: true
+            });
         });
 
         // Quiz state
@@ -146,14 +161,24 @@
         let selectedAnswer = null;
         let totalScore = 0;
         let questionsAnswered = 0;
-        let countdownStarted = false;
-
-        // Start countdown when page is fully loaded
-        window.addEventListener('load', () => {
-            if (!countdownStarted) {
-                startCountdown();
-                countdownStarted = true;
-            }
+        // let organizedQuestions = [];
+        
+        // Initialize when the document is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize icons
+            lucide.createIcons();
+            
+            // Organize questions and prepare first set
+            questions = organizeQuestions(allQuestions);
+            
+            // Reset all containers to their initial state
+            document.getElementById('countdown-container').style.display = 'block';
+            document.getElementById('question-container').style.display = 'none';
+            document.getElementById('set-info').style.display = 'none';
+            document.getElementById('score-container').style.display = 'none';
+            
+            // Start countdown
+            startCountdown();
         });
 
         function startCountdown() {
@@ -164,6 +189,11 @@
             
             let count = 10;
             countdownElement.textContent = count;
+            
+            // Make sure questions are organized before starting
+            if (!organizedQuestions) {
+                organizedQuestions = organizeQuestions(allQuestions);
+            }
             
             countdownTimer = setInterval(() => {
                 count--;
@@ -176,11 +206,21 @@
                 
                 if (count <= 0) {
                     clearInterval(countdownTimer);
+                    
+                    // Hide countdown
                     countdownContainer.classList.remove('active');
-                    countdownContainer.style.display = 'none'; // Ensure it's hidden
-                    questionContainer.style.display = 'flex'; // Show question container
-                    questionContainer.classList.add('active');
+                    countdownContainer.style.display = 'none';
+                    
+                    // Show set info
                     setInfo.style.display = 'block';
+                    setInfo.textContent = `Set ${currentSet + 1} of ${totalSets}`;
+                    
+                    // Show question container
+                    questionContainer.style.display = 'flex';
+                    questionContainer.classList.add('active');
+                    
+                    // Start the quiz with first set of questions
+                    questions = organizedQuestions.slice(0, questionsPerSet);
                     startQuiz();
                 }
             }, 1000);
@@ -195,10 +235,17 @@
             // Initialize containers
             const questionContainer = document.getElementById('question-container');
             const scoreContainer = document.getElementById('score-container');
+            const setInfo = document.getElementById('set-info');
             
             // Reset displays
             questionContainer.style.display = 'flex';
             scoreContainer.style.display = 'none';
+            setInfo.style.display = 'block';
+            setInfo.textContent = `Set ${currentSet + 1} of ${totalSets}`;
+            
+            // Ensure questions are loaded for current set
+            const start = currentSet * questionsPerSet;
+            questions = organizedQuestions.slice(start, start + questionsPerSet);
             
             // Reset UI elements
             document.querySelector('.progress').style.width = '0%';
@@ -211,12 +258,22 @@
         }
 
         function showQuestion() {
-            const currentQ = shuffledQuestions[currentQuestion];
-            if (!currentQ) return;
+            const questionContainer = document.getElementById('question-container');
+            const startIndex = currentSet * questionsPerSet;
+            const currentQ = allQuestions[startIndex + currentQuestion];
+            
+            if (!currentQ) {
+                console.error('No question found');
+                return;
+            }
 
             const questionElement = document.querySelector('.question');
             const optionsContainer = document.querySelector('.options');
             const submitButton = document.getElementById('submit-btn');
+            
+            // Ensure the question container is visible
+            questionContainer.style.display = 'flex';
+            questionContainer.classList.add('active');
             
             // Clear previous content and states
             questionElement.textContent = currentQ.question;
@@ -226,22 +283,26 @@
             submitButton.onclick = submitAnswer;
 
             // Create and append options with proper selection handling
-            currentQ.options.forEach((option, index) => {
-                const optionDiv = document.createElement('div');
-                optionDiv.className = 'option';
-                optionDiv.textContent = option;
-                optionDiv.style.setProperty('--index', index);
-                optionDiv.addEventListener('click', () => selectOption(index, optionDiv));
-                optionsContainer.appendChild(optionDiv);
-            });
+            if (currentQ.options && Array.isArray(currentQ.options)) {
+                currentQ.options.forEach((option, index) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    optionDiv.textContent = option;
+                    optionDiv.style.setProperty('--index', index);
+                    optionDiv.addEventListener('click', () => selectOption(index, optionDiv));
+                    optionsContainer.appendChild(optionDiv);
+                });
+            } else {
+                console.error('No options found for question:', currentQ);
+            }
 
             // Update set info and progress
             const setInfo = document.getElementById('set-info');
             setInfo.style.display = 'block';
-            setInfo.textContent = `Question ${currentQuestion + 1} of ${shuffledQuestions.length}`;
+            setInfo.textContent = `Set ${currentSet + 1} of ${totalSets} - Question ${currentQuestion + 1} of ${questionsPerSet}`;
             
             // Update progress bar
-            const progress = ((currentQuestion + 1) / shuffledQuestions.length) * 100;
+            const progress = ((currentQuestion + 1) / questionsPerSet) * 100;
             document.querySelector('.progress').style.width = `${progress}%`;
         }
 
@@ -254,19 +315,93 @@
         }
 
         function createQuestion(question, options, correctIndex, explanation, method) {
-            // Shuffle options and track new correct index
-            let indexMap = options.map((_, index) => index);
-            let shuffledOptions = shuffleArray([...options]);
-            let shuffledIndices = shuffleArray([...indexMap]);
-            let newCorrectIndex = shuffledIndices.indexOf(correctIndex);
-
             return {
                 question: question,
-                options: shuffledOptions,
-                correct: newCorrectIndex,
+                options: options,
+                correct: correctIndex,
                 explanation: explanation,
                 method: method
             };
+        }
+
+        function startTimer() {
+            if (timer) clearInterval(timer);
+            
+            timeLeft = 30;
+            document.querySelector('.timer').textContent = timeLeft + 's';
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                document.querySelector('.timer').textContent = timeLeft + 's';
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    submitAnswer();
+                }
+            }, 1000);
+        }
+
+        function selectOption(index, optionDiv) {
+            const allOptions = document.querySelectorAll('.option');
+            allOptions.forEach(opt => opt.classList.remove('selected'));
+            optionDiv.classList.add('selected');
+            selectedAnswer = index;
+        }
+
+        function submitAnswer() {
+            if (timer) clearInterval(timer);
+            
+            const currentQ = allQuestions[currentSet * questionsPerSet + currentQuestion];
+            if (!currentQ) return;
+
+            if (selectedAnswer === currentQ.correct) {
+                score++;
+            }
+            
+            currentQuestion++;
+            if (currentQuestion >= questionsPerSet) {
+                showScore();
+            } else {
+                showQuestion();
+                startTimer();
+            }
+        }
+
+        function showScore() {
+            const scoreContainer = document.getElementById('score-container');
+            const questionContainer = document.getElementById('question-container');
+            
+            // Hide question container
+            questionContainer.style.display = 'none';
+            questionContainer.classList.remove('active');
+            
+            // Show score container
+            scoreContainer.style.display = 'block';
+            scoreContainer.classList.add('active');
+            
+            // Calculate and display score
+            const percentage = (score / questionsPerSet) * 100;
+            document.querySelector('.score').textContent = percentage.toFixed(0) + '%';
+            
+            // Update message based on score
+            const message = document.querySelector('.score-message');
+            if (percentage >= 80) {
+                message.textContent = 'Excellent! Keep up the great work!';
+            } else if (percentage >= 60) {
+                message.textContent = 'Good job! Room for improvement.';
+            } else {
+                message.textContent = 'Keep practicing to improve your understanding.';
+            }
+            
+            // Update next set button
+            const nextSetBtn = document.getElementById('next-set-btn');
+            if (currentSet < totalSets - 1) {
+                nextSetBtn.style.display = 'block';
+                nextSetBtn.onclick = loadNextSet;
+            } else {
+                nextSetBtn.style.display = 'none';
+                message.textContent += ' Quiz completed!';
+            }
         }
 
         const allQuestions = [
@@ -836,22 +971,45 @@
             // I'm showing how the pattern works. The actual file will have all 40 questions
             // with shuffled correct answers.
 
-        // Shuffle the entire question array
-        const shuffledQuestions = shuffleArray([...allQuestions]);
+        // Organize questions by method type
+        function organizeQuestions(questions) {
+            // Filter questions by method
+            const methodQuestions = {
+                "Bisection": questions.filter(q => q.method === "Bisection"),
+                "Secant": questions.filter(q => q.method === "Secant"),
+                "Newton": questions.filter(q => q.method === "Newton")
+            };
+            
+            // Organize into 5 sets of 9 questions (3 from each method)
+            const organized = [];
+            for (let setIndex = 0; setIndex < 5; setIndex++) {
+                const setQuestions = [];
+                for (const method of ["Bisection", "Secant", "Newton"]) {
+                    const start = setIndex * 3;
+                    const methodQs = methodQuestions[method].slice(start, start + 3);
+                    setQuestions.push(...methodQs);
+                }
+                organized.push(...setQuestions);
+            }
+            return organized;
+        }
+
+        const organizedQuestions = organizeQuestions(allQuestions);
         
         // Initialize with first set of questions
-        const questionsPerSet = 8;
-        const totalSets = Math.ceil(shuffledQuestions.length / questionsPerSet);
+        const questionsPerSet = 9;
+        const totalSets = 5;
         let currentSet = 0;
-        let questions = shuffledQuestions.slice(0, questionsPerSet);
+        let questions = organizedQuestions.slice(0, questionsPerSet);
 
         function loadNextSet() {
             currentSet++;
             const start = currentSet * questionsPerSet;
-            questions = shuffledQuestions.slice(start, start + questionsPerSet);
+            questions = organizedQuestions.slice(start, start + questionsPerSet);
             currentQuestion = 0;
             score = 0;
             document.getElementById('current-set').textContent = currentSet + 1;
+            document.getElementById('total-sets').textContent = totalSets;
             document.getElementById('score-container').classList.remove('active');
             document.getElementById('question-container').classList.add('active');
             showQuestion(0);
