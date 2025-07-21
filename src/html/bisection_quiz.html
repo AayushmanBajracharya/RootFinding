@@ -7,13 +7,14 @@
     <link rel="stylesheet" href="../css/quiz.css">
     <link rel="stylesheet" href="../css/bisection_quiz.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
     <div id="particles-js" class="particles-container"></div>
 
     <div class="container">
         <div class="quiz-container">
-            <button class="quit-btn" onclick="location.href='quiz.html'">
+            <button class="quit-btn" onclick="showQuitConfirmation()">
                 <i data-lucide="x-circle"></i>
                 Quit Quiz
             </button>
@@ -50,6 +51,49 @@
                 <p class="score-message"></p>
                 <button id="next-set-btn" class="nav-btn">Start Next Set</button>
                 <p class="progress-info">Your overall progress: <span id="overall-progress">0</span>%</p>
+            </div>
+
+            <!-- Quit Confirmation Dialog -->
+            <div id="quit-dialog" class="quit-dialog">
+                <div class="quit-dialog-content">
+                    <div class="cute-character">
+                        <div class="character-face">
+                            <div class="eyes">
+                                <div class="eye left-eye">
+                                    <div class="pupil"></div>
+                                    <div class="sparkle"></div>
+                                </div>
+                                <div class="eye right-eye">
+                                    <div class="pupil"></div>
+                                    <div class="sparkle"></div>
+                                </div>
+                            </div>
+                            <div class="mouth">
+                                <div class="mouth-curve"></div>
+                            </div>
+                            <div class="blush left-blush"></div>
+                            <div class="blush right-blush"></div>
+                        </div>
+                        <div class="character-body">
+                            <div class="heart">💚</div>
+                        </div>
+                    </div>
+                    <h3 class="quit-title">Wait! Don't go yet! 🥺</h3>
+                    <p class="quit-message">
+                        You're doing amazing with the Bisection Method! I believe in you! 
+                        <br>Maybe just one more question? Pretty please? 🌟
+                    </p>
+                    <div class="quit-buttons">
+                        <button class="stay-btn" onclick="hideQuitConfirmation()">
+                            <i data-lucide="heart"></i>
+                            I'll Stay! 💪
+                        </button>
+                        <button class="leave-btn" onclick="confirmQuit()">
+                            <i data-lucide="door-open"></i>
+                            I Must Go 😢
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -520,8 +564,81 @@
             }, 1000);
         }
 
+        // Show quit confirmation dialog
+        function showQuitConfirmation() {
+            const dialog = document.getElementById('quit-dialog');
+            dialog.classList.add('active');
+            
+            // Pause any running timers
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+            if (countdownTimer) {
+                clearInterval(countdownTimer);
+                countdownTimer = null;
+            }
+        }
+
+        // Hide quit confirmation dialog
+        function hideQuitConfirmation() {
+            const dialog = document.getElementById('quit-dialog');
+            dialog.classList.remove('active');
+            
+            // Resume timer if in quiz
+            if (document.getElementById('question-container').classList.contains('active')) {
+                startTimer();
+            }
+            // Resume countdown if in countdown phase
+            else if (document.getElementById('countdown-container').classList.contains('active')) {
+                startCountdown();
+            }
+        }
+
+        // Confirm quit and redirect
+        function confirmQuit() {
+            // Show a brief goodbye message
+            const dialog = document.getElementById('quit-dialog');
+            const content = dialog.querySelector('.quit-dialog-content');
+            
+            content.innerHTML = `
+                <div class="cute-character">
+                    <div class="character-face" style="background: linear-gradient(135deg, #ddd, #bbb);">
+                        <div class="eyes">
+                            <div class="eye left-eye">
+                                <div class="pupil" style="animation: none; transform: scaleY(0.1);"></div>
+                            </div>
+                            <div class="eye right-eye">
+                                <div class="pupil" style="animation: none; transform: scaleY(0.1);"></div>
+                            </div>
+                        </div>
+                        <div class="mouth">
+                            <div class="mouth-curve" style="border-radius: 20px 20px 0 0; border-bottom: none; border-top: 2px solid #e17055;"></div>
+                        </div>
+                    </div>
+                    <div class="character-body">
+                        <div class="heart">💔</div>
+                    </div>
+                </div>
+                <h3 class="quit-title">Goodbye! 😢</h3>
+                <p class="quit-message">
+                    Come back and master the Bisection Method! We'll miss you! 💚
+                </p>
+            `;
+            
+            // Redirect after a short delay
+            setTimeout(() => {
+                window.location.href = 'quiz.html';
+            }, 2000);
+        }
+
         // Start the quiz with countdown
         startCountdown();
+
+        // Initialize Lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
     </script>
 </body>
 </html>
