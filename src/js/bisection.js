@@ -338,27 +338,73 @@ function updateFunctionChart(func, a, b, root) {
                 {
                     label: 'f(x)',
                     data: yData,
-                    borderColor: '#667eea',
-                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderColor: '#14b8a6',
+                    backgroundColor: 'rgba(20, 184, 166, 0.2)',
                     tension: 0.1,
-                    pointRadius: 0
+                    pointRadius: 0,
+                    borderWidth: 3
                 },
                 {
                     label: 'Root',
                     data: [{ x: root, y: func(root) }],
-                    borderColor: '#e53e3e',
-                    backgroundColor: '#e53e3e',
-                    pointRadius: 8,
-                    showLine: false
+                    borderColor: '#f59e0b',
+                    backgroundColor: '#f59e0b',
+                    pointRadius: 10,
+                    showLine: false,
+                    pointBorderWidth: 2,
+                    pointBorderColor: '#ffffff'
                 }
             ]
         },
         options: {
             responsive: true,
-            plugins: { legend: { display: true } },
+            plugins: { 
+                legend: { 
+                    display: true,
+                    labels: {
+                        color: '#e2e8f0',
+                        font: {
+                            size: 14
+                        }
+                    }
+                }
+            },
             scales: {
-                x: { type: 'linear', title: { display: true, text: 'x' } },
-                y: { title: { display: true, text: 'f(x)' } }
+                x: { 
+                    type: 'linear', 
+                    title: { 
+                        display: true, 
+                        text: 'x',
+                        color: '#e2e8f0',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    },
+                    ticks: {
+                        color: '#94a3b8'
+                    },
+                    grid: {
+                        color: 'rgba(71, 85, 105, 0.3)'
+                    }
+                },
+                y: { 
+                    title: { 
+                        display: true, 
+                        text: 'f(x)',
+                        color: '#e2e8f0',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    },
+                    ticks: {
+                        color: '#94a3b8'
+                    },
+                    grid: {
+                        color: 'rgba(71, 85, 105, 0.3)'
+                    }
+                }
             }
         }
     });
@@ -379,18 +425,65 @@ function updateConvergenceChart(iterations) {
             datasets: [{
                 label: 'Log10(Error)',
                 data: errors,
-                borderColor: '#764ba2',
-                backgroundColor: 'rgba(118, 75, 162, 0.1)',
+                borderColor: '#0891b2',
+                backgroundColor: 'rgba(8, 145, 178, 0.2)',
                 tension: 0.1,
-                fill: true
+                fill: true,
+                borderWidth: 3,
+                pointBackgroundColor: '#14b8a6',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                pointRadius: 5
             }]
         },
         options: {
             responsive: true,
-            plugins: { legend: { display: true } },
+            plugins: { 
+                legend: { 
+                    display: true,
+                    labels: {
+                        color: '#e2e8f0',
+                        font: {
+                            size: 14
+                        }
+                    }
+                }
+            },
             scales: {
-                x: { title: { display: true, text: 'Iteration' } },
-                y: { title: { display: true, text: 'Log10(Error)' } }
+                x: { 
+                    title: { 
+                        display: true, 
+                        text: 'Iteration',
+                        color: '#e2e8f0',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    },
+                    ticks: {
+                        color: '#94a3b8'
+                    },
+                    grid: {
+                        color: 'rgba(71, 85, 105, 0.3)'
+                    }
+                },
+                y: { 
+                    title: { 
+                        display: true, 
+                        text: 'Log10(Error)',
+                        color: '#e2e8f0',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    },
+                    ticks: {
+                        color: '#94a3b8'
+                    },
+                    grid: {
+                        color: 'rgba(71, 85, 105, 0.3)'
+                    }
+                }
             }
         }
     });

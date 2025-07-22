@@ -15,398 +15,61 @@
       position: fixed;
       top: 20px;
       left: 20px;
-      background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+      background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
       color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
+      padding: 12px 24px;
+      border-radius: 12px;
       text-decoration: none;
       display: flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      transition: transform 0.2s;
+      box-shadow: 0 4px 15px rgba(20, 184, 166, 0.3);
+      transition: all 0.3s ease;
       z-index: 1000;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(20, 184, 166, 0.3);
     }
     
     .back-button:hover {
       transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(20, 184, 166, 0.4);
     }
 
     .back-button i {
       width: 20px;
       height: 20px;
     }
+
+    /* Override highlight.js colors for better readability */
+    .hljs {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%) !important;
+      color: #e2e8f0 !important;
+    }
     
-    body {
-      font-family: 'Arial', sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 0;
-      background-color: #f9fafb;
+    .hljs-keyword, .hljs-selector-tag, .hljs-built_in {
+      color: #14b8a6 !important;
     }
-
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 15px;
+    
+    .hljs-string, .hljs-attr {
+      color: #22d3ee !important;
     }
-
-    header {
-        background: #10b981;
-        color: white;
-        padding: 20px 0;
-        margin-bottom: 40px;
-        border-radius: 8px;
+    
+    .hljs-number, .hljs-literal {
+      color: #0891b2 !important;
     }
-
-    .header h1 {
-        font-size: 2.5rem;
-        font-weight: bold;
-        color: #1f2937;
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
+    
+    .hljs-comment {
+      color: #94a3b8 !important;
+      font-style: italic;
     }
-
-    .header .trending-up-icon {
-        color: #10b981;
-        width: 48px;
-        height: 48px;
+    
+    .hljs-function, .hljs-title {
+      color: #06b6d4 !important;
     }
-
-    .subtitle {
-        font-size: 1.2rem;
-        color: #f0fdf4;
-        text-align: center;
-        margin-top: 0;
-    }
-
-    main {
-        padding: 0 0 60px;
-    }
-
-    .section {
-        background: white;
-        padding: 30px;
-        margin-bottom: 30px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .section h2 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #1f2937;
-        margin-bottom: 24px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .section h2 .chevron {
-        color: #10b981;
-    }
-
-    .step-list {
-        margin: 20px 0;
-        padding-left: 20px;
-    }
-
-    .step-list li {
-        margin-bottom: 10px;
-        position: relative;
-        padding-left: 25px;
-    }
-
-    .step-list li::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 8px;
-        width: 10px;
-        height: 10px;
-        background: #10b981;
-        border-radius: 50%;
-    }
-
-    .formula {
-        background: #f0fdf4;
-        border-left: 4px solid #10b981;
-        padding: 10px 15px;
-        margin: 20px 0;
-        font-family: 'Courier New', Courier, monospace;
-        font-size: 1.1rem;
-        border-radius: 4px;
-    }
-
-    .highlight-box {
-        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-        border: 1px solid #a7f3d0;
-        border-left: 4px solid #10b981;
-        padding: 20px 24px;
-        margin: 24px 0;
-        border-radius: 12px;
-        box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
-    }
-
-    .highlight-box p {
-        margin-bottom: 12px;
-        color: #064e3b;
-        font-weight: 500;
-    }
-
-    .highlight-box strong {
-        color: #065f46;
-        font-weight: 600;
-    }
-
-    .highlight-box ul {
-        margin: 16px 0;
-        padding-left: 24px;
-        color: #047857;
-    }
-
-    .highlight-box ul li {
-        margin-bottom: 8px;
-        line-height: 1.5;
-    }
-
-    .algorithm-complexity {
-        background: #f9f9f9;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 15px;
-        margin: 20px 0;
-    }
-
-    .algorithm-complexity h3 {
-        margin-top: 0;
-        font-size: 1.2rem;
-        color: #1f2937;
-    }
-
-    pre {
-        background: #f0fdf4;
-        padding: 15px;
-        border-radius: 4px;
-        overflow-x: auto;
-        margin: 20px 0;
-    }
-
-    code {
-        font-family: 'Courier New', Courier, monospace;
-        background: #eef9f4;
-        padding: 2px 4px;
-        border-radius: 4px;
-    }
-
-    .example-box {
-        background: #f0fdf4;
-        border: 1px solid #10b981;
-        border-radius: 8px;
-        padding: 20px;
-        margin: 20px 0;
-    }
-
-    .flowchart {
-        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-        padding: 24px;
-        border-radius: 12px;
-        margin: 24px 0;
-        border: 1px solid #a7f3d0;
-        border-left: 4px solid #10b981;
-        box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
-    }
-
-    .flowchart h3 {
-        color: #065f46;
-        margin-bottom: 16px;
-        font-weight: 600;
-    }
-
-    .flowchart p {
-        color: #047857;
-        font-weight: 500;
-        margin-bottom: 12px;
-    }
-
-    .flowchart ul {
-        color: #064e3b;
-        padding-left: 20px;
-    }
-
-    .flowchart ul li {
-        margin-bottom: 8px;
-        line-height: 1.5;
-    }
-
-    .pros-cons {
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        margin-top: 20px;
-    }
-
-    .pros-cons-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-        margin-top: 24px;
-    }
-
-    .pros-card, .cons-card {
-        background: #f9fafb;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 15px;
-        margin: 10px 0;
-        flex: 1 1 45%;
-    }
-
-    .pros-card {
-        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-        border: 1px solid #a7f3d0;
-        border-radius: 12px;
-        padding: 24px;
-        border-left: 4px solid #10b981;
-        box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
-    }
-
-    .cons-card {
-        border-left: 4px solid #ef4444;
-    }
-
-    .decision-matrix {
-        background: #f9fafb;
-        padding: 15px;
-        border-radius: 8px;
-        margin: 20px 0;
-        border: 1px solid #ddd;
-    }
-
-    .formula-box {
-        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-        border: 2px solid #10b981;
-        border-radius: 12px;
-        padding: 24px;
-        margin: 24px 0;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .formula-box::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, #10b981, #059669);
-    }
-
-    .back-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: white;
-        padding: 12px 24px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        border: none;
-        cursor: pointer;
-    }
-
-    .back-btn:hover {
-        background: linear-gradient(135deg, #059669, #047857);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
-    }
-
-    .step-card {
-        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-        border: 1px solid #bbf7d0;
-        border-radius: 16px;
-        padding: 24px;
-        margin-bottom: 24px;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.1);
-        transition: all 0.3s ease;
-    }
-
-    .step-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 24px -6px rgba(16, 185, 129, 0.15);
-    }
-
-    .step-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, #10b981, #059669);
-    }
-
-    .step-number {
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: white;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 1.125rem;
-        margin-bottom: 16px;
-        box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
-    }
-
-    .warning-box {
-        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-        border: 1px solid #f59e0b;
-        border-left: 4px solid #f59e0b;
-        padding: 20px 24px;
-        margin: 24px 0;
-        border-radius: 12px;
-        box-shadow: 0 2px 4px rgba(245, 158, 11, 0.1);
-    }
-
-    .warning-box h3 {
-        color: #92400e;
-        margin-bottom: 16px;
-        font-weight: 600;
-    }
-
-    .warning-box ul {
-        color: #78350f;
-        padding-left: 20px;
-    }
-
-    .warning-box ul li {
-        margin-bottom: 8px;
-        line-height: 1.5;
-    }
-
-    footer {
-        background: #2d3748;
-        color: white;
-        text-align: center;
-        padding: 40px 0;
-        margin-top: 60px;
-    }
-
-    footer p {
-        margin: 0;
-        opacity: 0.8;
+    
+    .hljs-variable, .hljs-name {
+      color: #67e8f9 !important;
     }
   </style>
 </head>
@@ -432,7 +95,6 @@
 
   <main>
     <div class="container">
-      
       <section class="section">
         <h2>Introduction & Definition</h2>
         <p>The <strong>Secant Method</strong> is a powerful numerical technique for finding roots of equations that combines the reliability of bracketing methods with the efficiency of open methods. Unlike Newton-Raphson method, the secant method doesn't require the computation of derivatives, making it more practical for complex functions or when derivatives are difficult to obtain.</p>
