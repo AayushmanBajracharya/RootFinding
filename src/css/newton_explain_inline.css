@@ -1,0 +1,61 @@
+/* Newton Explain Inline Styles */
+.back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(20, 184, 166, 0.3);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(20, 184, 166, 0.3);
+}
+
+.back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(20, 184, 166, 0.4);
+}
+
+.back-button i {
+  width: 20px;
+  height: 20px;
+}
+
+/* Override highlight.js colors for better readability */
+.hljs {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%) !important;
+  color: #e2e8f0 !important;
+}
+
+.hljs-keyword, .hljs-selector-tag, .hljs-built_in {
+  color: #14b8a6 !important;
+}
+
+.hljs-string, .hljs-attr {
+  color: #22d3ee !important;
+}
+
+.hljs-number, .hljs-literal {
+  color: #0891b2 !important;
+}
+
+.hljs-comment {
+  color: #94a3b8 !important;
+  font-style: italic;
+}
+
+.hljs-function, .hljs-title {
+  color: #06b6d4 !important;
+}
+
+.hljs-variable, .hljs-name {
+  color: #67e8f9 !important;
+}
