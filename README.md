@@ -274,23 +274,7 @@ php -S localhost:8000
 
 ---
 
-## 🎨 Screenshots
 
-<div align="center">
-
-### **🏠 Main Dashboard**
-*Interactive landing page with method selection and animated backgrounds*
-
-### **🧮 Calculator Interface**
-*Real-time numerical computation with step-by-step visualization*
-
-### **📊 Convergence Visualization**
-*Live charts showing algorithm progression and error analysis*
-
-### **🎯 Quiz Interface**
-*Engaging assessment platform with immediate feedback*
-
-</div>
 
 ---
 
